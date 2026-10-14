@@ -36,29 +36,36 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         children: [
           // App Logo / Title
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                title ?? 'GHARAR',
-                style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.5,
-                  color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title ?? 'GHARAR',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    fontSize: 20,
+                    color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+                  ),
                 ),
-              ),
-              Text(
-                provider.isTurkish ? 'İki Kalbin Sığınağı' : 'A Sanctuary for Two',
-                style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                  fontSize: 10,
-                  letterSpacing: 0.5,
-                  color: isDark ? AppColors.lavenderAccent : AppColors.burgundyRose,
+                Text(
+                  provider.isTurkish ? 'İki Kalbin Sığınağı' : 'A Sanctuary for Two',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                    fontSize: 10,
+                    letterSpacing: 0.5,
+                    color: isDark ? AppColors.lavenderAccent : AppColors.burgundyRose,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const Spacer(),
+          const SizedBox(width: 8),
 
           // Interactive Partner Switcher Pill
           if (showPartnerSwitcher)
@@ -75,11 +82,15 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
                       children: [
                         Text(provider.activePartner.avatar, style: const TextStyle(fontSize: 18)),
                         const SizedBox(width: 8),
-                        Text(
-                          provider.isTurkish
-                              ? 'Artık ${provider.activePartner.name} olarak görüntülüyorsunuz'
-                              : 'Now viewing as ${provider.activePartner.name}',
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                        Expanded(
+                          child: Text(
+                            provider.isTurkish
+                                ? 'Artık ${provider.activePartner.name} olarak görüntülüyorsunuz'
+                                : 'Now viewing as ${provider.activePartner.name}',
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
@@ -87,7 +98,7 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
                 );
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                 decoration: BoxDecoration(
                   color: isDark
                       ? AppColors.darkCardElevated
@@ -102,19 +113,25 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(active.avatar, style: const TextStyle(fontSize: 15)),
+                    Text(active.avatar, style: const TextStyle(fontSize: 14)),
                     const SizedBox(width: 4),
-                    Text(
-                      active.name,
-                      style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.deepBurgundy,
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 68),
+                      child: Text(
+                        active.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 11,
+                          color: isDark ? AppColors.darkTextPrimary : AppColors.deepBurgundy,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 3),
                     Icon(
                       Icons.swap_horiz_rounded,
-                      size: 16,
+                      size: 15,
                       color: isDark ? AppColors.blushPinkDeep : AppColors.burgundyRose,
                     ),
                   ],
@@ -122,7 +139,7 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
 
-          const SizedBox(width: 8),
+          const SizedBox(width: 4),
 
           // AI Companion "Noor" Shortcut
           if (showAIButton)

@@ -66,8 +66,16 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                   isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
               unselectedItemColor:
                   isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-              selectedFontSize: 12,
-              unselectedFontSize: 11,
+              selectedFontSize: MediaQuery.sizeOf(context).width <= 360 ? 11 : 12,
+              unselectedFontSize: MediaQuery.sizeOf(context).width <= 360 ? 10 : 11,
+              selectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.w700,
+                overflow: TextOverflow.ellipsis,
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.w500,
+                overflow: TextOverflow.ellipsis,
+              ),
               onTap: (idx) => setState(() => _currentIndex = idx),
               items: [
                 BottomNavigationBarItem(

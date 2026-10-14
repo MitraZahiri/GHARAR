@@ -270,15 +270,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        title,
-                        style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 15,
+                      Flexible(
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                       if (badgeText != null) ...[
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 6, vertical: 2),
@@ -298,16 +302,21 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       ],
                     ],
                   ),
-                  Text(subtitle,
-                      style: AppTextStyles.bodySmall(isDark: isDark)),
+                  const SizedBox(height: 3),
+                  Text(
+                    price,
+                    style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
+                      color: isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: AppTextStyles.bodySmall(isDark: isDark).copyWith(fontSize: 11),
+                  ),
                 ],
-              ),
-            ),
-            Text(
-              price,
-              style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w800,
-                color: isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
               ),
             ),
           ],

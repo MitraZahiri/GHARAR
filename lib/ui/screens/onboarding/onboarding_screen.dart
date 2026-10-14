@@ -168,48 +168,54 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildWelcomeSlide(bool isDark, bool isTr) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 110,
-            height: 110,
-            decoration: BoxDecoration(
-              gradient: AppColors.romanticLove,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.deepBurgundy.withValues(alpha: 0.28),
-                  blurRadius: 28,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+    return Center(
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                gradient: AppColors.romanticLove,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.deepBurgundy.withValues(alpha: 0.28),
+                    blurRadius: 28,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Text('🕊️', style: TextStyle(fontSize: 48)),
+              ),
             ),
-            child: const Center(
-              child: Text('🕊️', style: TextStyle(fontSize: 54)),
+            const SizedBox(height: 24),
+            Text(
+              isTr
+                  ? 'İkinize Özel Masalsı Bir Alan'
+                  : 'A Sacred Sanctuary Just for the Two of You',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.displayMedium(isDark: isDark).copyWith(
+                fontWeight: FontWeight.w800,
+                fontSize: 24,
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
-          Text(
-            isTr
-                ? 'İkinize Özel Masalsı Bir Alan'
-                : 'A Sacred Sanctuary Just for the Two of You',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.displayMedium(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w800,
+            const SizedBox(height: 14),
+            Text(
+              isTr
+                  ? 'GHARAR; ilişkinizi derinleştirmek, birbirinizi yargılamadan anlamak, gizli sorularla heyecanı canlı tutmak ve ömürlük anılar biriktirmek için tasarlandı.'
+                  : 'GHARAR is exclusively designed to deepen your bond, understand each other without judgment, spark romance with private questions, and cherish every moment.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyLarge(isDark: isDark).copyWith(
+                fontSize: 15,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            isTr
-                ? 'GHARAR; ilişkinizi derinleştirmek, birbirinizi yargılamadan anlamak, gizli sorularla heyecanı canlı tutmak ve ömürlük anılar biriktirmek için tasarlandı.'
-                : 'GHARAR is exclusively designed to deepen your bond, understand each other without judgment, spark romance with private questions, and cherish every moment.',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyLarge(isDark: isDark),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

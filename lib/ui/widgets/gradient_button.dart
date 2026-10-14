@@ -30,7 +30,7 @@ class GradientButton extends StatelessWidget {
 
     return Container(
       width: width ?? double.infinity,
-      height: height,
+      constraints: BoxConstraints(minHeight: height),
       decoration: BoxDecoration(
         gradient: gradient ??
             (isDark
@@ -56,7 +56,7 @@ class GradientButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
           onTap: isLoading ? null : onPressed,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             child: Center(
               child: isLoading
                   ? const SizedBox(
@@ -78,7 +78,8 @@ class GradientButton extends StatelessWidget {
                         Flexible(
                           child: Text(
                             text,
-                            maxLines: 1,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
                             style: AppTextStyles.labelLarge(isDark: false).copyWith(
                               color: Colors.white,

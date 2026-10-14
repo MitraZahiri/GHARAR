@@ -94,6 +94,8 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                           isTr
                               ? 'Haftalık Çift Görevleri & Rozetler'
                               : 'Weekly Challenges & Badges',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.titleMedium(isDark: isDark)
                               .copyWith(fontWeight: FontWeight.w700, fontSize: 14),
                         ),
@@ -101,12 +103,15 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                           isTr
                               ? 'Bu haftanın romantik görevini tamamlayın'
                               : 'Complete this week’s love mission',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.bodySmall(isDark: isDark)
                               .copyWith(fontSize: 11),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 6),
                   const Icon(Icons.arrow_forward_ios_rounded,
                       size: 14, color: AppColors.lightTextMuted),
                 ],
@@ -283,18 +288,22 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          act.category(isTr).toUpperCase(),
-                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                            fontSize: 10,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.w700,
-                            color: isDark
-                                ? AppColors.blushPinkDeep
-                                : AppColors.burgundyRose,
+                        Expanded(
+                          child: Text(
+                            act.category(isTr).toUpperCase(),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                              fontSize: 10,
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.w700,
+                              color: isDark
+                                  ? AppColors.blushPinkDeep
+                                  : AppColors.burgundyRose,
+                            ),
                           ),
                         ),
-                        const Spacer(),
+                        const SizedBox(width: 6),
                         // Bookmark icon
                         IconButton(
                           padding: EdgeInsets.zero,
@@ -388,10 +397,11 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
           const Divider(height: 20),
 
           // Completion status button
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton.icon(
+          Align(
+            alignment: Alignment.centerRight,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: TextButton.icon(
                 icon: Icon(
                   act.isCompleted
                       ? Icons.check_circle_rounded
@@ -419,7 +429,7 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                   provider.toggleCompleteActivity(act.id);
                 },
               ),
-            ],
+            ),
           ),
         ],
       ),

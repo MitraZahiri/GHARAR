@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
@@ -22,18 +23,25 @@ class AnswerRevealScreen extends StatefulWidget {
 
 class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
   bool _playConfetti = true;
+  Timer? _confettiTimer;
 
   @override
   void initState() {
     super.initState();
     // Confetti automatically bursts upon entering the reveal screen
-    Future.delayed(const Duration(milliseconds: 3000), () {
+    _confettiTimer = Timer(const Duration(milliseconds: 3000), () {
       if (mounted) {
         setState(() {
           _playConfetti = false;
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _confettiTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -83,20 +91,23 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                     ),
                   ],
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('🎉', style: TextStyle(fontSize: 18)),
-                    const SizedBox(width: 8),
-                    Text(
-                      isTr ? 'İki Kalp Senkronize Oldu!' : 'Two Souls in Sync!',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('🎉', style: TextStyle(fontSize: 18)),
+                      const SizedBox(width: 8),
+                      Text(
+                        isTr ? 'İki Kalp Senkronize Oldu!' : 'Two Souls in Sync!',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 
@@ -116,14 +127,18 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                         Text(widget.question.categoryIcon,
                             style: const TextStyle(fontSize: 20)),
                         const SizedBox(width: 8),
-                        Text(
-                          widget.question.categoryName(isTr).toUpperCase(),
-                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                            letterSpacing: 1.2,
-                            fontWeight: FontWeight.w700,
-                            color: isDark
-                                ? AppColors.blushPinkDeep
-                                : AppColors.deepBurgundy,
+                        Flexible(
+                          child: Text(
+                            widget.question.categoryName(isTr).toUpperCase(),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w700,
+                              color: isDark
+                                  ? AppColors.blushPinkDeep
+                                  : AppColors.deepBurgundy,
+                            ),
                           ),
                         ),
                       ],
@@ -302,22 +317,28 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                 ),
               ),
               const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    partner.name,
-                    style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                      fontWeight: FontWeight.w700,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      partner.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  Text(
-                    isTr ? 'Cevaplandı' : 'Shared with love',
-                    style: AppTextStyles.bodySmall(isDark: isDark),
-                  ),
-                ],
+                    Text(
+                      isTr ? 'Cevaplandı' : 'Shared with love',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.bodySmall(isDark: isDark),
+                    ),
+                  ],
+                ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               if (answer.reactionEmoji != null)
                 Container(
                   padding:
