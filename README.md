@@ -4,7 +4,7 @@
 [![GHARAR Flutter CI](https://github.com/MitraZahiri/GHARAR/actions/workflows/ci.yml/badge.svg)](https://github.com/MitraZahiri/GHARAR/actions/workflows/ci.yml)
 [![Flutter](https://img.shields.io/badge/Flutter-3.29.0-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.7.0-0175C2?logo=dart)](https://dart.dev)
-[![Release](https://img.shields.io/badge/Release-v1.0.0-8E2A40)](https://github.com/MitraZahiri/GHARAR/releases)
+[![Release](https://img.shields.io/badge/Release-v1.0.2-8E2A40)](https://github.com/MitraZahiri/GHARAR/releases)
 [![License](https://img.shields.io/badge/License-MIT-E2B774)](#)
 
 ---
@@ -82,8 +82,19 @@ Typography blends **Playfair Display** for poetic, elegant headlines with **Plus
 ### 11. 🔄 Interactive Partner Switcher (Simulation Mode)
 - Test and experience both partner perspectives (e.g. Mitra 🌸 & Deniz 🌿) with a single tap in the app bar! Allows full demonstration of the mutual reveal system without requiring two separate phones.
 
-### 12. 🌍 Dual-Language Localization (English & Turkish)
-- Instant live switching between **English 🇬🇧** and **Türkçe 🇹🇷**.
+### 12. 🌍 8-Language Multilingual Localization & RTL Support
+- Instant live switching across **8 languages** with complete cultural nuances, authentic typography, and bidirectional script support:
+  - 🇬🇧 **English** (*A Sanctuary for Two*)
+  - 🇹🇷 **Türkçe** (*İki Kalbin Sığınağı*)
+  - 🇸🇦 **العربية** (*ملاذ لقلبين* • **Full RTL Support**)
+  - 🇮🇷 **فارسی** (*پناهگاه دو قلب* • **Full RTL Support**)
+  - 🇩🇪 **Deutsch** (*Ein Zufluchtsort für Zwei*)
+  - 🇪🇸 **Español** (*Un Santuario para Dos*)
+  - 🇫🇷 **Français** (*Un Sanctuaire pour Deux*)
+  - 🇮🇹 **Italiano** (*Un Santuario per Due*)
+- Cultural adaptation of the name **GHARAR (قرار)** representing serenity, tranquility, and a sacred haven for two lovers.
+- Culturally tailored partner answer simulations in all 8 languages.
+- Interactive modal sheets with flags, native names, romantic slogans, and RTL badges on both Onboarding and Profile Settings screens.
 
 ### 13. 👑 GHARAR Premium Tier
 - Transparent, non-manipulative premium option with unlimited questions, expanded memory storage, and full Noor AI companion features.
@@ -96,7 +107,8 @@ Typography blends **Playfair Display** for poetic, elegant headlines with **Plus
 lib/
 ├── core/
 │   ├── localization/
-│   │   └── app_localizations.dart       # English & Turkish dictionaries
+│   │   ├── app_language.dart            # Supported languages, RTL & cultural metadata
+│   │   └── app_localizations.dart       # 8-language dictionaries & bidirectional engine
 │   ├── theme/
 │   │   ├── app_colors.dart             # Romantic blush, burgundy, gold tokens
 │   │   ├── app_text_styles.dart        # Playfair Display & Plus Jakarta Sans
@@ -168,7 +180,9 @@ flutter run -d chrome
 ---
 
 ## 🧪 Testing & Verification
-GHARAR includes full unit and widget test suites:
+GHARAR includes 64 comprehensive unit and widget tests across 4 suites:
+- `test/multilingual_localization_test.dart`: Validates the 8-language engine (AR, FA, DE, ES, FR, IT, TR, EN), bidirectional text direction (RTL/LTR), English fallbacks, and live switching.
+- `test/responsive_test.dart`: Validates multi-phone compatibility across iPhone SE 1st Gen (320px), SE 2nd/3rd (375px), iPhone 14/15/16 (390px), Galaxy S23 (393px), iPhone 15/16 Pro Max (430px), and 1.3x text scaling.
 - `test/domain_test.dart`: Validates couple synchronization, privacy state machine, mutual reveal triggers, activity saving, challenge completion, and localization.
 - `test/widget_test.dart`: Validates startup rendering, widget tree composition, and theme application.
 
