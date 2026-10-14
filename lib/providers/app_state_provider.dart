@@ -9,6 +9,7 @@ import '../models/shared_interest_model.dart';
 import '../models/journal_entry_model.dart';
 import '../models/special_date_model.dart';
 import '../models/ai_message_model.dart';
+import '../core/localization/app_language.dart';
 import '../services/storage_service.dart';
 import '../services/seed_data_service.dart';
 import '../services/ai_companion_service.dart';
@@ -47,9 +48,21 @@ class AppStateProvider extends ChangeNotifier {
   CoupleModel? get couple => _couple;
   String get activeViewingPartnerId => _activeViewingPartnerId;
   Locale get locale => _locale;
+  AppLanguage get currentLanguage => AppLanguage.fromCode(_locale.languageCode);
   bool get isTurkish => _locale.languageCode == 'tr';
+  bool get isArabic => _locale.languageCode == 'ar';
+  bool get isFarsi => _locale.languageCode == 'fa';
+  bool get isGerman => _locale.languageCode == 'de';
+  bool get isSpanish => _locale.languageCode == 'es';
+  bool get isFrench => _locale.languageCode == 'fr';
+  bool get isItalian => _locale.languageCode == 'it';
+  bool get isRtl => currentLanguage.isRtl;
   bool get isDarkMode => _isDarkMode;
   bool get hasOnboarded => _hasOnboarded;
+
+  void setLanguageCode(String code) {
+    setLocale(Locale(code));
+  }
 
   List<QuestionModel> get questions => _questions;
   int get currentQuestionIndex => _currentQuestionIndex;
@@ -373,10 +386,41 @@ class AppStateProvider extends ChangeNotifier {
   // Simulate Partner Answer (Demo helper so single user can see mutual reveal immediately!)
   void simulatePartnerAnswer(String questionId) {
     final partner = otherPartner;
-
-    final simulatedText = isTurkish
-        ? 'Bu soru kalbimi eritti. Birlikte geçirdiğimiz her an, özellikle o sessizce birbirimize sarıldığımız akşamlar benim için paha biçilemez.'
-        : 'This melted my heart completely. Every moment we spend, especially when we just sit together peacefully with no words needed, is sacred to me.';
+    final String simulatedText;
+    switch (_locale.languageCode) {
+      case 'tr':
+        simulatedText =
+            'Bu soru kalbimi eritti. Birlikte geçirdiğimiz her an, özellikle o sessizce birbirimize sarıldığımız akşamlar benim için paha biçilemez.';
+        break;
+      case 'ar':
+        simulatedText =
+            'هذا السؤال أذاب قلبي بالكامل. كل لحظة نقضيها معاً، وخاصة تلك الأمسيات الهادئة التي نتعانق فيها بصمت، هي أثمن كنز لدي.';
+        break;
+      case 'fa':
+        simulatedText =
+            'این پاسخ تمام وجودم را سرشار از عشق کرد. هر لحظه‌ای که با هم می‌گذرانیم، مخصوصاً غروب‌هایی که در سکوت دست در دست هم آرام می‌گیریم، مقدس‌ترین دارایی من است.';
+        break;
+      case 'de':
+        simulatedText =
+            'Diese Frage hat mein Herz tief berührt. Jeder Moment mit dir, besonders wenn wir einfach still beieinander sitzen und uns aneinander kuscheln, ist unbezahlbar für mich.';
+        break;
+      case 'es':
+        simulatedText =
+            'Esta pregunta me ha derretido el corazón por completo. Cada instante que pasamos juntos, especialmente esos abrazos en silencio al atardecer, es un tesoro para mí.';
+        break;
+      case 'fr':
+        simulatedText =
+            'Cette question a fait fondre mon cœur. Chaque instant passé ensemble, surtout ces soirées paisibles où nous nous enlaçons en silence, est un trésor inestimable.';
+        break;
+      case 'it':
+        simulatedText =
+            'Questa risposta mi ha scaldato il cuore. Ogni attimo che trascorriamo insieme, soprattutto quando restiamo abbracciati in silenzio la sera, è preziosissimo per me.';
+        break;
+      default:
+        simulatedText =
+            'This melted my heart completely. Every moment we spend, especially when we just sit together peacefully with no words needed, is sacred to me.';
+        break;
+    }
 
     final list = List<AnswerModel>.from(_answersMap[questionId] ?? []);
     list.removeWhere((a) => a.authorId == partner.id);

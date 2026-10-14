@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/localization/app_language.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
@@ -47,14 +48,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           children: [
             // Top Bar with Language Selector & Progress Dots
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               child: Row(
                 children: [
                   Text(
                     'GHARAR',
                     style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 2,
+                      letterSpacing: 1.5,
                       fontSize: 18,
                       color: isDark
                           ? AppColors.blushPinkDeep
@@ -62,15 +63,45 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                   const Spacer(),
-                  // Language Switcher Chip
-                  ActionChip(
-                    avatar: const Icon(Icons.language_rounded, size: 16),
-                    label: Text(isTr ? 'Türkçe' : 'English'),
-                    onPressed: () {
-                      provider.setLocale(
-                        isTr ? const Locale('en') : const Locale('tr'),
-                      );
-                    },
+                  // Multilingual Language Switcher Chip (8 Languages & RTL)
+                  InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () => _showLanguagePickerSheet(context, provider),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? AppColors.darkCardElevated
+                            : AppColors.blushPinkLight,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.blushPinkDeep.withValues(alpha: 0.35),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(provider.currentLanguage.flag,
+                              style: const TextStyle(fontSize: 15)),
+                          const SizedBox(width: 5),
+                          Text(
+                            provider.currentLanguage.nativeName,
+                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          Icon(
+                            Icons.arrow_drop_down_rounded,
+                            size: 16,
+                            color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -493,6 +524,215 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
         ],
       ),
+    );
+  }
+
+  void _showLanguagePickerSheet(
+      BuildContext context, AppStateProvider provider) {
+    final isDark = provider.isDarkMode;
+    final currentLang = provider.currentLanguage;
+    final isTr = provider.isTurkish;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(ctx).size.height * 0.78,
+          ),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkCardElevated : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 20,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    const Text('🌍', style: TextStyle(fontSize: 26)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isTr ? 'Uygulama Dili Seçin' : 'Choose App Language',
+                            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Text(
+                            isTr
+                                ? '8 dil desteği ve sağdan sola (RTL) tam uyum'
+                                : '8 languages supported with full RTL & LTR script harmony',
+                            style: AppTextStyles.bodySmall(isDark: isDark),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Divider(
+                height: 1,
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              ),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  itemCount: AppLanguage.supportedLanguages.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (ctx, index) {
+                    final lang = AppLanguage.supportedLanguages[index];
+                    final isSelected = lang.code == currentLang.code;
+
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        provider.setLanguageCode(lang.code);
+                        Navigator.of(ctx).pop();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? (isDark
+                                  ? AppColors.blushPinkDeep
+                                      .withValues(alpha: 0.22)
+                                  : AppColors.blushPinkLight)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isSelected
+                                ? (isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy)
+                                : (isDark
+                                    ? AppColors.darkBorder
+                                        .withValues(alpha: 0.5)
+                                    : AppColors.lightBorder),
+                            width: isSelected ? 1.8 : 1.0,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(lang.flag,
+                                style: const TextStyle(fontSize: 28)),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        lang.nativeName,
+                                        style: AppTextStyles.titleMedium(
+                                                isDark: isDark)
+                                            .copyWith(
+                                          fontWeight: isSelected
+                                              ? FontWeight.w800
+                                              : FontWeight.w600,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '(${lang.name})',
+                                        style: AppTextStyles.bodySmall(
+                                                isDark: isDark)
+                                            .copyWith(
+                                          fontSize: 12,
+                                          color: isDark
+                                              ? AppColors.darkTextSecondary
+                                              : AppColors.lightTextMuted,
+                                        ),
+                                      ),
+                                      if (lang.isRtl) ...[
+                                        const SizedBox(width: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 6, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.champagneGold
+                                                .withValues(alpha: 0.2),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                          ),
+                                          child: const Text(
+                                            'RTL',
+                                            style: TextStyle(
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppColors.champagneGold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    lang.tagline,
+                                    style: AppTextStyles.bodySmall(
+                                            isDark: isDark)
+                                        .copyWith(
+                                      fontSize: 11,
+                                      fontStyle: FontStyle.italic,
+                                      color: isDark
+                                          ? AppColors.lavenderAccent
+                                          : AppColors.burgundyRose,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (isSelected)
+                              Icon(
+                                Icons.check_circle_rounded,
+                                color: isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy,
+                                size: 22,
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
     );
   }
 }

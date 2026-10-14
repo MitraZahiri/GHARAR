@@ -53,7 +53,7 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 Text(
-                  provider.isTurkish ? 'İki Kalbin Sığınağı' : 'A Sanctuary for Two',
+                  provider.currentLanguage.tagline,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.bodySmall(isDark: isDark).copyWith(

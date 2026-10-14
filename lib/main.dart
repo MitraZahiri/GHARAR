@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'core/localization/app_language.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/app_state_provider.dart';
@@ -34,10 +35,9 @@ class GhararApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: provider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       locale: provider.locale,
-      supportedLocales: const [
-        Locale('en'),
-        Locale('tr'),
-      ],
+      supportedLocales: AppLanguage.supportedLanguages
+          .map((lang) => Locale(lang.code))
+          .toList(),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

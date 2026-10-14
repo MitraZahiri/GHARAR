@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../../../core/localization/app_language.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
@@ -250,38 +251,74 @@ class ProfileSettingsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // Language Toggle
+            // Multi-Language Localization Selector (8 Languages & RTL)
             GlassCard(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              onTap: () => _showLanguagePickerSheet(context, provider),
               child: Row(
                 children: [
                   const Icon(Icons.language_rounded, size: 22),
                   const SizedBox(width: 14),
                   Expanded(
-                    child: Text(
-                      isTr ? 'Uygulama Dili' : 'App Language',
-                      style: AppTextStyles.titleMedium(isDark: isDark)
-                          .copyWith(fontSize: 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isTr ? 'Uygulama Dili (8 Dil)' : 'App Language (8 Languages)',
+                          style: AppTextStyles.titleMedium(isDark: isDark)
+                              .copyWith(fontSize: 14, fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          provider.currentLanguage.tagline,
+                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                            fontSize: 11,
+                            color: isDark ? AppColors.lavenderAccent : AppColors.burgundyRose,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  DropdownButton<String>(
-                    value: provider.locale.languageCode,
-                    underline: const SizedBox(),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'en',
-                        child: Text('English 🇬🇧'),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? AppColors.darkCardElevated
+                          : AppColors.blushPinkLight,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isDark ? AppColors.darkBorder : AppColors.blushPinkDeep.withValues(alpha: 0.4),
                       ),
-                      DropdownMenuItem(
-                        value: 'tr',
-                        child: Text('Türkçe 🇹🇷'),
-                      ),
-                    ],
-                    onChanged: (val) {
-                      if (val != null) {
-                        provider.setLocale(Locale(val));
-                      }
-                    },
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${provider.currentLanguage.flag} ${provider.currentLanguage.nativeName}',
+                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                        ),
+                        if (provider.currentLanguage.isRtl) ...[
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: AppColors.champagneGold.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'RTL',
+                              style: TextStyle(
+                                fontSize: 8,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.champagneGold,
+                              ),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(width: 4),
+                        const Icon(Icons.arrow_drop_down_rounded, size: 18),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -468,6 +505,215 @@ class ProfileSettingsScreen extends StatelessWidget {
               : 'All memories and journal copied to clipboard! 📋',
         ),
       ),
+    );
+  }
+
+  void _showLanguagePickerSheet(
+      BuildContext context, AppStateProvider provider) {
+    final isDark = provider.isDarkMode;
+    final currentLang = provider.currentLanguage;
+    final isTr = provider.isTurkish;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(ctx).size.height * 0.78,
+          ),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkCardElevated : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 20,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    const Text('🌍', style: TextStyle(fontSize: 26)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isTr ? 'Uygulama Dili Seçin' : 'Choose App Language',
+                            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Text(
+                            isTr
+                                ? 'Anında canlı dil ve yazı yönü değişimi (LTR & RTL)'
+                                : 'Live instant language and script direction switching',
+                            style: AppTextStyles.bodySmall(isDark: isDark),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Divider(
+                height: 1,
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              ),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  itemCount: AppLanguage.supportedLanguages.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (ctx, index) {
+                    final lang = AppLanguage.supportedLanguages[index];
+                    final isSelected = lang.code == currentLang.code;
+
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        provider.setLanguageCode(lang.code);
+                        Navigator.of(ctx).pop();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? (isDark
+                                  ? AppColors.blushPinkDeep
+                                      .withValues(alpha: 0.22)
+                                  : AppColors.blushPinkLight)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isSelected
+                                ? (isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy)
+                                : (isDark
+                                    ? AppColors.darkBorder
+                                        .withValues(alpha: 0.5)
+                                    : AppColors.lightBorder),
+                            width: isSelected ? 1.8 : 1.0,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(lang.flag,
+                                style: const TextStyle(fontSize: 28)),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        lang.nativeName,
+                                        style: AppTextStyles.titleMedium(
+                                                isDark: isDark)
+                                            .copyWith(
+                                          fontWeight: isSelected
+                                              ? FontWeight.w800
+                                              : FontWeight.w600,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '(${lang.name})',
+                                        style: AppTextStyles.bodySmall(
+                                                isDark: isDark)
+                                            .copyWith(
+                                          fontSize: 12,
+                                          color: isDark
+                                              ? AppColors.darkTextSecondary
+                                              : AppColors.lightTextMuted,
+                                        ),
+                                      ),
+                                      if (lang.isRtl) ...[
+                                        const SizedBox(width: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 6, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.champagneGold
+                                                .withValues(alpha: 0.2),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                          ),
+                                          child: const Text(
+                                            'RTL',
+                                            style: TextStyle(
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppColors.champagneGold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    lang.tagline,
+                                    style: AppTextStyles.bodySmall(
+                                            isDark: isDark)
+                                        .copyWith(
+                                      fontSize: 11,
+                                      fontStyle: FontStyle.italic,
+                                      color: isDark
+                                          ? AppColors.lavenderAccent
+                                          : AppColors.burgundyRose,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (isSelected)
+                              Icon(
+                                Icons.check_circle_rounded,
+                                color: isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy,
+                                size: 22,
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
     );
   }
 }
