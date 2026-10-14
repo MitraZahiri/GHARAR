@@ -48,7 +48,10 @@ class HomeDashboardScreen extends StatelessWidget {
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.sizeOf(context).width <= 360 ? 14 : 20,
+            vertical: 12,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -62,6 +65,8 @@ class HomeDashboardScreen extends StatelessWidget {
                       children: [
                         Text(
                           _getGreeting(isTr),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.bodyMedium(isDark: isDark)
                               .copyWith(
                             color: isDark
@@ -75,15 +80,19 @@ class HomeDashboardScreen extends StatelessWidget {
                           couple != null
                               ? '${couple.partner1.name} & ${couple.partner2?.name ?? "..."}'
                               : activePartner.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.displaySmall(isDark: isDark)
                               .copyWith(
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.3,
+                            fontSize: MediaQuery.sizeOf(context).width <= 360 ? 22 : 26,
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
                   if (couple != null)
                     StreakBadge(
                       streakDays: couple.connectionStreak,
@@ -126,42 +135,48 @@ class HomeDashboardScreen extends StatelessWidget {
                       // Category Tag & Draw Another
                       Row(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? AppColors.darkCardElevated
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
                                 color: isDark
-                                    ? AppColors.darkBorder
-                                    : AppColors.lightBorder,
+                                    ? AppColors.darkCardElevated
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(currentQ.categoryIcon,
+                                      style: const TextStyle(fontSize: 14)),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      currentQ.categoryName(isTr).toUpperCase(),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: AppTextStyles.bodySmall(isDark: isDark)
+                                          .copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 10,
+                                        letterSpacing: 1,
+                                        color: isDark
+                                            ? AppColors.blushPinkDeep
+                                            : AppColors.deepBurgundy,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(currentQ.categoryIcon,
-                                    style: const TextStyle(fontSize: 14)),
-                                const SizedBox(width: 6),
-                                Text(
-                                  currentQ.categoryName(isTr).toUpperCase(),
-                                  style: AppTextStyles.bodySmall(isDark: isDark)
-                                      .copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 10,
-                                    letterSpacing: 1,
-                                    color: isDark
-                                        ? AppColors.blushPinkDeep
-                                        : AppColors.deepBurgundy,
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
-                          const Spacer(),
+                          const SizedBox(width: 8),
                           IconButton(
                             icon: const Icon(Icons.shuffle_rounded, size: 20),
                             tooltip:
@@ -190,20 +205,24 @@ class HomeDashboardScreen extends StatelessWidget {
                       // Partner Status Indicator
                       Row(
                         children: [
-                          _buildMiniAvatarStatus(
-                            avatar: activePartner.avatar,
-                            name: activePartner.name,
-                            hasAnswered: activeAnswer != null,
-                            isDark: isDark,
-                            isTr: isTr,
+                          Expanded(
+                            child: _buildMiniAvatarStatus(
+                              avatar: activePartner.avatar,
+                              name: activePartner.name,
+                              hasAnswered: activeAnswer != null,
+                              isDark: isDark,
+                              isTr: isTr,
+                            ),
                           ),
-                          const SizedBox(width: 14),
-                          _buildMiniAvatarStatus(
-                            avatar: otherPartner.avatar,
-                            name: otherPartner.name,
-                            hasAnswered: otherAnswer != null,
-                            isDark: isDark,
-                            isTr: isTr,
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _buildMiniAvatarStatus(
+                              avatar: otherPartner.avatar,
+                              name: otherPartner.name,
+                              hasAnswered: otherAnswer != null,
+                              isDark: isDark,
+                              isTr: isTr,
+                            ),
                           ),
                         ],
                       ),
@@ -280,24 +299,29 @@ class HomeDashboardScreen extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  isTr
-                                      ? 'HAFTALIK ÇİFT GÖREVİ'
-                                      : 'WEEKLY COUPLE CHALLENGE',
-                                  style: AppTextStyles.bodySmall(isDark: isDark)
-                                      .copyWith(
-                                    fontSize: 10,
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w700,
-                                    color: isDark
-                                        ? AppColors.blushPinkDeep
-                                        : AppColors.burgundyRose,
+                                Expanded(
+                                  child: Text(
+                                    isTr
+                                        ? 'HAFTALIK ÇİFT GÖREVİ'
+                                        : 'WEEKLY COUPLE CHALLENGE',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.bodySmall(isDark: isDark)
+                                        .copyWith(
+                                      fontSize: 10,
+                                      letterSpacing: 1,
+                                      fontWeight: FontWeight.w700,
+                                      color: isDark
+                                          ? AppColors.blushPinkDeep
+                                          : AppColors.burgundyRose,
+                                    ),
                                   ),
                                 ),
-                                const Spacer(),
-                                if (activeChallenge.isCompleted)
+                                if (activeChallenge.isCompleted) ...[
+                                  const SizedBox(width: 6),
                                   const Icon(Icons.check_circle_rounded,
                                       color: AppColors.successGreen, size: 16),
+                                ],
                               ],
                             ),
                             const SizedBox(height: 2),
@@ -527,28 +551,36 @@ class HomeDashboardScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              name,
-              style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w700,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                ),
               ),
-            ),
-            Text(
-              hasAnswered
-                  ? (isTr ? 'Cevapladı' : 'Answered')
-                  : (isTr ? 'Düşünüyor' : 'Thinking...'),
-              style: TextStyle(
-                fontSize: 10,
-                color: hasAnswered
-                    ? AppColors.successGreen
-                    : AppColors.champagneGold,
-                fontWeight: FontWeight.w600,
+              Text(
+                hasAnswered
+                    ? (isTr ? 'Cevapladı' : 'Answered')
+                    : (isTr ? 'Düşünüyor' : 'Thinking...'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: hasAnswered
+                      ? AppColors.successGreen
+                      : AppColors.champagneGold,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

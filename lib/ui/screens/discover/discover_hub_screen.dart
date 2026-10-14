@@ -86,7 +86,8 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
           // Tab Bar
           TabBar(
             controller: _tabController,
-            isScrollable: false,
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
             indicatorColor: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
             labelColor: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
             unselectedLabelColor: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,

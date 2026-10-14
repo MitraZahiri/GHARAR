@@ -66,6 +66,8 @@ class SpecialDatesScreen extends StatelessWidget {
                     children: [
                       Text(
                         item.category.toUpperCase(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                           fontSize: 10,
                           letterSpacing: 1,
@@ -78,6 +80,8 @@ class SpecialDatesScreen extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         item.title(isTr),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
@@ -86,6 +90,8 @@ class SpecialDatesScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         DateFormat('MMMM d, yyyy').format(item.date),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.bodySmall(isDark: isDark),
                       ),
                     ],
@@ -174,82 +180,84 @@ class SpecialDatesScreen extends StatelessWidget {
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(32)),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 44,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    isTr ? 'Özel Gün / Yıldönümü Ekle' : 'Add Special Date',
-                    style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: titleController,
-                    decoration: InputDecoration(
-                      labelText: isTr ? 'Etkinlik / Gün Adı' : 'Event / Date Title',
-                      hintText: isTr
-                          ? 'Örn: Paris Tatilimiz 🗼'
-                          : 'e.g. Paris Getaway 🗼',
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          icon: const Icon(Icons.calendar_month_rounded, size: 18),
-                          label: Text(
-                            DateFormat('MMM d, yyyy').format(selectedDate),
-                          ),
-                          onPressed: () async {
-                            final picked = await showDatePicker(
-                              context: context,
-                              initialDate: selectedDate,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2040),
-                            );
-                            if (picked != null) {
-                              setModalState(() {
-                                selectedDate = picked;
-                              });
-                            }
-                          },
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 44,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder,
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  GradientButton(
-                    text: isTr ? 'Geri Sayımı Başlat ⏳' : 'Start Countdown ⏳',
-                    onPressed: () {
-                      if (titleController.text.trim().isEmpty) return;
-                      provider.addSpecialDate(
-                        titleEn: titleController.text.trim(),
-                        titleTr: titleController.text.trim(),
-                        date: selectedDate,
-                        category: category,
-                        icon: '🎉',
-                      );
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      isTr ? 'Özel Gün / Yıldönümü Ekle' : 'Add Special Date',
+                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: titleController,
+                      decoration: InputDecoration(
+                        labelText: isTr ? 'Etkinlik / Gün Adı' : 'Event / Date Title',
+                        hintText: isTr
+                            ? 'Örn: Paris Tatilimiz 🗼'
+                            : 'e.g. Paris Getaway 🗼',
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            icon: const Icon(Icons.calendar_month_rounded, size: 18),
+                            label: Text(
+                              DateFormat('MMM d, yyyy').format(selectedDate),
+                            ),
+                            onPressed: () async {
+                              final picked = await showDatePicker(
+                                context: context,
+                                initialDate: selectedDate,
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2040),
+                              );
+                              if (picked != null) {
+                                setModalState(() {
+                                  selectedDate = picked;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    GradientButton(
+                      text: isTr ? 'Geri Sayımı Başlat ⏳' : 'Start Countdown ⏳',
+                      onPressed: () {
+                        if (titleController.text.trim().isEmpty) return;
+                        provider.addSpecialDate(
+                          titleEn: titleController.text.trim(),
+                          titleTr: titleController.text.trim(),
+                          date: selectedDate,
+                          category: category,
+                          icon: '🎉',
+                        );
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           },

@@ -113,40 +113,46 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkCardElevated
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
                             color: isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder,
+                                ? AppColors.darkCardElevated
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(question.categoryIcon,
+                                  style: const TextStyle(fontSize: 16)),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  question.categoryName(isTr),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: AppTextStyles.bodySmall(isDark: isDark)
+                                      .copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(question.categoryIcon,
-                                style: const TextStyle(fontSize: 16)),
-                            const SizedBox(width: 6),
-                            Text(
-                              question.categoryName(isTr),
-                              style: AppTextStyles.bodySmall(isDark: isDark)
-                                  .copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 8),
                       // Intensity Badge
                       _buildIntensityBadge(question.intensity, isDark, isTr),
                     ],
@@ -155,8 +161,8 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                   Text(
                     question.text(isTr),
                     style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                      fontWeight: FontWeight.w700,
-                      height: 1.3,
+                       fontWeight: FontWeight.w700,
+                       height: 1.3,
                     ),
                   ),
                   if (question.inspirationTip(isTr) != null) ...[
@@ -177,12 +183,13 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                             color: AppColors.champagneGold,
                           ),
                           const SizedBox(width: 6),
-                          Text(
-                            isTr
-                                ? (_showInspiration
-                                    ? 'İpucunu Gizle'
-                                    : 'İlham İpucu İster misiniz?')
-                                : (_showInspiration
+                          Expanded(
+                            child: Text(
+                              isTr
+                                  ? (_showInspiration
+                                      ? 'İpucunu Gizle'
+                                      : 'İlham İpucu İster misiniz?')
+                                  : (_showInspiration
                                     ? 'Hide Inspiration Tip'
                                     : 'Need an Inspiration Spark?'),
                             style: AppTextStyles.bodySmall(isDark: isDark)
@@ -191,7 +198,8 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        ],
+                        ),
+                      ],
                       ),
                     ),
                     if (_showInspiration) ...[
@@ -456,31 +464,38 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
             const SizedBox(height: 16),
 
             // Skip & Draw Another Actions (No penalty!)
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              alignment: WrapAlignment.center,
               children: [
-                Expanded(
-                  child: TextButton.icon(
-                    icon: const Icon(Icons.shuffle_rounded, size: 18),
-                    label: Text(isTr ? 'Başka Soru Çek' : 'Draw Another'),
-                    onPressed: () {
-                      provider.drawRandomQuestion();
-                      _answerController.clear();
-                      _selectedOptionIndex = null;
-                      _loadExistingAnswer();
-                    },
+                TextButton.icon(
+                  icon: const Icon(Icons.shuffle_rounded, size: 18),
+                  label: Text(
+                    isTr ? 'Başka Soru Çek' : 'Draw Another',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  onPressed: () {
+                    provider.drawRandomQuestion();
+                    _answerController.clear();
+                    _selectedOptionIndex = null;
+                    _loadExistingAnswer();
+                  },
                 ),
-                Expanded(
-                  child: TextButton.icon(
-                    icon: const Icon(Icons.skip_next_rounded, size: 18),
-                    label: Text(isTr ? 'Soruyu Atla' : 'Skip Question'),
-                    onPressed: () {
-                      provider.nextQuestion();
-                      _answerController.clear();
-                      _selectedOptionIndex = null;
-                      _loadExistingAnswer();
-                    },
+                TextButton.icon(
+                  icon: const Icon(Icons.skip_next_rounded, size: 18),
+                  label: Text(
+                    isTr ? 'Soruyu Atla' : 'Skip Question',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  onPressed: () {
+                    provider.nextQuestion();
+                    _answerController.clear();
+                    _selectedOptionIndex = null;
+                    _loadExistingAnswer();
+                  },
                 ),
               ],
             ),

@@ -123,7 +123,7 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.82,
+                      maxWidth: MediaQuery.sizeOf(context).width * 0.84,
                     ),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),

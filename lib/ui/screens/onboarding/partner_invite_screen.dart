@@ -119,14 +119,17 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                             : AppColors.lightBorder,
                       ),
                     ),
-                    child: SelectableText(
-                      inviteCode,
-                      style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 2.0,
-                        color: isDark
-                            ? AppColors.warmPeach
-                            : AppColors.deepBurgundy,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: SelectableText(
+                        inviteCode,
+                        style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.5,
+                          color: isDark
+                              ? AppColors.warmPeach
+                              : AppColors.deepBurgundy,
+                        ),
                       ),
                     ),
                   ),

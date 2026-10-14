@@ -71,33 +71,36 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
             Text(isTr ? 'Anın Hissi & Emojisi:' : 'Mood & Feeling:',
                 style: AppTextStyles.labelLarge(isDark: isDark)),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                for (final m in _moods)
-                  GestureDetector(
-                    onTap: () => setState(() => _selectedMood = m),
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: _selectedMood == m
-                            ? (isDark
-                                ? AppColors.blushPinkDeep.withValues(alpha: 0.25)
-                                : AppColors.blushPinkLight)
-                            : Colors.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (final m in _moods)
+                    GestureDetector(
+                      onTap: () => setState(() => _selectedMood = m),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
                           color: _selectedMood == m
                               ? (isDark
-                                  ? AppColors.blushPinkDeep
-                                  : AppColors.deepBurgundy)
+                                  ? AppColors.blushPinkDeep.withValues(alpha: 0.25)
+                                  : AppColors.blushPinkLight)
                               : Colors.transparent,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: _selectedMood == m
+                                ? (isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy)
+                                : Colors.transparent,
+                          ),
                         ),
+                        child: Text(m, style: const TextStyle(fontSize: 22)),
                       ),
-                      child: Text(m, style: const TextStyle(fontSize: 22)),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
 
             const SizedBox(height: 16),

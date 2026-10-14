@@ -133,19 +133,24 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    isTr
-                        ? 'Soru ${_currentQuizIndex + 1} / ${_quizzes.length}'
-                        : 'Question ${_currentQuizIndex + 1} of ${_quizzes.length}',
-                    style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                      fontWeight: FontWeight.w700,
+                  Expanded(
+                    child: Text(
+                      isTr
+                          ? 'Soru ${_currentQuizIndex + 1} / ${_quizzes.length}'
+                          : 'Question ${_currentQuizIndex + 1} of ${_quizzes.length}',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     isTr
                         ? 'Uyum: $_matchesCount Eşleşme ✨'
                         : 'Harmony: $_matchesCount Matches ✨',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: AppColors.champagneGold,
                       fontWeight: FontWeight.w700,
                       fontSize: 13,
@@ -183,16 +188,20 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
                         Text(otherPartner.avatar,
                             style: const TextStyle(fontSize: 22)),
                         const SizedBox(width: 8),
-                        Text(
-                          isTr
-                              ? '${otherPartner.name} Ne Seçecek?'
-                              : 'What would ${otherPartner.name} choose?',
-                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
-                            color: isDark
-                                ? AppColors.blushPinkDeep
-                                : AppColors.deepBurgundy,
+                        Flexible(
+                          child: Text(
+                            isTr
+                                ? '${otherPartner.name} Ne Seçecek?'
+                                : 'What would ${otherPartner.name} choose?',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                              color: isDark
+                                  ? AppColors.blushPinkDeep
+                                  : AppColors.deepBurgundy,
+                            ),
                           ),
                         ),
                       ],
