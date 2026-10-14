@@ -372,8 +372,6 @@ class AppStateProvider extends ChangeNotifier {
 
   // Simulate Partner Answer (Demo helper so single user can see mutual reveal immediately!)
   void simulatePartnerAnswer(String questionId) {
-    final q = _questions.firstWhere((item) => item.id == questionId,
-        orElse: () => _questions.first);
     final partner = otherPartner;
 
     final simulatedText = isTurkish

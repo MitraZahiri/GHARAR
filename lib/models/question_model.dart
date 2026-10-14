@@ -11,7 +11,7 @@ enum QuestionCategory {
   memories,
   communication,
   futureDreams,
-  values,
+  coreValues,
   fun,
   romance,
   personalGrowth,
@@ -61,7 +61,7 @@ class QuestionModel {
         return '💬';
       case QuestionCategory.futureDreams:
         return '✨';
-      case QuestionCategory.values:
+      case QuestionCategory.coreValues:
         return '🧭';
       case QuestionCategory.fun:
         return '🎉';
@@ -91,7 +91,7 @@ class QuestionModel {
           return 'İletişim & Diller';
         case QuestionCategory.futureDreams:
           return 'Gelecek Hayalleri';
-        case QuestionCategory.values:
+        case QuestionCategory.coreValues:
           return 'Değerler & İnanç';
         case QuestionCategory.fun:
           return 'Neşeli & Eğlenceli';
@@ -118,7 +118,7 @@ class QuestionModel {
           return 'Communication';
         case QuestionCategory.futureDreams:
           return 'Future Dreams';
-        case QuestionCategory.values:
+        case QuestionCategory.coreValues:
           return 'Core Values';
         case QuestionCategory.fun:
           return 'Playful & Fun';

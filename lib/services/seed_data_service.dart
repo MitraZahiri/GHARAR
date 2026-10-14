@@ -140,7 +140,7 @@ class SeedDataService {
           id: 'q_val_1',
           textEn: 'What principle or value do you admire most in how I live my life?',
           textTr: 'Hayatı yaşama biçimimde ve duruşumda en çok takdir ettiğin değer veya ilke nedir?',
-          category: QuestionCategory.values,
+          category: QuestionCategory.coreValues,
           intensity: QuestionIntensity.meaningful,
         ),
 
