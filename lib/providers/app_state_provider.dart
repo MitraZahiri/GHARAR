@@ -24,6 +24,9 @@ class AppStateProvider extends ChangeNotifier {
   Locale _locale = const Locale('en');
   bool _isDarkMode = false;
   bool _hasOnboarded = false;
+  bool _isAuthenticated = false;
+  String? _userEmail;
+  String? _authProvider;
 
   List<QuestionModel> _questions = [];
   int _currentQuestionIndex = 0;
@@ -59,6 +62,9 @@ class AppStateProvider extends ChangeNotifier {
   bool get isRtl => currentLanguage.isRtl;
   bool get isDarkMode => _isDarkMode;
   bool get hasOnboarded => _hasOnboarded;
+  bool get isAuthenticated => _isAuthenticated;
+  String? get userEmail => _userEmail;
+  String? get authProvider => _authProvider;
 
   void setLanguageCode(String code) {
     setLocale(Locale(code));
@@ -117,6 +123,9 @@ class AppStateProvider extends ChangeNotifier {
   }
 
   void _loadFromStorage() {
+    _isAuthenticated = _storage.isAuthenticated;
+    _userEmail = _storage.userEmail;
+    _authProvider = _storage.authProvider;
     _isDarkMode = _storage.isDarkMode;
     _locale = Locale(_storage.localeCode);
     _hasOnboarded = _storage.hasOnboarded;
@@ -137,7 +146,8 @@ class AppStateProvider extends ChangeNotifier {
     _aiMessages = AICompanionService.getInitialMessages();
 
     if (_currentUser == null) {
-      seedDemoCouple();
+      seedDemoCouple(authenticate: false);
+      _isAuthenticated = _storage.isAuthenticated;
     } else {
       _activeViewingPartnerId = _currentUser!.id;
     }
@@ -145,7 +155,16 @@ class AppStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void seedDemoCouple() {
+  void seedDemoCouple({bool authenticate = true}) {
+    if (authenticate) {
+      _isAuthenticated = true;
+      _userEmail = 'mitra@gharar.love';
+      _authProvider = 'demo';
+      _storage.setIsAuthenticated(true);
+      _storage.setUserEmail('mitra@gharar.love');
+      _storage.setAuthProvider('demo');
+    }
+
     final mitra = UserModel(
       id: 'user_1',
       name: 'Mitra',
@@ -154,6 +173,8 @@ class AppStateProvider extends ChangeNotifier {
       relationshipStage: 'stageLongTerm',
       selectedGoals: ['goalDeeperConversations', 'goalSpontaneousRomance', 'goalFuturePlanning'],
       joinedAt: DateTime(2023, 10, 14),
+      email: 'mitra@gharar.love',
+      authProvider: 'demo',
     );
 
     final deniz = UserModel(
@@ -164,6 +185,8 @@ class AppStateProvider extends ChangeNotifier {
       relationshipStage: 'stageLongTerm',
       selectedGoals: ['goalDeeperConversations', 'goalUnderstandingNeeds', 'goalFunAdventures'],
       joinedAt: DateTime(2023, 10, 14),
+      email: 'deniz@gharar.love',
+      authProvider: 'demo',
     );
 
     _currentUser = mitra;
@@ -246,7 +269,9 @@ class AppStateProvider extends ChangeNotifier {
     required String relationshipStage,
     required List<String> goals,
     required String languageCode,
+    String? email,
   }) {
+    final effectiveEmail = email ?? _userEmail ?? 'mitra@gharar.love';
     final user = UserModel(
       id: 'user_1',
       name: name.trim().isEmpty ? 'Mitra' : name.trim(),
@@ -255,6 +280,8 @@ class AppStateProvider extends ChangeNotifier {
       relationshipStage: relationshipStage,
       selectedGoals: goals,
       joinedAt: DateTime.now(),
+      email: effectiveEmail,
+      authProvider: _authProvider ?? 'email',
     );
 
     _currentUser = user;
@@ -607,5 +634,96 @@ class AppStateProvider extends ChangeNotifier {
 
   void resetToDemo() {
     seedDemoCouple();
+  }
+
+  // Authentication Methods (Apple ID & Email/Name)
+  Future<void> signInWithApple() async {
+    final appleEmail = (_userEmail != null && _userEmail!.endsWith('@privaterelay.appleid.com'))
+        ? _userEmail!
+        : 'mitra.apple@privaterelay.appleid.com';
+    _isAuthenticated = true;
+    _authProvider = 'apple';
+    _userEmail = appleEmail;
+    _storage.setIsAuthenticated(true);
+    _storage.setAuthProvider('apple');
+    _storage.setUserEmail(appleEmail);
+
+    if (_currentUser == null) {
+      _currentUser = UserModel(
+        id: 'user_${DateTime.now().millisecondsSinceEpoch}',
+        name: 'Mitra',
+        avatar: '🌸',
+        preferredLanguage: _locale.languageCode,
+        relationshipStage: 'stageDating',
+        selectedGoals: [],
+        joinedAt: DateTime.now(),
+        email: appleEmail,
+        authProvider: 'apple',
+      );
+      _storage.saveUser(_currentUser!);
+    } else {
+      _currentUser = _currentUser!.copyWith(
+        email: appleEmail,
+        authProvider: 'apple',
+      );
+      _storage.saveUser(_currentUser!);
+    }
+    notifyListeners();
+  }
+
+  Future<void> authenticateWithEmail({
+    required String name,
+    required String email,
+    required String password,
+    bool isRegister = true,
+  }) async {
+    final trimmedName = name.trim().isEmpty ? (_currentUser?.name ?? 'Mitra') : name.trim();
+    final trimmedEmail = email.trim().toLowerCase();
+    _isAuthenticated = true;
+    _authProvider = 'email';
+    _userEmail = trimmedEmail;
+    _storage.setIsAuthenticated(true);
+    _storage.setAuthProvider('email');
+    _storage.setUserEmail(trimmedEmail);
+
+    if (_currentUser == null) {
+      _currentUser = UserModel(
+        id: 'user_${DateTime.now().millisecondsSinceEpoch}',
+        name: trimmedName,
+        avatar: '🌸',
+        preferredLanguage: _locale.languageCode,
+        relationshipStage: 'stageDating',
+        selectedGoals: [],
+        joinedAt: DateTime.now(),
+        email: trimmedEmail,
+        authProvider: 'email',
+      );
+      _storage.saveUser(_currentUser!);
+    } else {
+      _currentUser = _currentUser!.copyWith(
+        name: trimmedName,
+        email: trimmedEmail,
+        authProvider: 'email',
+      );
+      _storage.saveUser(_currentUser!);
+    }
+    notifyListeners();
+  }
+
+  Future<void> signInAsDemoCouple() async {
+    seedDemoCouple();
+    _isAuthenticated = true;
+    _authProvider = 'demo';
+    _userEmail = 'mitra@gharar.love';
+    _storage.setIsAuthenticated(true);
+    _storage.setAuthProvider('demo');
+    _storage.setUserEmail('mitra@gharar.love');
+    notifyListeners();
+  }
+
+  Future<void> signOut() async {
+    _isAuthenticated = false;
+    _storage.setIsAuthenticated(false);
+    notifyListeners();
   }
 }

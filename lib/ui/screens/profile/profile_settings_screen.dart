@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../core/localization/app_language.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
@@ -17,6 +18,7 @@ class ProfileSettingsScreen extends StatelessWidget {
     final provider = context.watch<AppStateProvider>();
     final isDark = provider.isDarkMode;
     final isTr = provider.isTurkish;
+    final loc = AppLocalizations.of(context);
 
     final couple = provider.couple;
     final partner1 = couple?.partner1 ?? provider.activePartner;
@@ -405,6 +407,131 @@ class ProfileSettingsScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
+            // Account & Security / Connected Profile
+            Text(
+              loc?.translate('authAccountInfo') ?? (isTr ? 'Giriş & Güvenlik' : 'Account & Security'),
+              style: AppTextStyles.labelLarge(isDark: isDark).copyWith(
+                fontWeight: FontWeight.w700,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextMuted,
+              ),
+            ),
+            const SizedBox(height: 8),
+            GlassCard(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? AppColors.darkCardElevated
+                              : AppColors.blushPinkLight,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            provider.authProvider == 'apple' ? '' : '✉️',
+                            style: TextStyle(
+                              fontSize: provider.authProvider == 'apple' ? 22 : 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              provider.authProvider == 'apple'
+                                  ? (isTr ? 'Apple Kimliği ile Bağlı' : 'Apple ID Connected')
+                                  : (isTr ? 'E-posta ile Bağlı' : 'Email Connected'),
+                              style: AppTextStyles.labelLarge(isDark: isDark).copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              (provider.userEmail != null && provider.userEmail!.isNotEmpty)
+                                  ? provider.userEmail!
+                                  : (provider.authProvider == 'apple'
+                                      ? 'mitra@privaterelay.appleid.com'
+                                      : 'mitra@gharar.love'),
+                              style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                                fontSize: 12,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: provider.authProvider == 'apple'
+                              ? (isDark ? Colors.white : Colors.black)
+                              : AppColors.blushPinkDeep.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          provider.authProvider == 'apple'
+                              ? ' Apple'
+                              : (provider.authProvider == 'email'
+                                  ? 'Email'
+                                  : 'Demo'),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: provider.authProvider == 'apple'
+                                ? (isDark ? Colors.black : Colors.white)
+                                : (isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Divider(
+                    height: 1,
+                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _showSignOutDialog(context, provider),
+                      icon: const Icon(Icons.logout_rounded, size: 16),
+                      label: Text(
+                        loc?.translate('signOutBtn') ?? (isTr ? 'Çıkış Yap' : 'Sign Out'),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.burgundyRose,
+                        side: BorderSide(
+                          color: AppColors.burgundyRose.withValues(alpha: 0.4),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
             // Danger & Reset Section
             Center(
               child: TextButton.icon(
@@ -504,6 +631,64 @@ class ProfileSettingsScreen extends StatelessWidget {
               ? 'Tüm çift anılarınız ve günlüğünüz panoya kopyalandı! 📋'
               : 'All memories and journal copied to clipboard! 📋',
         ),
+      ),
+    );
+  }
+
+  void _showSignOutDialog(BuildContext context, AppStateProvider provider) {
+    final isDark = provider.isDarkMode;
+    final loc = AppLocalizations.of(context);
+    final isTr = provider.isTurkish;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? AppColors.darkCardElevated : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            const Text('🔒', style: TextStyle(fontSize: 22)),
+            const SizedBox(width: 8),
+            Text(
+              loc?.translate('signOutBtn') ?? (isTr ? 'Çıkış Yap' : 'Sign Out'),
+              style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          loc?.translate('signOutConfirm') ??
+              (isTr
+                  ? 'Oturumunuzu kapatmak istediğinize emin misiniz? Çift alanınıza tekrar girmek için Apple ID veya e-postanızla giriş yapabilirsiniz.'
+                  : 'Are you sure you want to sign out? You can sign back in anytime with your Apple ID or email.'),
+          style: AppTextStyles.bodyMedium(isDark: isDark),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(
+              loc?.translate('cancel') ?? (isTr ? 'İptal' : 'Cancel'),
+              style: TextStyle(
+                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextMuted,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              provider.signOut();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.burgundyRose,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Text(loc?.translate('signOutBtn') ?? (isTr ? 'Çıkış Yap' : 'Sign Out')),
+          ),
+        ],
       ),
     );
   }

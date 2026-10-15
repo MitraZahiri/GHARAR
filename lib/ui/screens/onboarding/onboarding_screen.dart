@@ -30,6 +30,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<String> _avatars = ['🌸', '🌿', '🕊️', '👑', '✨', '🌺', '☕', '🌟'];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final provider = context.read<AppStateProvider>();
+      final existingName = provider.currentUser?.name;
+      if (existingName != null && existingName.isNotEmpty) {
+        _nameController.text = existingName;
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     _nameController.dispose();

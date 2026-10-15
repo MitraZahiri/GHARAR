@@ -2,10 +2,12 @@ class UserModel {
   final String id;
   final String name;
   final String avatar;
-  final String preferredLanguage; // 'en' or 'tr'
+  final String preferredLanguage; // 'en', 'tr', 'ar', etc.
   final String relationshipStage;
   final List<String> selectedGoals;
   final DateTime joinedAt;
+  final String? email;
+  final String? authProvider; // 'apple', 'email', 'demo'
 
   UserModel({
     required this.id,
@@ -15,6 +17,8 @@ class UserModel {
     required this.relationshipStage,
     required this.selectedGoals,
     required this.joinedAt,
+    this.email,
+    this.authProvider,
   });
 
   UserModel copyWith({
@@ -25,6 +29,8 @@ class UserModel {
     String? relationshipStage,
     List<String>? selectedGoals,
     DateTime? joinedAt,
+    String? email,
+    String? authProvider,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -34,6 +40,8 @@ class UserModel {
       relationshipStage: relationshipStage ?? this.relationshipStage,
       selectedGoals: selectedGoals ?? this.selectedGoals,
       joinedAt: joinedAt ?? this.joinedAt,
+      email: email ?? this.email,
+      authProvider: authProvider ?? this.authProvider,
     );
   }
 
@@ -45,6 +53,8 @@ class UserModel {
         'relationshipStage': relationshipStage,
         'selectedGoals': selectedGoals,
         'joinedAt': joinedAt.toIso8601String(),
+        'email': email,
+        'authProvider': authProvider,
       };
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -60,6 +70,8 @@ class UserModel {
           [],
       joinedAt: DateTime.tryParse(json['joinedAt'] as String? ?? '') ??
           DateTime.now(),
+      email: json['email'] as String?,
+      authProvider: json['authProvider'] as String?,
     );
   }
 }

@@ -4,7 +4,7 @@
 [![GHARAR Flutter CI](https://github.com/MitraZahiri/GHARAR/actions/workflows/ci.yml/badge.svg)](https://github.com/MitraZahiri/GHARAR/actions/workflows/ci.yml)
 [![Flutter](https://img.shields.io/badge/Flutter-3.29.0-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.7.0-0175C2?logo=dart)](https://dart.dev)
-[![Release](https://img.shields.io/badge/Release-v1.0.2-8E2A40)](https://github.com/MitraZahiri/GHARAR/releases)
+[![Release](https://img.shields.io/badge/Release-v1.0.3-8E2A40)](https://github.com/MitraZahiri/GHARAR/releases)
 [![License](https://img.shields.io/badge/License-MIT-E2B774)](#)
 
 ---
@@ -96,7 +96,15 @@ Typography blends **Playfair Display** for poetic, elegant headlines with **Plus
 - Culturally tailored partner answer simulations in all 8 languages.
 - Interactive modal sheets with flags, native names, romantic slogans, and RTL badges on both Onboarding and Profile Settings screens.
 
-### 13. 👑 GHARAR Premium Tier
+### 13. 🔐 Entry Gate: Name & Email + Apple ID (Sign in with Apple)
+- **Compulsory Sanctuary Entry**: Couples authenticate securely upon initial launch via **Sign in with Apple** or with their **Name & Email**.
+- **Apple HIG Compliance**: Authentic high-contrast design (Jet Black on light theme, Solid White on dark theme) following Apple Human Interface Guidelines with official icon and font spacing.
+- **Dynamic Mode Switcher**: Seamless toggle between *Sign In* and *New Account* with real-time form validation.
+- **Multilingual Switcher at Entry**: Live 8-language switcher chip directly in the Auth screen header, supporting instant LTR and RTL re-layout.
+- **App Store Reviewer & Guest Bypass**: One-tap sample couple entry (Mitra & Deniz) for swift exploration and review.
+- **Account & Security Hub**: Profile Settings displays the connected identity ( Apple ID / Email) with a confirmed, graceful Sign Out flow.
+
+### 14. 👑 GHARAR Premium Tier
 - Transparent, non-manipulative premium option with unlimited questions, expanded memory storage, and full Noor AI companion features.
 
 ---
@@ -135,6 +143,7 @@ lib/
     ├── screens/
     │   ├── activities/                 # ActivitiesExplorer, SurpriseGenerator, Challenges
     │   ├── ai_companion/               # AICompanionScreen (Noor)
+    │   ├── auth/                       # AuthScreen (Apple ID & Email Entry Gate)
     │   ├── daily_questions/            # DailyQuestionScreen, AnswerReveal, QuestionVault
     │   ├── discover/                   # DiscoverHub, QuizGame, FutureAlignment
     │   ├── home/                       # HomeDashboardScreen
@@ -180,7 +189,8 @@ flutter run -d chrome
 ---
 
 ## 🧪 Testing & Verification
-GHARAR includes 64 comprehensive unit and widget tests across 4 suites:
+GHARAR includes **74 comprehensive unit and widget tests** across 5 test suites:
+- `test/auth_test.dart`: Validates Apple ID authentication, Email sign-in/registration, sign-out, demo bypass, and overflow-free responsive layout on compact screens (iPhone SE 320px).
 - `test/multilingual_localization_test.dart`: Validates the 8-language engine (AR, FA, DE, ES, FR, IT, TR, EN), bidirectional text direction (RTL/LTR), English fallbacks, and live switching.
 - `test/responsive_test.dart`: Validates multi-phone compatibility across iPhone SE 1st Gen (320px), SE 2nd/3rd (375px), iPhone 14/15/16 (390px), Galaxy S23 (393px), iPhone 15/16 Pro Max (430px), and 1.3x text scaling.
 - `test/domain_test.dart`: Validates couple synchronization, privacy state machine, mutual reveal triggers, activity saving, challenge completion, and localization.

@@ -19,6 +19,9 @@ class StorageService {
   static const _keyTheme = 'gharar_theme_dark';
   static const _keyLocale = 'gharar_locale';
   static const _keyHasOnboarded = 'gharar_has_onboarded';
+  static const _keyIsAuthenticated = 'gharar_is_authenticated';
+  static const _keyUserEmail = 'gharar_user_email';
+  static const _keyAuthProvider = 'gharar_auth_provider';
 
   final SharedPreferences _prefs;
 
@@ -28,6 +31,21 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     return StorageService(prefs);
   }
+
+  // Authentication status
+  bool get isAuthenticated => _prefs.getBool(_keyIsAuthenticated) ?? false;
+  Future<void> setIsAuthenticated(bool val) =>
+      _prefs.setBool(_keyIsAuthenticated, val);
+
+  String? get userEmail => _prefs.getString(_keyUserEmail);
+  Future<void> setUserEmail(String? email) => email != null
+      ? _prefs.setString(_keyUserEmail, email)
+      : _prefs.remove(_keyUserEmail);
+
+  String? get authProvider => _prefs.getString(_keyAuthProvider);
+  Future<void> setAuthProvider(String? provider) => provider != null
+      ? _prefs.setString(_keyAuthProvider, provider)
+      : _prefs.remove(_keyAuthProvider);
 
   // Onboarding status
   bool get hasOnboarded => _prefs.getBool(_keyHasOnboarded) ?? false;

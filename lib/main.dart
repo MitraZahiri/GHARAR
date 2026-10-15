@@ -6,6 +6,7 @@ import 'core/localization/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/app_state_provider.dart';
 import 'services/storage_service.dart';
+import 'ui/screens/auth/auth_screen.dart';
 import 'ui/screens/main_navigation_shell.dart';
 import 'ui/screens/onboarding/onboarding_screen.dart';
 
@@ -55,9 +56,11 @@ class GhararApp extends StatelessWidget {
           child: child ?? const SizedBox(),
         );
       },
-      home: provider.hasOnboarded
-          ? const MainNavigationShell()
-          : const OnboardingScreen(),
+      home: !provider.isAuthenticated
+          ? const AuthScreen()
+          : provider.hasOnboarded
+              ? const MainNavigationShell()
+              : const OnboardingScreen(),
     );
   }
 }
