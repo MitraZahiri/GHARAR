@@ -85,14 +85,16 @@ class AppStateProvider extends ChangeNotifier {
   List<AIMessageModel> get aiMessages => _aiMessages;
   bool get isGeneratingAI => _isGeneratingAI;
 
+  bool get isPartnerLinked => _couple?.isLinked ?? false;
+
   UserModel get activePartner {
     if (_couple == null) {
       return _currentUser ??
           UserModel(
             id: 'user_1',
-            name: 'Mitra',
+            name: isTurkish ? 'Ben' : 'You',
             avatar: '🌸',
-            preferredLanguage: 'en',
+            preferredLanguage: _locale.languageCode,
             relationshipStage: 'stageDating',
             selectedGoals: [],
             joinedAt: DateTime.now(),
@@ -108,9 +110,9 @@ class AppStateProvider extends ChangeNotifier {
     if (_couple == null || _couple!.partner2 == null) {
       return UserModel(
         id: 'user_2',
-        name: 'Deniz',
+        name: isTurkish ? 'Partneriniz' : 'Partner',
         avatar: '🌿',
-        preferredLanguage: 'en',
+        preferredLanguage: _locale.languageCode,
         relationshipStage: 'stageDating',
         selectedGoals: [],
         joinedAt: DateTime.now(),
@@ -145,97 +147,9 @@ class AppStateProvider extends ChangeNotifier {
     _milestones = SeedDataService.defaultMilestones;
     _aiMessages = AICompanionService.getInitialMessages();
 
-    if (_currentUser == null) {
-      seedDemoCouple(authenticate: false);
-      _isAuthenticated = _storage.isAuthenticated;
-    } else {
+    if (_currentUser != null) {
       _activeViewingPartnerId = _currentUser!.id;
     }
-
-    notifyListeners();
-  }
-
-  void seedDemoCouple({bool authenticate = true}) {
-    if (authenticate) {
-      _isAuthenticated = true;
-      _userEmail = 'mitra@gharar.love';
-      _authProvider = 'demo';
-      _storage.setIsAuthenticated(true);
-      _storage.setUserEmail('mitra@gharar.love');
-      _storage.setAuthProvider('demo');
-    }
-
-    final mitra = UserModel(
-      id: 'user_1',
-      name: 'Mitra',
-      avatar: '🌸',
-      preferredLanguage: _locale.languageCode,
-      relationshipStage: 'stageLongTerm',
-      selectedGoals: ['goalDeeperConversations', 'goalSpontaneousRomance', 'goalFuturePlanning'],
-      joinedAt: DateTime(2023, 10, 14),
-      email: 'mitra@gharar.love',
-      authProvider: 'demo',
-    );
-
-    final deniz = UserModel(
-      id: 'user_2',
-      name: 'Deniz',
-      avatar: '🌿',
-      preferredLanguage: _locale.languageCode,
-      relationshipStage: 'stageLongTerm',
-      selectedGoals: ['goalDeeperConversations', 'goalUnderstandingNeeds', 'goalFunAdventures'],
-      joinedAt: DateTime(2023, 10, 14),
-      email: 'deniz@gharar.love',
-      authProvider: 'demo',
-    );
-
-    _currentUser = mitra;
-    _activeViewingPartnerId = mitra.id;
-
-    _couple = CoupleModel(
-      id: 'couple_gharar_demo',
-      partner1: mitra,
-      partner2: deniz,
-      inviteCode: 'GHARAR-7842-LOVE',
-      anniversaryDate: DateTime(2023, 10, 14),
-      connectionStreak: 7,
-      streakLastMaintained: DateTime.now(),
-      isLinked: true,
-      isPremium: true,
-    );
-
-    _hasOnboarded = true;
-    _storage.setHasOnboarded(true);
-    _storage.saveUser(mitra);
-    _storage.saveCouple(_couple!);
-
-    // Pre-seed some answers for the first question so user can experience the reveal immediately
-    final firstQ = _questions.first;
-    _answersMap[firstQ.id] = [
-      AnswerModel(
-        id: 'ans_1',
-        questionId: firstQ.id,
-        authorId: mitra.id,
-        authorName: mitra.name,
-        answerText: isTurkish
-            ? 'Pazar sabahları kahve yaparken bana o sıcacık gülümsemeyle bakman ve elime dokunman.'
-            : 'The way you quietly bring me coffee on Sunday mornings with that warm, sleepy smile and kiss my forehead.',
-        answeredAt: DateTime.now().subtract(const Duration(hours: 3)),
-        reactionEmoji: '💖',
-      ),
-      AnswerModel(
-        id: 'ans_2',
-        questionId: firstQ.id,
-        authorId: deniz.id,
-        authorName: deniz.name,
-        answerText: isTurkish
-            ? 'Beni dinlerken gözlerimin içine dikkatle bakman ve elimi usulca avucunun içine alman.'
-            : 'When I am speaking excitedly about something and you look straight into my eyes, resting your hand gently on mine.',
-        answeredAt: DateTime.now().subtract(const Duration(hours: 2)),
-        reactionEmoji: '✨',
-      ),
-    ];
-    _storage.saveAnswers(_answersMap);
 
     notifyListeners();
   }
@@ -271,10 +185,10 @@ class AppStateProvider extends ChangeNotifier {
     required String languageCode,
     String? email,
   }) {
-    final effectiveEmail = email ?? _userEmail ?? 'mitra@gharar.love';
+    final effectiveEmail = email ?? _userEmail ?? 'user@gharar.love';
     final user = UserModel(
       id: 'user_1',
-      name: name.trim().isEmpty ? 'Mitra' : name.trim(),
+      name: name.trim().isEmpty ? (isTurkish ? 'Ben' : 'You') : name.trim(),
       avatar: avatar,
       preferredLanguage: languageCode,
       relationshipStage: relationshipStage,
@@ -632,15 +546,11 @@ class AppStateProvider extends ChangeNotifier {
     }
   }
 
-  void resetToDemo() {
-    seedDemoCouple();
-  }
-
   // Authentication Methods (Apple ID & Email/Name)
   Future<void> signInWithApple() async {
     final appleEmail = (_userEmail != null && _userEmail!.endsWith('@privaterelay.appleid.com'))
         ? _userEmail!
-        : 'mitra.apple@privaterelay.appleid.com';
+        : 'user.apple@privaterelay.appleid.com';
     _isAuthenticated = true;
     _authProvider = 'apple';
     _userEmail = appleEmail;
@@ -651,7 +561,7 @@ class AppStateProvider extends ChangeNotifier {
     if (_currentUser == null) {
       _currentUser = UserModel(
         id: 'user_${DateTime.now().millisecondsSinceEpoch}',
-        name: 'Mitra',
+        name: isTurkish ? 'Ben' : 'You',
         avatar: '🌸',
         preferredLanguage: _locale.languageCode,
         relationshipStage: 'stageDating',
@@ -677,7 +587,8 @@ class AppStateProvider extends ChangeNotifier {
     required String password,
     bool isRegister = true,
   }) async {
-    final trimmedName = name.trim().isEmpty ? (_currentUser?.name ?? 'Mitra') : name.trim();
+    final defaultName = isTurkish ? 'Ben' : 'You';
+    final trimmedName = name.trim().isEmpty ? (_currentUser?.name ?? defaultName) : name.trim();
     final trimmedEmail = email.trim().toLowerCase();
     _isAuthenticated = true;
     _authProvider = 'email';
@@ -707,17 +618,6 @@ class AppStateProvider extends ChangeNotifier {
       );
       _storage.saveUser(_currentUser!);
     }
-    notifyListeners();
-  }
-
-  Future<void> signInAsDemoCouple() async {
-    seedDemoCouple();
-    _isAuthenticated = true;
-    _authProvider = 'demo';
-    _userEmail = 'mitra@gharar.love';
-    _storage.setIsAuthenticated(true);
-    _storage.setAuthProvider('demo');
-    _storage.setUserEmail('mitra@gharar.love');
     notifyListeners();
   }
 

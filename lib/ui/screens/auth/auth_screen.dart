@@ -7,6 +7,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/gradient_button.dart';
+import '../../widgets/soul_connection_art.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -54,15 +55,6 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() => _isLoading = true);
     try {
       await provider.signInWithApple();
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  void _submitDemoAuth(AppStateProvider provider) async {
-    setState(() => _isLoading = true);
-    try {
-      await provider.signInAsDemoCouple();
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -163,25 +155,12 @@ class _AuthScreenState extends State<AuthScreen> {
 
               const SizedBox(height: 24),
 
-              // Glowing Romantic Motif
-              Center(
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.romanticLove,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.deepBurgundy.withValues(alpha: 0.25),
-                        blurRadius: 24,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Text('🕊️', style: TextStyle(fontSize: 38)),
-                  ),
+              // Hero Soul Connection Artwork (Two Souls with Glowing Heart Bridge)
+              const Center(
+                child: SoulConnectionArt(
+                  width: 260,
+                  height: 200,
+                  animateGlow: true,
                 ),
               ),
 
@@ -356,7 +335,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       // Name Field (Shown when Registering)
                       if (_isRegister) ...[
                         Text(
-                          loc?.translate('nameHint') ?? 'Your Name (e.g. Mitra)',
+                          loc?.translate('enterYourName') ?? 'Your Name',
                           style: AppTextStyles.labelLarge(isDark: isDark).copyWith(fontSize: 13),
                         ),
                         const SizedBox(height: 6),
@@ -365,7 +344,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.person_rounded, size: 20),
-                            hintText: loc?.translate('nameHint') ?? 'Mitra',
+                            hintText: loc?.translate('enterYourName') ?? 'Your Name',
                           ),
                           validator: (val) {
                             if (_isRegister && (val == null || val.trim().isEmpty)) {
@@ -452,24 +431,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
               const SizedBox(height: 16),
 
-              // Demo Couple Login Option (Sample Reviewer Access)
-              Center(
-                child: TextButton.icon(
-                  icon: const Icon(Icons.favorite_rounded, size: 16, color: AppColors.champagneGold),
-                  label: Text(
-                    loc?.translate('demoCoupleBtn') ??
-                        'Explore as Sample Couple (Mitra & Deniz)',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: isDark ? AppColors.champagneGold : AppColors.deepBurgundy,
-                    ),
-                  ),
-                  onPressed: _isLoading ? null : () => _submitDemoAuth(provider),
-                ),
-              ),
-
-              const SizedBox(height: 16),
+              // Privacy & Encryption Assurance
 
               // Privacy & Encryption Assurance
               Center(

@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
+import '../../widgets/soul_connection_art.dart';
 import 'subscription_screen.dart';
 
 class ProfileSettingsScreen extends StatelessWidget {
@@ -47,6 +48,12 @@ class ProfileSettingsScreen extends StatelessWidget {
                   : AppColors.intimateCardGradient,
               child: Column(
                 children: [
+                  const SoulConnectionArt(
+                    width: 200,
+                    height: 140,
+                    animateGlow: true,
+                  ),
+                  const SizedBox(height: 14),
                   // Avatars in Heart Shape
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -531,33 +538,6 @@ class ProfileSettingsScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 24),
-
-            // Danger & Reset Section
-            Center(
-              child: TextButton.icon(
-                icon: const Icon(Icons.restart_alt_rounded, size: 18),
-                label: Text(
-                  isTr
-                      ? 'Demo Çift Verilerini Yeniden Yükle'
-                      : 'Reset to Sample Couple (Mitra & Deniz)',
-                ),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.burgundyRose,
-                ),
-                onPressed: () {
-                  provider.resetToDemo();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(isTr
-                          ? 'Demo çift verileri başarıyla sıfırlandı!'
-                          : 'Sample couple data refreshed!'),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -605,7 +585,7 @@ class ProfileSettingsScreen extends StatelessWidget {
     final buffer = StringBuffer();
     buffer.writeln('=== GHARAR COUPLE JOURNAL & MEMORIES ===');
     buffer.writeln(
-        'Couple: ${provider.couple?.partnerNames ?? "Mitra & Deniz"}');
+        'Couple: ${provider.couple?.partnerNames ?? (isTr ? "Siz & Partneriniz" : "You & Partner")}');
     buffer.writeln('Date: ${DateTime.now()}\n');
 
     buffer.writeln('--- JOURNAL ENTRIES ---');

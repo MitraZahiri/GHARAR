@@ -53,14 +53,25 @@ void main() {
       expect(provider.currentUser?.email, equals('leyla@example.com'));
     });
 
-    test('Sign in as Demo Couple sets authenticated and seeds Mitra & Deniz', () async {
-      await provider.signInAsDemoCouple();
+    test('Completing onboarding and linking partner creates real couple without demo data', () async {
+      provider.completeOnboarding(
+        name: 'Leyla',
+        avatar: '🌸',
+        relationshipStage: 'stageDating',
+        goals: ['goalDeeperConversations'],
+        languageCode: 'en',
+        email: 'leyla@example.com',
+      );
 
-      expect(provider.isAuthenticated, isTrue);
-      expect(provider.authProvider, equals('demo'));
-      expect(provider.couple, isNotNull);
-      expect(provider.couple?.partner1.name, equals('Mitra'));
-      expect(provider.couple?.partner2?.name, equals('Deniz'));
+      expect(provider.hasOnboarded, isTrue);
+      expect(provider.currentUser?.name, equals('Leyla'));
+      expect(provider.currentUser?.email, equals('leyla@example.com'));
+      expect(provider.isPartnerLinked, isFalse);
+
+      provider.linkPartner(partnerName: 'Mert');
+      expect(provider.isPartnerLinked, isTrue);
+      expect(provider.couple?.partner1.name, equals('Leyla'));
+      expect(provider.couple?.partner2?.name, equals('Mert'));
     });
 
     test('Sign out clears authenticated state while retaining preferences', () async {

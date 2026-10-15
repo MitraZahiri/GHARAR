@@ -7,6 +7,8 @@ import '../../widgets/glass_card.dart';
 import '../../widgets/gradient_button.dart';
 import '../../widgets/romantic_app_bar.dart';
 import '../../widgets/streak_badge.dart';
+import '../../widgets/soul_connection_art.dart';
+import '../onboarding/partner_invite_screen.dart';
 import '../daily_questions/answer_reveal_screen.dart';
 import '../daily_questions/daily_question_screen.dart';
 import '../activities/surprise_generator_modal.dart';
@@ -77,9 +79,11 @@ class HomeDashboardScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          couple != null
-                              ? '${couple.partner1.name} & ${couple.partner2?.name ?? "..."}'
-                              : activePartner.name,
+                          couple != null && couple.partner2 != null
+                              ? '${couple.partner1.name} & ${couple.partner2!.name}'
+                              : (couple != null
+                                  ? '${couple.partner1.name} & ${isTr ? "Partner Bekleniyor" : "Partner Pending"}'
+                                  : activePartner.name),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.displaySmall(isDark: isDark)
@@ -116,6 +120,57 @@ class HomeDashboardScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 18),
+
+              // Soul Connection Invite Card (Displayed when Partner is not linked yet)
+              if (!provider.isPartnerLinked) ...[
+                GlassCard(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  gradient: isDark
+                      ? AppColors.darkCardGradient
+                      : AppColors.intimateCardGradient,
+                  borderColor: isDark ? AppColors.darkBorder : AppColors.heartGold.withValues(alpha: 0.5),
+                  child: Column(
+                    children: [
+                      const SoulConnectionArt(
+                        width: 200,
+                        height: 140,
+                        animateGlow: true,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        isTr
+                            ? 'İki Ruh Birbirini Bekliyor'
+                            : 'Two Souls Waiting to Connect',
+                        style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: isDark ? AppColors.heartGoldGlow : AppColors.terracottaDeep,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        isTr
+                            ? 'Partnerinizi özel çift kodunuzla davet ederek birlikte yanıtları keşfedin.'
+                            : 'Invite your partner with your couple code to reveal answers together.',
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.bodySmall(isDark: isDark),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.share_rounded, size: 16),
+                        label: Text(isTr ? 'Partneri Davet Et 💌' : 'Invite Partner 💌'),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const PartnerInviteScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+              ],
 
               // Hero Daily Question Card (The Heart of GHARAR)
               if (currentQ != null)

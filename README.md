@@ -22,14 +22,14 @@ Designed as a harmonious fusion of:
 ---
 
 ## 🎨 Visual Identity & Aesthetic
-GHARAR utilizes a warm, romantic, sophisticated palette:
-- **Soft Blush Pink** (`#F9D8DE`, `#FFF0F3`)
-- **Warm Cream & Ivory** (`#FFF9F5`, `#FAF3EE`)
-- **Muted Lavender** (`#E8E0F0`, `#8E79B2`)
-- **Deep Burgundy & Wine** (`#6B1D2F`, `#4A0E1B`)
-- **Subtle Peach & Coral Gold** (`#FFD8CC`, `#E07A5F`)
-- **Champagne Gold Accents** (`#E2B774`, `#F4D06F`)
-- **Velvet Burgundy Dark Mode** for cozy, late-night intimacy
+GHARAR embodies an intimate, artistic, soulful aesthetic inspired by expressive line art of two souls holding hands with an interconnecting golden soul bridge:
+- **Organic Terracotta** (`#C85A32`, `#A33D1A`): Burnt clay and grounding warmth from the left soul silhouette.
+- **Contemplative Slate Charcoal** (`#48454D`, `#2E2B33`): Muted umber and calm strength from the right soul silhouette.
+- **Radiant Heart Gold & Golden Soul Bridge** (`#F5AC1F`, `#FFCB52`): Pulsing solar heart centers connected by a radiant golden energy bridge.
+- **Warm Textured Parchment & Sand** (`#FAF4EB`, `#F3ECE0`, `#E5DAC7`): Tactile raw canvas background.
+- **Deep Organic Ink** (`#252227`): Expressive, highly readable typography.
+- **Deep Charcoal Earth Night Mode** (`#1B191D`, `#262329`) for cozy, late-night intimacy.
+- **Custom Vector SoulConnectionArt**: Living, breathing line-art widget capturing two souls holding hands with an animated pulsing golden bridge.
 
 Typography blends **Playfair Display** for poetic, elegant headlines with **Plus Jakarta Sans** for crisp, modern mobile legibility.
 
@@ -80,7 +80,7 @@ Typography blends **Playfair Display** for poetic, elegant headlines with **Plus
 - Reframes raw feelings into constructive "I" statements, sparks date ideas, and de-escalates small disagreements without replacing professional therapy.
 
 ### 11. 🔄 Interactive Partner Switcher (Simulation Mode)
-- Test and experience both partner perspectives (e.g. Mitra 🌸 & Deniz 🌿) with a single tap in the app bar! Allows full demonstration of the mutual reveal system without requiring two separate phones.
+- Experience and preview both partner perspectives with a single tap in the app bar! Allows full demonstration of the mutual reveal system without requiring two separate phones.
 
 ### 12. 🌍 8-Language Multilingual Localization & RTL Support
 - Instant live switching across **8 languages** with complete cultural nuances, authentic typography, and bidirectional script support:
@@ -101,7 +101,7 @@ Typography blends **Playfair Display** for poetic, elegant headlines with **Plus
 - **Apple HIG Compliance**: Authentic high-contrast design (Jet Black on light theme, Solid White on dark theme) following Apple Human Interface Guidelines with official icon and font spacing.
 - **Dynamic Mode Switcher**: Seamless toggle between *Sign In* and *New Account* with real-time form validation.
 - **Multilingual Switcher at Entry**: Live 8-language switcher chip directly in the Auth screen header, supporting instant LTR and RTL re-layout.
-- **App Store Reviewer & Guest Bypass**: One-tap sample couple entry (Mitra & Deniz) for swift exploration and review.
+- **Pure Couple Space**: Starts completely clean for real couples without pre-seeded mock couples.
 - **Account & Security Hub**: Profile Settings displays the connected identity ( Apple ID / Email) with a confirmed, graceful Sign Out flow.
 
 ### 14. 👑 GHARAR Premium Tier

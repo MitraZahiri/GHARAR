@@ -6,6 +6,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/gradient_button.dart';
+import '../../widgets/soul_connection_art.dart';
 import '../main_navigation_shell.dart';
 
 class PartnerInviteScreen extends StatefulWidget {
@@ -46,24 +47,10 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Romantic Icon
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                gradient: AppColors.romanticLove,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.deepBurgundy.withValues(alpha: 0.3),
-                    blurRadius: 18,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Text('💌', style: TextStyle(fontSize: 38)),
-              ),
+            const SoulConnectionArt(
+              width: 220,
+              height: 170,
+              animateGlow: true,
             ),
 
             const SizedBox(height: 20),
@@ -170,7 +157,9 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                   icon: const Icon(Icons.arrow_forward_rounded),
                   onPressed: () {
                     if (_partnerCodeController.text.trim().isNotEmpty) {
-                      provider.linkPartner(partnerName: 'Deniz');
+                      provider.linkPartner(
+                        partnerName: isTr ? 'Partneriniz' : 'Partner',
+                      );
                       _navigateToMain();
                     }
                   },
@@ -186,26 +175,6 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                   ? 'Çift Alanımıza Başla ✨'
                   : 'Enter Our Couple Sanctuary ✨',
               onPressed: () {
-                // Seed partner link so full interactive experience is immediately alive
-                if (provider.couple?.partner2 == null) {
-                  provider.linkPartner(partnerName: 'Deniz');
-                }
-                _navigateToMain();
-              },
-            ),
-
-            const SizedBox(height: 14),
-
-            // Partner Simulator Quick Option
-            TextButton.icon(
-              icon: const Icon(Icons.bolt_rounded, size: 18),
-              label: Text(
-                isTr
-                    ? 'Demo Modu: Mitra & Deniz ile Hemen Başla'
-                    : 'Demo Mode: Explore with Mitra & Deniz',
-              ),
-              onPressed: () {
-                provider.seedDemoCouple();
                 _navigateToMain();
               },
             ),

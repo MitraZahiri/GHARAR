@@ -50,7 +50,14 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final storageService = await StorageService.init();
     provider = AppStateProvider(storageService);
-    provider.seedDemoCouple();
+    provider.completeOnboarding(
+      name: 'Ben',
+      avatar: '🌸',
+      relationshipStage: 'stageDating',
+      goals: ['goalDeeperConversations'],
+      languageCode: 'en',
+    );
+    provider.linkPartner(partnerName: 'Partner');
   });
 
   group('Multi-Phone Responsive Compatibility Tests', () {

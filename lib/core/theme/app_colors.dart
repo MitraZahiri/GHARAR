@@ -1,92 +1,153 @@
 import 'package:flutter/material.dart';
 
-/// GHARAR romantic, sophisticated color palette
-/// Curated with soft blush pink, warm cream, muted lavender, deep burgundy,
-/// subtle peach accents, and warm golden highlights.
+/// GHARAR Organic Soul & Earth Connection Palette
+/// Inspired by intimate minimalist line art of two souls holding hands:
+/// - Earthy Terracotta (Burnt Clay & Warm Heart)
+/// - Organic Slate (Muted Umber & Contemplative Charcoal)
+/// - Radiant Heart Gold (Solar Yellow Soul Bridge)
+/// - Warm Parchment & Linen (Raw Canvas & Textured Sand)
 class AppColors {
   AppColors._();
 
-  // Romantic Signature Palette
-  static const Color blushPink = Color(0xFFF9D8DE);
-  static const Color blushPinkLight = Color(0xFFFFF0F3);
-  static const Color blushPinkDeep = Color(0xFFF09AB0);
+  // ==========================================
+  // Core Earth & Soul Connection Palette
+  // ==========================================
+  /// Terracotta contour from left soul silhouette
+  static const Color terracotta = Color(0xFFC85A32);
+  static const Color terracottaDeep = Color(0xFFA33D1A);
+  static const Color terracottaLight = Color(0xFFF2DDD4);
+  static const Color terracottaSubtle = Color(0xFFFAF0EB);
 
-  static const Color warmCream = Color(0xFFFFF9F5);
-  static const Color warmIvory = Color(0xFFFAF3EE);
-  static const Color softAlabaster = Color(0xFFF5EFEA);
+  /// Earth slate charcoal from right soul silhouette
+  static const Color earthSlate = Color(0xFF48454D);
+  static const Color earthSlateDeep = Color(0xFF2E2B33);
+  static const Color earthSlateLight = Color(0xFFE3DFE6);
+  static const Color earthSlateSubtle = Color(0xFFF4F2F6);
 
-  static const Color mutedLavender = Color(0xFFE8E0F0);
-  static const Color lavenderAccent = Color(0xFFC7B8DF);
-  static const Color lavenderDeep = Color(0xFF8E79B2);
+  /// Radiant golden heart core & connecting soul bridge
+  static const Color heartGold = Color(0xFFF5AC1F);
+  static const Color heartGoldGlow = Color(0xFFFFCB52);
+  static const Color heartGoldDeep = Color(0xFFD68F0F);
+  static const Color heartGoldSubtle = Color(0xFFFDF5E3);
 
-  static const Color deepBurgundy = Color(0xFF6B1D2F);
-  static const Color burgundyWine = Color(0xFF4A0E1B);
-  static const Color burgundyRose = Color(0xFF8E2A40);
+  /// Warm organic parchment & linen background
+  static const Color warmParchment = Color(0xFFFAF4EB);
+  static const Color parchmentSand = Color(0xFFF3ECE0);
+  static const Color agedPaper = Color(0xFFE2D6C0);
+  static const Color parchmentBorder = Color(0xFFE5DAC7);
 
-  static const Color subtlePeach = Color(0xFFFFD8CC);
-  static const Color warmPeach = Color(0xFFFFAC91);
-  static const Color coralGold = Color(0xFFE07A5F);
+  /// Deep organic ink for readable, expressive typography
+  static const Color inkCharcoal = Color(0xFF252227);
+  static const Color inkMuted = Color(0xFF6B656F);
+  static const Color inkSubtle = Color(0xFF9E96A2);
 
-  static const Color champagneGold = Color(0xFFE2B774);
-  static const Color softGold = Color(0xFFF4D06F);
+  // ==========================================
+  // Light Mode Surfaces (Warm Parchment)
+  // ==========================================
+  static const Color lightBackground = Color(0xFFFAF4EB);
+  static const Color lightCard = Color(0xFFFFFDF9);
+  static const Color lightCardElevated = Color(0xFFF7F0E4);
+  static const Color lightTextPrimary = Color(0xFF252227);
+  static const Color lightTextSecondary = Color(0xFF6B656F);
+  static const Color lightTextMuted = Color(0xFF9A929E);
+  static const Color lightBorder = Color(0xFFE4D8C5);
+
+  // ==========================================
+  // Dark Mode Surfaces (Deep Earth Charcoal Night)
+  // ==========================================
+  static const Color darkBackground = Color(0xFF1B191D);
+  static const Color darkCard = Color(0xFF262329);
+  static const Color darkCardElevated = Color(0xFF332F37);
+  static const Color darkTextPrimary = Color(0xFFFAF4EB);
+  static const Color darkTextSecondary = Color(0xFFC7BFAF);
+  static const Color darkTextMuted = Color(0xFF888075);
+  static const Color darkBorder = Color(0xFF403B45);
 
   // Status & Connection Streaks
-  static const Color streakFlame = Color(0xFFFF7043);
-  static const Color streakFlameGlow = Color(0xFFFFAB91);
-  static const Color successGreen = Color(0xFF4E937A);
-  static const Color gentleIndigo = Color(0xFF5C6BC0);
+  static const Color streakFlame = Color(0xFFC85A32);
+  static const Color streakFlameGlow = Color(0xFFFFCB52);
+  static const Color successGreen = Color(0xFF4C826A);
+  static const Color gentleIndigo = Color(0xFF48454D);
 
-  // Light Mode Surfaces
-  static const Color lightBackground = Color(0xFFFAF4F0);
-  static const Color lightCard = Color(0xFFFFFFFF);
-  static const Color lightCardElevated = Color(0xFFFFFDFC);
-  static const Color lightTextPrimary = Color(0xFF2C1E23);
-  static const Color lightTextSecondary = Color(0xFF755B63);
-  static const Color lightTextMuted = Color(0xFFA8969D);
-  static const Color lightBorder = Color(0xFFEEDCD7);
+  // ==========================================
+  // Backward-Compatible Aliases
+  // ==========================================
+  static const Color blushPink = terracottaLight;
+  static const Color blushPinkLight = terracottaSubtle;
+  static const Color blushPinkDeep = terracotta;
 
-  // Dark Romantic Mode Surfaces
-  static const Color darkBackground = Color(0xFF191116);
-  static const Color darkCard = Color(0xFF251A22);
-  static const Color darkCardElevated = Color(0xFF33232F);
-  static const Color darkTextPrimary = Color(0xFFFDF6F7);
-  static const Color darkTextSecondary = Color(0xFFD4BFC6);
-  static const Color darkTextMuted = Color(0xFF8F7680);
-  static const Color darkBorder = Color(0xFF422D3B);
+  static const Color warmCream = warmParchment;
+  static const Color warmIvory = parchmentSand;
+  static const Color softAlabaster = Color(0xFFF5EFE6);
 
-  // Romantic Gradients
+  static const Color mutedLavender = earthSlateLight;
+  static const Color lavenderAccent = earthSlate;
+  static const Color lavenderDeep = earthSlateDeep;
+
+  static const Color deepBurgundy = terracottaDeep;
+  static const Color burgundyWine = inkCharcoal;
+  static const Color burgundyRose = terracotta;
+
+  static const Color subtlePeach = terracottaLight;
+  static const Color warmPeach = Color(0xFFEAA07E);
+  static const Color coralGold = heartGold;
+
+  static const Color champagneGold = heartGold;
+  static const Color softGold = heartGoldGlow;
+
+  // ==========================================
+  // Organic Signature Gradients
+  // ==========================================
   static const LinearGradient romanticLove = LinearGradient(
-    colors: [Color(0xFF8E2A40), Color(0xFF6B1D2F)],
+    colors: [terracotta, terracottaDeep],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient terracottaEarth = LinearGradient(
+    colors: [terracotta, terracottaDeep],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient soulBridgeGlow = LinearGradient(
+    colors: [heartGoldGlow, heartGold],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  static const LinearGradient slateContour = LinearGradient(
+    colors: [earthSlate, earthSlateDeep],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient blushGlow = LinearGradient(
-    colors: [Color(0xFFFFF0F3), Color(0xFFF9D8DE)],
+    colors: [terracottaSubtle, terracottaLight],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
   static const LinearGradient sunsetGold = LinearGradient(
-    colors: [Color(0xFFFFAC91), Color(0xFFE2B774)],
+    colors: [terracotta, heartGold],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient lavenderDream = LinearGradient(
-    colors: [Color(0xFFE8E0F0), Color(0xFFD4BFC6)],
+    colors: [earthSlateLight, parchmentSand],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient intimateCardGradient = LinearGradient(
-    colors: [Color(0xFFFFF9F5), Color(0xFFFFF0F3)],
+    colors: [Color(0xFFFFFDF9), Color(0xFFF5EFE5)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient darkCardGradient = LinearGradient(
-    colors: [Color(0xFF2A1C26), Color(0xFF1E141B)],
+    colors: [Color(0xFF2B2730), Color(0xFF201D24)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

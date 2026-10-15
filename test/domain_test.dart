@@ -16,14 +16,36 @@ void main() {
       provider = AppStateProvider(storage);
     });
 
-    test('Initial demo couple is created with Mitra and Deniz', () {
+    test('User onboarding initializes clean couple sanctuary and links partner cleanly', () {
+      provider.completeOnboarding(
+        name: 'Selin',
+        avatar: '🌸',
+        relationshipStage: 'stageDating',
+        goals: ['goalDeeperConversations'],
+        languageCode: 'en',
+      );
+
       expect(provider.couple, isNotNull);
-      expect(provider.couple!.partner1.name, 'Mitra');
-      expect(provider.couple!.partner2?.name, 'Deniz');
+      expect(provider.couple!.partner1.name, 'Selin');
+      expect(provider.couple!.partner2, isNull);
+      expect(provider.isPartnerLinked, isFalse);
+
+      provider.linkPartner(partnerName: 'Can');
+      expect(provider.isPartnerLinked, isTrue);
+      expect(provider.couple!.partner2?.name, 'Can');
       expect(provider.couple!.connectionStreak, greaterThanOrEqualTo(1));
     });
 
-    test('Interactive partner switcher toggles active viewing partner', () {
+    test('Interactive partner switcher toggles active viewing partner when linked', () {
+      provider.completeOnboarding(
+        name: 'Selin',
+        avatar: '🌸',
+        relationshipStage: 'stageDating',
+        goals: ['goalDeeperConversations'],
+        languageCode: 'en',
+      );
+      provider.linkPartner(partnerName: 'Can');
+
       final initialId = provider.activePartner.id;
       provider.switchActivePartner();
       final toggledId = provider.activePartner.id;

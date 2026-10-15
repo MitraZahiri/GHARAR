@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/gradient_button.dart';
+import '../../widgets/soul_connection_art.dart';
 import 'partner_invite_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -18,8 +19,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final TextEditingController _nameController =
-      TextEditingController(text: 'Mitra');
+  final TextEditingController _nameController = TextEditingController();
   String _selectedAvatar = '🌸';
   String _selectedStage = 'stageDating';
   final List<String> _selectedGoals = [
@@ -188,7 +188,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   } else {
                     provider.completeOnboarding(
                       name: _nameController.text.trim().isEmpty
-                          ? 'Mitra'
+                          ? (isTr ? 'Ben' : 'You')
                           : _nameController.text.trim(),
                       avatar: _selectedAvatar,
                       relationshipStage: _selectedStage,
@@ -219,25 +219,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                gradient: AppColors.romanticLove,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.deepBurgundy.withValues(alpha: 0.28),
-                    blurRadius: 28,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Text('🕊️', style: TextStyle(fontSize: 48)),
-              ),
+            const SoulConnectionArt(
+              width: 240,
+              height: 190,
+              animateGlow: true,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             Text(
               isTr
                   ? 'İkinize Özel Masalsı Bir Alan'
@@ -292,7 +279,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
-              hintText: isTr ? 'Örn: Mitra' : 'e.g. Mitra',
+              hintText: isTr ? 'Adınızı girin' : 'Enter your name',
               prefixIcon: const Icon(Icons.person_rounded),
             ),
           ),
