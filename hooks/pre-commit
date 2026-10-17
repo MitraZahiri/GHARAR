@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# GHARAR Pre-Commit Quality Guard (ECC Architecture)
+# ==============================================================================
+set -e
+
+echo "🔍 [1/2] Statik kod analizi çalıştırılıyor (flutter analyze)..."
+if ! flutter analyze; then
+  echo ""
+  echo "❌ Linter Hatası: Kod standartlara uymuyor! Commit iptal edildi."
+  exit 1
+fi
+
+echo "🧪 [2/2] Birim ve bileşen testleri çalıştırılıyor (flutter test)..."
+if ! flutter test; then
+  echo ""
+  echo "❌ Test Hatası: Testler patladı! Commit iptal edildi."
+  exit 1
+fi
+
+echo "✅ Tüm kontroller başarıyla tamamlandı! Commit onaylandı."
+exit 0
