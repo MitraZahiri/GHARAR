@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../models/shared_interest_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/romantic_app_bar.dart';
-import 'quiz_game_screen.dart';
 import 'future_alignment_screen.dart';
+import 'quiz_game_screen.dart';
 
 class DiscoverHubScreen extends StatefulWidget {
   const DiscoverHubScreen({super.key});
@@ -33,9 +34,8 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
 
     return Scaffold(
       appBar: RomanticAppBar(
@@ -49,7 +49,7 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
             child: Row(
               children: [
                 Expanded(
-                  child: _buildActionTile(
+                  child: DiscoverActionTile(
                     title: isTr ? 'Bizi Ne Kadar Tanıyoruz?' : 'Quiz: How Well We Know Us',
                     subtitle: isTr ? 'Eğlenceli tahmin oyunu' : 'Playful predictions',
                     icon: '🎯',
@@ -65,7 +65,7 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: _buildActionTile(
+                  child: DiscoverActionTile(
                     title: isTr ? 'Nereye İlerliyoruz?' : 'Where Are We Heading?',
                     subtitle: isTr ? 'Ortak gelecek hayalleri' : 'Future alignment',
                     icon: '🧭',
@@ -103,15 +103,15 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
+              children: const [
                 // 1. Shared Sparks
-                _buildSharedSparksTab(provider, isDark, isTr),
+                SharedSparksTabView(),
 
                 // 2. Beautiful Differences
-                _buildDifferencesTab(provider, isDark, isTr),
+                DifferencesTabView(),
 
                 // 3. Relationship Growth Hub
-                _buildGrowthHubTab(context, isDark, isTr),
+                GrowthHubTabView(),
               ],
             ),
           ),
@@ -119,14 +119,27 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
       ),
     );
   }
+}
 
-  Widget _buildActionTile({
-    required String title,
-    required String subtitle,
-    required String icon,
-    required bool isDark,
-    required VoidCallback onTap,
-  }) {
+/// Dedicated action tile for Discover sub-navigation.
+class DiscoverActionTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String icon;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const DiscoverActionTile({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GlassCard(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       onTap: onTap,
@@ -159,109 +172,98 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
       ),
     );
   }
+}
 
-  Widget _buildSharedSparksTab(
-      AppStateProvider provider, bool isDark, bool isTr) {
-    final list =
-        provider.sharedInterests.where((item) => item.bothEnjoy).toList();
+/// Dedicated view for shared sparks tab.
+class SharedSparksTabView extends StatelessWidget {
+  const SharedSparksTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final list = context.select<AppStateProvider, List<SharedInterestModel>>(
+      (p) => p.sharedInterests.where((item) => item.bothEnjoy).toList(),
+    );
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       itemCount: list.length,
       itemBuilder: (context, index) {
-        final item = list[index];
-        return GlassCard(
-          margin: const EdgeInsets.only(bottom: 14),
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        return SharedSparkCard(
+          item: list[index],
+          isDark: isDark,
+          isTr: isTr,
+        );
+      },
+    );
+  }
+}
+
+/// Dedicated card for a shared spark interest.
+class SharedSparkCard extends StatelessWidget {
+  final SharedInterestModel item;
+  final bool isDark;
+  final bool isTr;
+
+  const SharedSparkCard({
+    super.key,
+    required this.item,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Text(item.icon, style: const TextStyle(fontSize: 24)),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.category.toUpperCase(),
-                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                            fontSize: 10,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.w700,
-                            color: isDark ? AppColors.blushPinkDeep : AppColors.burgundyRose,
-                          ),
-                        ),
-                        Text(
-                          item.title(isTr),
-                          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
+              Text(item.icon, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.category.toUpperCase(),
+                      style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                        fontSize: 10,
+                        letterSpacing: 1,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? AppColors.blushPinkDeep : AppColors.burgundyRose,
+                      ),
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.successGreen.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(12),
+                    Text(
+                      item.title(isTr),
+                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text('💖', style: TextStyle(fontSize: 11)),
-                        const SizedBox(width: 4),
-                        Text(
-                          isTr ? 'Ortak Tutku' : 'Mutual Spark',
-                          style: const TextStyle(
-                            color: AppColors.successGreen,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                item.description(isTr),
-                style: AppTextStyles.bodyMedium(isDark: isDark),
-              ),
-              const SizedBox(height: 14),
-              // Suggested Date Idea
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkCardElevated : AppColors.warmIvory,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                  ),
+                  color: AppColors.successGreen.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('💡', style: TextStyle(fontSize: 18)),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isTr ? 'Önerilen Randevu Fikri:' : 'Suggested Date Idea:',
-                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            item.suggestedDate(isTr),
-                            style: AppTextStyles.bodySmall(isDark: isDark),
-                          ),
-                        ],
+                    const Text('💖', style: TextStyle(fontSize: 11)),
+                    const SizedBox(width: 4),
+                    Text(
+                      isTr ? 'Ortak Tutku' : 'Mutual Spark',
+                      style: const TextStyle(
+                        color: AppColors.successGreen,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -269,109 +271,189 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
               ),
             ],
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildDifferencesTab(
-      AppStateProvider provider, bool isDark, bool isTr) {
-    final list =
-        provider.sharedInterests.where((item) => !item.bothEnjoy).toList();
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      itemCount: list.length,
-      itemBuilder: (context, index) {
-        final item = list[index];
-        return GlassCard(
-          margin: const EdgeInsets.only(bottom: 14),
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(item.icon, style: const TextStyle(fontSize: 24)),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      item.title(isTr),
-                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.champagneGold.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      isTr ? 'Tatlı Zıtlık' : 'Sweet Contrast',
-                      style: const TextStyle(
-                        color: AppColors.champagneGold,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
+          const SizedBox(height: 12),
+          Text(
+            item.description(isTr),
+            style: AppTextStyles.bodyMedium(isDark: isDark),
+          ),
+          const SizedBox(height: 14),
+          // Suggested Date Idea
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkCardElevated : AppColors.warmIvory,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
               ),
-              const SizedBox(height: 10),
-              Text(
-                item.description(isTr),
-                style: AppTextStyles.bodyMedium(isDark: isDark),
-              ),
-              const SizedBox(height: 14),
-
-              // Bridge Conversation Box
-              if (item.bridgeConv(isTr) != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkCardElevated : AppColors.blushPinkLight,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isDark ? AppColors.darkBorder : AppColors.blushPink,
-                    ),
-                  ),
+            ),
+            child: Row(
+              children: [
+                const Text('💡', style: TextStyle(fontSize: 18)),
+                const SizedBox(width: 10),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          const Text('🕊️', style: TextStyle(fontSize: 16)),
-                          const SizedBox(width: 8),
-                          Text(
-                            isTr ? 'Birlikte Sohbet Başlatıcı:' : 'Respectful Conversation Bridge:',
-                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
                       Text(
-                        item.bridgeConv(isTr)!,
-                        style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
-                          fontStyle: FontStyle.italic,
+                        isTr ? 'Önerilen Randevu Fikri:' : 'Suggested Date Idea:',
+                        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                          fontWeight: FontWeight.w700,
                         ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        item.suggestedDate(isTr),
+                        style: AppTextStyles.bodySmall(isDark: isDark),
                       ),
                     ],
                   ),
                 ),
               ],
-            ],
+            ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Dedicated view for differences tab.
+class DifferencesTabView extends StatelessWidget {
+  const DifferencesTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final list = context.select<AppStateProvider, List<SharedInterestModel>>(
+      (p) => p.sharedInterests.where((item) => !item.bothEnjoy).toList(),
+    );
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        return DifferenceCard(
+          item: list[index],
+          isDark: isDark,
+          isTr: isTr,
         );
       },
     );
   }
+}
 
-  Widget _buildGrowthHubTab(BuildContext context, bool isDark, bool isTr) {
+/// Dedicated card for difference interest.
+class DifferenceCard extends StatelessWidget {
+  final SharedInterestModel item;
+  final bool isDark;
+  final bool isTr;
+
+  const DifferenceCard({
+    super.key,
+    required this.item,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(item.icon, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  item.title(isTr),
+                  style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.champagneGold.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  isTr ? 'Tatlı Zıtlık' : 'Sweet Contrast',
+                  style: const TextStyle(
+                    color: AppColors.champagneGold,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            item.description(isTr),
+            style: AppTextStyles.bodyMedium(isDark: isDark),
+          ),
+          const SizedBox(height: 14),
+
+          // Bridge Conversation Box
+          if (item.bridgeConv(isTr) != null) ...[
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCardElevated : AppColors.blushPinkLight,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isDark ? AppColors.darkBorder : AppColors.blushPink,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Text('🕊️', style: TextStyle(fontSize: 16)),
+                      const SizedBox(width: 8),
+                      Text(
+                        isTr ? 'Birlikte Sohbet Başlatıcı:' : 'Respectful Conversation Bridge:',
+                        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    item.bridgeConv(isTr)!,
+                    style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Dedicated view for relationship growth hub exercises.
+class GrowthHubTabView extends StatelessWidget {
+  const GrowthHubTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+
     final exercises = [
       {
         'titleEn': 'Emotional Validation & Safe Harbor',

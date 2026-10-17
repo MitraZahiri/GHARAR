@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
 import '../screens/ai_companion/ai_companion_screen.dart';
 
@@ -24,9 +25,8 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final active = provider.activePartner;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final tagline = context.select<AppStateProvider, String>((p) => p.currentLanguage.tagline);
 
     return AppBar(
       toolbarHeight: 68,
@@ -53,7 +53,7 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 Text(
-                  provider.currentLanguage.tagline,
+                  tagline,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
@@ -68,76 +68,7 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: 8),
 
           // Interactive Partner Switcher Pill
-          if (showPartnerSwitcher)
-            GestureDetector(
-              onTap: () {
-                provider.switchActivePartner();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    duration: const Duration(milliseconds: 1400),
-                    backgroundColor: AppColors.deepBurgundy,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    content: Row(
-                      children: [
-                        Text(provider.activePartner.avatar, style: const TextStyle(fontSize: 18)),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            provider.isTurkish
-                                ? 'Artık ${provider.activePartner.name} olarak görüntülüyorsunuz'
-                                : 'Now viewing as ${provider.activePartner.name}',
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkCardElevated
-                      : AppColors.blushPinkLight,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkBorder
-                        : AppColors.blushPinkDeep.withValues(alpha: 0.5),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(active.avatar, style: const TextStyle(fontSize: 14)),
-                    const SizedBox(width: 4),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 68),
-                      child: Text(
-                        active.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 11,
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.deepBurgundy,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 3),
-                    Icon(
-                      Icons.swap_horiz_rounded,
-                      size: 15,
-                      color: isDark ? AppColors.blushPinkDeep : AppColors.burgundyRose,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          if (showPartnerSwitcher) const PartnerSwitcherPill(),
 
           const SizedBox(width: 4),
 
@@ -171,6 +102,89 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
 
           if (actions != null) ...actions!,
         ],
+      ),
+    );
+  }
+}
+
+/// Dedicated widget for switching active partner with granular rebuilds.
+class PartnerSwitcherPill extends StatelessWidget {
+  const PartnerSwitcherPill({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final active = context.select<AppStateProvider, UserModel>((p) => p.activePartner);
+
+    return GestureDetector(
+      onTap: () {
+        final provider = context.read<AppStateProvider>();
+        provider.switchActivePartner();
+        final newActive = provider.activePartner;
+        final isTr = provider.isTurkish;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: const Duration(milliseconds: 1400),
+            backgroundColor: AppColors.deepBurgundy,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            content: Row(
+              children: [
+                Text(newActive.avatar, style: const TextStyle(fontSize: 18)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    isTr
+                        ? 'Artık ${newActive.name} olarak görüntülüyorsunuz'
+                        : 'Now viewing as ${newActive.name}',
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkCardElevated : AppColors.blushPinkLight,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isDark
+                ? AppColors.darkBorder
+                : AppColors.blushPinkDeep.withValues(alpha: 0.5),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(active.avatar, style: const TextStyle(fontSize: 14)),
+            const SizedBox(width: 4),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 68),
+              child: Text(
+                active.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 11,
+                  color: isDark ? AppColors.darkTextPrimary : AppColors.deepBurgundy,
+                ),
+              ),
+            ),
+            const SizedBox(width: 3),
+            Icon(
+              Icons.swap_horiz_rounded,
+              size: 15,
+              color: isDark ? AppColors.blushPinkDeep : AppColors.burgundyRose,
+            ),
+          ],
+        ),
       ),
     );
   }

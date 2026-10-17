@@ -20,10 +20,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
-    final isPremium = provider.couple?.isPremium ?? false;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final isPremium = context.select<AppStateProvider, bool>((p) => p.couple?.isPremium ?? false);
 
     return ConfettiOverlay(
       isPlaying: _playConfetti,
@@ -88,7 +87,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    _buildBenefitRow(
+                    PremiumBenefitRow(
                       icon: '✨',
                       title: isTr
                           ? '100+ Soru & Tüm 12 Kategori'
@@ -96,7 +95,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       isDark: isDark,
                     ),
                     const Divider(height: 18),
-                    _buildBenefitRow(
+                    PremiumBenefitRow(
                       icon: '🤖',
                       title: isTr
                           ? 'Noor AI ile Sınırsız İletişim Rehberliği'
@@ -104,7 +103,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       isDark: isDark,
                     ),
                     const Divider(height: 18),
-                    _buildBenefitRow(
+                    PremiumBenefitRow(
                       icon: '📖',
                       title: isTr
                           ? 'Sınırsız Çift Günlüğü & Fotoğraf Hatıraları'
@@ -112,7 +111,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       isDark: isDark,
                     ),
                     const Divider(height: 18),
-                    _buildBenefitRow(
+                    PremiumBenefitRow(
                       icon: '🌟',
                       title: isTr
                           ? 'Gelişmiş Uyum & Ortak Gelecek Analizi'
@@ -126,29 +125,35 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               const SizedBox(height: 24),
 
               // Plan Cards (Monthly, Annual, Lifetime)
-              _buildPlanTile(
+              PlanOptionTile(
                 index: 0,
                 title: isTr ? 'Aylık Plan' : 'Monthly Sanctuary',
                 price: isTr ? '₺99.99 / ay' : '\$4.99 / month',
                 subtitle: isTr ? 'İstediğiniz zaman iptal edin' : 'Cancel anytime',
+                isSelected: _selectedPlanIndex == 0,
                 isDark: isDark,
+                onTap: () => setState(() => _selectedPlanIndex = 0),
               ),
               const SizedBox(height: 12),
-              _buildPlanTile(
+              PlanOptionTile(
                 index: 1,
                 title: isTr ? 'Yıllık Plan (En Popüler)' : 'Annual Plan (Best Value)',
                 price: isTr ? '₺599.99 / yıl (₺49.99/ay)' : '\$29.99 / year (\$2.49/mo)',
                 subtitle: isTr ? '%50 Tasarruf + 7 Gün Ücretsiz Deneme' : 'Save 50% + 7-Day Free Trial',
                 badgeText: isTr ? 'EN POPÜLER' : 'BEST VALUE',
+                isSelected: _selectedPlanIndex == 1,
                 isDark: isDark,
+                onTap: () => setState(() => _selectedPlanIndex = 1),
               ),
               const SizedBox(height: 12),
-              _buildPlanTile(
+              PlanOptionTile(
                 index: 2,
                 title: isTr ? 'Ömür Boyu Aşk' : 'Lifetime Devotion',
                 price: isTr ? '₺1,499 Tek Seferlik' : '\$79.99 One-time',
                 subtitle: isTr ? 'Sonsuza kadar ikiniz için' : 'Forever yours, no subscriptions',
+                isSelected: _selectedPlanIndex == 2,
                 isDark: isDark,
+                onTap: () => setState(() => _selectedPlanIndex = 2),
               ),
 
               const SizedBox(height: 28),
@@ -164,7 +169,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         : 'Start 7-Day Free Trial'),
                 gradient: AppColors.sunsetGold,
                 onPressed: () {
-                  provider.togglePremium();
+                  context.read<AppStateProvider>().togglePremium();
                   setState(() {
                     _playConfetti = true;
                   });
@@ -202,12 +207,23 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       ),
     );
   }
+}
 
-  Widget _buildBenefitRow({
-    required String icon,
-    required String title,
-    required bool isDark,
-  }) {
+/// Dedicated widget for displaying a premium benefit row.
+class PremiumBenefitRow extends StatelessWidget {
+  final String icon;
+  final String title;
+  final bool isDark;
+
+  const PremiumBenefitRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Text(icon, style: const TextStyle(fontSize: 20)),
@@ -223,20 +239,36 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       ],
     );
   }
+}
 
-  Widget _buildPlanTile({
-    required int index,
-    required String title,
-    required String price,
-    required String subtitle,
-    String? badgeText,
-    required bool isDark,
-  }) {
-    final isSelected = _selectedPlanIndex == index;
+/// Dedicated widget for selecting a subscription plan option.
+class PlanOptionTile extends StatelessWidget {
+  final int index;
+  final String title;
+  final String price;
+  final String subtitle;
+  final String? badgeText;
+  final bool isSelected;
+  final bool isDark;
+  final VoidCallback onTap;
 
+  const PlanOptionTile({
+    super.key,
+    required this.index,
+    required this.title,
+    required this.price,
+    required this.subtitle,
+    this.badgeText,
+    required this.isSelected,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
-      onTap: () => setState(() => _selectedPlanIndex = index),
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
@@ -291,7 +323,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            badgeText,
+                            badgeText!,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 9,

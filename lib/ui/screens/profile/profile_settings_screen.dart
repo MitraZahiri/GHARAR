@@ -6,6 +6,8 @@ import '../../../core/localization/app_language.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../models/couple_model.dart';
+import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/soul_connection_art.dart';
@@ -16,15 +18,19 @@ class ProfileSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
     final loc = AppLocalizations.of(context);
 
-    final couple = provider.couple;
-    final partner1 = couple?.partner1 ?? provider.activePartner;
-    final partner2 = couple?.partner2 ?? provider.otherPartner;
-    final active = provider.activePartner;
+    final couple = context.select<AppStateProvider, CoupleModel?>((p) => p.couple);
+    final active = context.select<AppStateProvider, UserModel>((p) => p.activePartner);
+    final other = context.select<AppStateProvider, UserModel>((p) => p.otherPartner);
+    final partner1 = couple?.partner1 ?? active;
+    final partner2 = couple?.partner2 ?? other;
+
+    final currentLanguage = context.select<AppStateProvider, AppLanguage>((p) => p.currentLanguage);
+    final authProvider = context.select<AppStateProvider, String?>((p) => p.authProvider);
+    final userEmail = context.select<AppStateProvider, String?>((p) => p.userEmail);
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +64,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildAvatarBubble(partner1.avatar, partner1.name, isDark),
+                      AvatarBubble(avatar: partner1.avatar, name: partner1.name, isDark: isDark),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
@@ -74,7 +80,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      _buildAvatarBubble(partner2.avatar, partner2.name, isDark),
+                      AvatarBubble(avatar: partner2.avatar, name: partner2.name, isDark: isDark),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -181,14 +187,15 @@ class ProfileSettingsScreen extends StatelessWidget {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      provider.switchActivePartner();
+                      final appState = context.read<AppStateProvider>();
+                      appState.switchActivePartner();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           duration: const Duration(milliseconds: 1000),
                           content: Text(
                             isTr
-                                ? 'Artık ${provider.activePartner.name} olarak bakıyorsunuz'
-                                : 'Now viewing as ${provider.activePartner.name}',
+                                ? 'Artık ${appState.activePartner.name} olarak bakıyorsunuz'
+                                : 'Now viewing as ${appState.activePartner.name}',
                           ),
                         ),
                       );
@@ -263,7 +270,7 @@ class ProfileSettingsScreen extends StatelessWidget {
             // Multi-Language Localization Selector (8 Languages & RTL)
             GlassCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              onTap: () => _showLanguagePickerSheet(context, provider),
+              onTap: () => _showLanguagePickerSheet(context, isDark, currentLanguage),
               child: Row(
                 children: [
                   const Icon(Icons.language_rounded, size: 22),
@@ -279,7 +286,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          provider.currentLanguage.tagline,
+                          currentLanguage.tagline,
                           style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                             fontSize: 11,
                             color: isDark ? AppColors.lavenderAccent : AppColors.burgundyRose,
@@ -303,10 +310,10 @@ class ProfileSettingsScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          '${provider.currentLanguage.flag} ${provider.currentLanguage.nativeName}',
+                          '${currentLanguage.flag} ${currentLanguage.nativeName}',
                           style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
                         ),
-                        if (provider.currentLanguage.isRtl) ...[
+                        if (currentLanguage.isRtl) ...[
                           const SizedBox(width: 4),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
@@ -368,7 +375,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                     value: isDark,
                     activeColor: AppColors.blushPinkDeep,
                     onChanged: (val) {
-                      provider.toggleTheme();
+                      context.read<AppStateProvider>().toggleTheme();
                     },
                   ),
                 ],
@@ -381,7 +388,7 @@ class ProfileSettingsScreen extends StatelessWidget {
             GlassCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               onTap: () {
-                _exportMemories(context, provider, isTr);
+                _exportMemories(context, isTr);
               },
               child: Row(
                 children: [
@@ -442,9 +449,9 @@ class ProfileSettingsScreen extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            provider.authProvider == 'apple' ? '' : '✉️',
+                            authProvider == 'apple' ? '' : '✉️',
                             style: TextStyle(
-                              fontSize: provider.authProvider == 'apple' ? 22 : 20,
+                              fontSize: authProvider == 'apple' ? 22 : 20,
                             ),
                           ),
                         ),
@@ -455,7 +462,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              provider.authProvider == 'apple'
+                              authProvider == 'apple'
                                   ? (isTr ? 'Apple Kimliği ile Bağlı' : 'Apple ID Connected')
                                   : (isTr ? 'E-posta ile Bağlı' : 'Email Connected'),
                               style: AppTextStyles.labelLarge(isDark: isDark).copyWith(
@@ -464,9 +471,9 @@ class ProfileSettingsScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              (provider.userEmail != null && provider.userEmail!.isNotEmpty)
-                                  ? provider.userEmail!
-                                  : (provider.authProvider == 'apple'
+                              (userEmail != null && userEmail.isNotEmpty)
+                                  ? userEmail
+                                  : (authProvider == 'apple'
                                       ? 'mitra@privaterelay.appleid.com'
                                       : 'mitra@gharar.love'),
                               style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
@@ -483,21 +490,21 @@ class ProfileSettingsScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: provider.authProvider == 'apple'
+                          color: authProvider == 'apple'
                               ? (isDark ? Colors.white : Colors.black)
                               : AppColors.blushPinkDeep.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          provider.authProvider == 'apple'
+                          authProvider == 'apple'
                               ? ' Apple'
-                              : (provider.authProvider == 'email'
+                              : (authProvider == 'email'
                                   ? 'Email'
                                   : 'Demo'),
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
-                            color: provider.authProvider == 'apple'
+                            color: authProvider == 'apple'
                                 ? (isDark ? Colors.black : Colors.white)
                                 : (isDark
                                     ? AppColors.blushPinkDeep
@@ -516,7 +523,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () => _showSignOutDialog(context, provider),
+                      onPressed: () => _showSignOutDialog(context, isDark, isTr),
                       icon: const Icon(Icons.logout_rounded, size: 16),
                       label: Text(
                         loc?.translate('signOutBtn') ?? (isTr ? 'Çıkış Yap' : 'Sign Out'),
@@ -544,44 +551,8 @@ class ProfileSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatarBubble(String avatar, String name, bool isDark) {
-    return Column(
-      children: [
-        Container(
-          width: 58,
-          height: 58,
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCardElevated : Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(avatar, style: const TextStyle(fontSize: 28)),
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          name,
-          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _exportMemories(
-      BuildContext context, AppStateProvider provider, bool isTr) {
+  void _exportMemories(BuildContext context, bool isTr) {
+    final provider = context.read<AppStateProvider>();
     final buffer = StringBuffer();
     buffer.writeln('=== GHARAR COUPLE JOURNAL & MEMORIES ===');
     buffer.writeln(
@@ -615,10 +586,8 @@ class ProfileSettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showSignOutDialog(BuildContext context, AppStateProvider provider) {
-    final isDark = provider.isDarkMode;
+  void _showSignOutDialog(BuildContext context, bool isDark, bool isTr) {
     final loc = AppLocalizations.of(context);
-    final isTr = provider.isTurkish;
 
     showDialog(
       context: context,
@@ -657,7 +626,7 @@ class ProfileSettingsScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.of(ctx).pop();
-              provider.signOut();
+              context.read<AppStateProvider>().signOut();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.burgundyRose,
@@ -674,10 +643,8 @@ class ProfileSettingsScreen extends StatelessWidget {
   }
 
   void _showLanguagePickerSheet(
-      BuildContext context, AppStateProvider provider) {
-    final isDark = provider.isDarkMode;
-    final currentLang = provider.currentLanguage;
-    final isTr = provider.isTurkish;
+      BuildContext context, bool isDark, AppLanguage currentLang) {
+    final isTr = currentLang.code == 'tr';
 
     showModalBottomSheet(
       context: context,
@@ -760,7 +727,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                     return InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        provider.setLanguageCode(lang.code);
+                        context.read<AppStateProvider>().setLanguageCode(lang.code);
                         Navigator.of(ctx).pop();
                       },
                       child: Container(
@@ -879,6 +846,57 @@ class ProfileSettingsScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+/// Dedicated widget for displaying a partner's avatar bubble.
+class AvatarBubble extends StatelessWidget {
+  final String avatar;
+  final String name;
+  final bool isDark;
+
+  const AvatarBubble({
+    super.key,
+    required this.avatar,
+    required this.name,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 58,
+          height: 58,
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkCardElevated : Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(avatar, style: const TextStyle(fontSize: 28)),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          name,
+          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
     );
   }
 }

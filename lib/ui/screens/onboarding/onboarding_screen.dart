@@ -51,9 +51,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final currentLanguage = context.select<AppStateProvider, AppLanguage>((p) => p.currentLanguage);
 
     return Scaffold(
       body: SafeArea(
@@ -79,7 +79,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   // Multilingual Language Switcher Chip (8 Languages & RTL)
                   InkWell(
                     borderRadius: BorderRadius.circular(20),
-                    onTap: () => _showLanguagePickerSheet(context, provider),
+                    onTap: () => _showLanguagePickerSheet(context, isDark, currentLanguage),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
@@ -96,11 +96,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(provider.currentLanguage.flag,
+                          Text(currentLanguage.flag,
                               style: const TextStyle(fontSize: 15)),
                           const SizedBox(width: 5),
                           Text(
-                            provider.currentLanguage.nativeName,
+                            currentLanguage.nativeName,
                             style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                               fontWeight: FontWeight.w700,
                               fontSize: 12,
@@ -156,7 +156,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
                 children: [
                   // 1. Welcome Slide
-                  _buildWelcomeSlide(isDark, isTr),
+                  OnboardingWelcomeSlide(isDark: isDark, isTr: isTr),
 
                   // 2. Profile Setup (Name & Avatar)
                   _buildProfileSlide(isDark, isTr),
@@ -186,14 +186,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       curve: Curves.easeInOut,
                     );
                   } else {
-                    provider.completeOnboarding(
+                    final appState = context.read<AppStateProvider>();
+                    appState.completeOnboarding(
                       name: _nameController.text.trim().isEmpty
                           ? (isTr ? 'Ben' : 'You')
                           : _nameController.text.trim(),
                       avatar: _selectedAvatar,
                       relationshipStage: _selectedStage,
                       goals: _selectedGoals,
-                      languageCode: provider.locale.languageCode,
+                      languageCode: appState.locale.languageCode,
                     );
 
                     Navigator.of(context).pushReplacement(
@@ -203,46 +204,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     );
                   }
                 },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWelcomeSlide(bool isDark, bool isTr) {
-    return Center(
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SoulConnectionArt(
-              width: 240,
-              height: 190,
-              animateGlow: true,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              isTr
-                  ? 'İkinize Özel Masalsı Bir Alan'
-                  : 'A Sacred Sanctuary Just for the Two of You',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.displayMedium(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w800,
-                fontSize: 24,
-              ),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              isTr
-                  ? 'GHARAR; ilişkinizi derinleştirmek, birbirinizi yargılamadan anlamak, gizli sorularla heyecanı canlı tutmak ve ömürlük anılar biriktirmek için tasarlandı.'
-                  : 'GHARAR is exclusively designed to deepen your bond, understand each other without judgment, spark romance with private questions, and cherish every moment.',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyLarge(isDark: isDark).copyWith(
-                fontSize: 15,
               ),
             ),
           ],
@@ -295,35 +256,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             runSpacing: 12,
             children: [
               for (final av in _avatars)
-                GestureDetector(
+                AvatarOptionBubble(
+                  avatar: av,
+                  isSelected: _selectedAvatar == av,
+                  isDark: isDark,
                   onTap: () => setState(() => _selectedAvatar = av),
-                  child: Container(
-                    width: 58,
-                    height: 58,
-                    decoration: BoxDecoration(
-                      color: _selectedAvatar == av
-                          ? (isDark
-                              ? AppColors.blushPinkDeep.withValues(alpha: 0.3)
-                              : AppColors.blushPinkLight)
-                          : (isDark
-                              ? AppColors.darkCard
-                              : Colors.white),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: _selectedAvatar == av
-                            ? (isDark
-                                ? AppColors.blushPinkDeep
-                                : AppColors.deepBurgundy)
-                            : (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder),
-                        width: _selectedAvatar == av ? 2.5 : 1.0,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(av, style: const TextStyle(fontSize: 26)),
-                    ),
-                  ),
                 ),
             ],
           ),
@@ -363,54 +300,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 20),
 
           for (final s in stages) ...[
-            InkWell(
-              borderRadius: BorderRadius.circular(18),
+            RelationshipStageCard(
+              icon: s['icon']!,
+              label: isTr ? s['labelTr']! : s['labelEn']!,
+              isSelected: _selectedStage == s['key'],
+              isDark: isDark,
               onTap: () => setState(() => _selectedStage = s['key']!),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                margin: const EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-                  color: _selectedStage == s['key']
-                      ? (isDark
-                          ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
-                          : AppColors.blushPinkLight)
-                      : (isDark ? AppColors.darkCard : Colors.white),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: _selectedStage == s['key']
-                        ? (isDark
-                            ? AppColors.blushPinkDeep
-                            : AppColors.deepBurgundy)
-                        : (isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder),
-                    width: _selectedStage == s['key'] ? 2.0 : 1.0,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Text(s['icon']!, style: const TextStyle(fontSize: 22)),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Text(
-                        isTr ? s['labelTr']! : s['labelEn']!,
-                        style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                          fontWeight: _selectedStage == s['key']
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    if (_selectedStage == s['key'])
-                      Icon(
-                        Icons.check_circle_rounded,
-                        color: isDark
-                            ? AppColors.blushPinkDeep
-                            : AppColors.deepBurgundy,
-                      ),
-                  ],
-                ),
-              ),
             ),
           ],
         ],
@@ -452,8 +347,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Builder(
               builder: (context) {
                 final isSelected = _selectedGoals.contains(g['key']);
-                return InkWell(
-                  borderRadius: BorderRadius.circular(18),
+                return GoalSelectionCard(
+                  icon: g['icon']!,
+                  label: isTr ? g['labelTr']! : g['labelEn']!,
+                  isSelected: isSelected,
+                  isDark: isDark,
                   onTap: () {
                     setState(() {
                       if (isSelected) {
@@ -463,62 +361,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       }
                     });
                   },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                    margin: const EdgeInsets.only(bottom: 10),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? (isDark
-                              ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
-                              : AppColors.blushPinkLight)
-                          : (isDark ? AppColors.darkCard : Colors.white),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(
-                        color: isSelected
-                            ? (isDark
-                                ? AppColors.blushPinkDeep
-                                : AppColors.deepBurgundy)
-                            : (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder),
-                        width: isSelected ? 2.0 : 1.0,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(g['icon']!, style: const TextStyle(fontSize: 22)),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Text(
-                            isTr ? g['labelTr']! : g['labelEn']!,
-                            style: AppTextStyles.titleMedium(isDark: isDark)
-                                .copyWith(
-                              fontWeight:
-                                  isSelected ? FontWeight.w700 : FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Checkbox(
-                          value: isSelected,
-                          activeColor: isDark
-                              ? AppColors.blushPinkDeep
-                              : AppColors.deepBurgundy,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6)),
-                          onChanged: (val) {
-                            setState(() {
-                              if (val == true) {
-                                _selectedGoals.add(g['key']!);
-                              } else {
-                                _selectedGoals.remove(g['key']);
-                              }
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                  onChanged: (val) {
+                    setState(() {
+                      if (val == true) {
+                        _selectedGoals.add(g['key']!);
+                      } else {
+                        _selectedGoals.remove(g['key']);
+                      }
+                    });
+                  },
                 );
               },
             ),
@@ -528,10 +379,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _showLanguagePickerSheet(
-      BuildContext context, AppStateProvider provider) {
-    final isDark = provider.isDarkMode;
-    final currentLang = provider.currentLanguage;
-    final isTr = provider.isTurkish;
+      BuildContext context, bool isDark, AppLanguage currentLang) {
+    final isTr = currentLang.code == 'tr';
 
     showModalBottomSheet(
       context: context,
@@ -614,7 +463,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     return InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        provider.setLanguageCode(lang.code);
+                        context.read<AppStateProvider>().setLanguageCode(lang.code);
                         Navigator.of(ctx).pop();
                       },
                       child: Container(
@@ -733,6 +582,247 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class OnboardingWelcomeSlide extends StatelessWidget {
+  final bool isDark;
+  final bool isTr;
+
+  const OnboardingWelcomeSlide({
+    super.key,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SoulConnectionArt(
+              width: 240,
+              height: 190,
+              animateGlow: true,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              isTr
+                  ? 'İkinize Özel Masalsı Bir Alan'
+                  : 'A Sacred Sanctuary Just for the Two of You',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.displayMedium(isDark: isDark).copyWith(
+                fontWeight: FontWeight.w800,
+                fontSize: 24,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              isTr
+                  ? 'GHARAR; ilişkinizi derinleştirmek, birbirinizi yargılamadan anlamak, gizli sorularla heyecanı canlı tutmak ve ömürlük anılar biriktirmek için tasarlandı.'
+                  : 'GHARAR is exclusively designed to deepen your bond, understand each other without judgment, spark romance with private questions, and cherish every moment.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyLarge(isDark: isDark).copyWith(
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AvatarOptionBubble extends StatelessWidget {
+  final String avatar;
+  final bool isSelected;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const AvatarOptionBubble({
+    super.key,
+    required this.avatar,
+    required this.isSelected,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 58,
+        height: 58,
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark
+                  ? AppColors.blushPinkDeep.withValues(alpha: 0.3)
+                  : AppColors.blushPinkLight)
+              : (isDark
+                  ? AppColors.darkCard
+                  : Colors.white),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isSelected
+                ? (isDark
+                    ? AppColors.blushPinkDeep
+                    : AppColors.deepBurgundy)
+                : (isDark
+                    ? AppColors.darkBorder
+                    : AppColors.lightBorder),
+            width: isSelected ? 2.5 : 1.0,
+          ),
+        ),
+        child: Center(
+          child: Text(avatar, style: const TextStyle(fontSize: 26)),
+        ),
+      ),
+    );
+  }
+}
+
+class RelationshipStageCard extends StatelessWidget {
+  final String icon;
+  final String label;
+  final bool isSelected;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const RelationshipStageCard({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        margin: const EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark
+                  ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
+                  : AppColors.blushPinkLight)
+              : (isDark ? AppColors.darkCard : Colors.white),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: isSelected
+                ? (isDark
+                    ? AppColors.blushPinkDeep
+                    : AppColors.deepBurgundy)
+                : (isDark
+                    ? AppColors.darkBorder
+                    : AppColors.lightBorder),
+            width: isSelected ? 2.0 : 1.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(icon, style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ),
+            if (isSelected)
+              Icon(
+                Icons.check_circle_rounded,
+                color: isDark
+                    ? AppColors.blushPinkDeep
+                    : AppColors.deepBurgundy,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class GoalSelectionCard extends StatelessWidget {
+  final String icon;
+  final String label;
+  final bool isSelected;
+  final bool isDark;
+  final VoidCallback onTap;
+  final ValueChanged<bool?> onChanged;
+
+  const GoalSelectionCard({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.isDark,
+    required this.onTap,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        margin: const EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark
+                  ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
+                  : AppColors.blushPinkLight)
+              : (isDark ? AppColors.darkCard : Colors.white),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: isSelected
+                ? (isDark
+                    ? AppColors.blushPinkDeep
+                    : AppColors.deepBurgundy)
+                : (isDark
+                    ? AppColors.darkBorder
+                    : AppColors.lightBorder),
+            width: isSelected ? 2.0 : 1.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(icon, style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ),
+            Checkbox(
+              value: isSelected,
+              activeColor: isDark
+                  ? AppColors.blushPinkDeep
+                  : AppColors.deepBurgundy,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6)),
+              onChanged: onChanged,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

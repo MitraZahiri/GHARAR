@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/confetti_overlay.dart';
 import '../../widgets/glass_card.dart';
@@ -102,11 +103,10 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final otherPartner = context.select<AppStateProvider, UserModel>((p) => p.otherPartner);
 
-    final otherPartner = provider.otherPartner;
     final quiz = _quizzes[_currentQuizIndex];
     final options = isTr
         ? (quiz['optionsTr'] as List<String>)
@@ -224,12 +224,20 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
 
               // Options
               for (int i = 0; i < options.length; i++) ...[
-                _buildOptionTile(
+                QuizOptionTile(
                   index: i,
                   text: options[i],
                   actualIndex: actual,
+                  predictedOptionIndex: _predictedOptionIndex,
+                  isAnswerRevealed: _isAnswerRevealed,
                   isDark: isDark,
-                  isTr: isTr,
+                  onTap: _isAnswerRevealed
+                      ? null
+                      : () {
+                          setState(() {
+                            _predictedOptionIndex = i;
+                          });
+                        },
                 ),
                 const SizedBox(height: 10),
               ],
@@ -339,105 +347,6 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
     );
   }
 
-  Widget _buildOptionTile({
-    required int index,
-    required String text,
-    required int actualIndex,
-    required bool isDark,
-    required bool isTr,
-  }) {
-    Color? tileBorderColor;
-    Color? tileBgColor;
-
-    if (_isAnswerRevealed) {
-      if (index == actualIndex) {
-        tileBorderColor = AppColors.successGreen;
-        tileBgColor = AppColors.successGreen.withValues(alpha: 0.15);
-      } else if (index == _predictedOptionIndex) {
-        tileBorderColor = AppColors.coralGold;
-        tileBgColor = AppColors.coralGold.withValues(alpha: 0.12);
-      }
-    } else if (_predictedOptionIndex == index) {
-      tileBorderColor =
-          isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy;
-      tileBgColor = isDark
-          ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
-          : AppColors.blushPinkLight;
-    }
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(18),
-      onTap: _isAnswerRevealed
-          ? null
-          : () {
-              setState(() {
-                _predictedOptionIndex = index;
-              });
-            },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: tileBgColor ??
-              (isDark ? AppColors.darkCard : Colors.white),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: tileBorderColor ??
-                (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-            width: (_predictedOptionIndex == index ||
-                    (_isAnswerRevealed && index == actualIndex))
-                ? 1.8
-                : 1.0,
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkCardElevated
-                    : AppColors.lightBackground,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  String.fromCharCode(65 + index),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.deepBurgundy,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                text,
-                style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
-                  fontWeight: _predictedOptionIndex == index
-                      ? FontWeight.w700
-                      : FontWeight.w400,
-                ),
-              ),
-            ),
-            if (_isAnswerRevealed) ...[
-              if (index == actualIndex)
-                const Icon(Icons.check_circle_rounded,
-                    color: AppColors.successGreen, size: 22)
-              else if (index == _predictedOptionIndex)
-                const Icon(Icons.favorite_border_rounded,
-                    color: AppColors.coralGold, size: 22),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
   void _showFinalScoreDialog(BuildContext context, bool isDark, bool isTr) {
     showDialog(
       context: context,
@@ -493,6 +402,115 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
           ],
         );
       },
+    );
+  }
+}
+
+class QuizOptionTile extends StatelessWidget {
+  final int index;
+  final String text;
+  final int actualIndex;
+  final int? predictedOptionIndex;
+  final bool isAnswerRevealed;
+  final bool isDark;
+  final VoidCallback? onTap;
+
+  const QuizOptionTile({
+    super.key,
+    required this.index,
+    required this.text,
+    required this.actualIndex,
+    required this.predictedOptionIndex,
+    required this.isAnswerRevealed,
+    required this.isDark,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Color? tileBorderColor;
+    Color? tileBgColor;
+
+    if (isAnswerRevealed) {
+      if (index == actualIndex) {
+        tileBorderColor = AppColors.successGreen;
+        tileBgColor = AppColors.successGreen.withValues(alpha: 0.15);
+      } else if (index == predictedOptionIndex) {
+        tileBorderColor = AppColors.coralGold;
+        tileBgColor = AppColors.coralGold.withValues(alpha: 0.12);
+      }
+    } else if (predictedOptionIndex == index) {
+      tileBorderColor =
+          isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy;
+      tileBgColor = isDark
+          ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
+          : AppColors.blushPinkLight;
+    }
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: tileBgColor ??
+              (isDark ? AppColors.darkCard : Colors.white),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: tileBorderColor ??
+                (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            width: (predictedOptionIndex == index ||
+                    (isAnswerRevealed && index == actualIndex))
+                ? 1.8
+                : 1.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: isDark
+                    ? AppColors.darkCardElevated
+                    : AppColors.lightBackground,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  String.fromCharCode(65 + index),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.deepBurgundy,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                text,
+                style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
+                  fontWeight: predictedOptionIndex == index
+                      ? FontWeight.w700
+                      : FontWeight.w400,
+                ),
+              ),
+            ),
+            if (isAnswerRevealed) ...[
+              if (index == actualIndex)
+                const Icon(Icons.check_circle_rounded,
+                    color: AppColors.successGreen, size: 22)
+              else if (index == predictedOptionIndex)
+                const Icon(Icons.favorite_border_rounded,
+                    color: AppColors.coralGold, size: 22),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

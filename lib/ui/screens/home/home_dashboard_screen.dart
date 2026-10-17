@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../models/challenge_model.dart';
+import '../../../models/couple_model.dart';
+import '../../../models/question_model.dart';
+import '../../../models/shared_interest_model.dart';
+import '../../../models/special_date_model.dart';
+import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/gradient_button.dart';
@@ -20,25 +26,35 @@ class HomeDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final isPartnerLinked = context.select<AppStateProvider, bool>((p) => p.isPartnerLinked);
 
-    final couple = provider.couple;
-    final activePartner = provider.activePartner;
-    final otherPartner = provider.otherPartner;
-    final currentQ = provider.currentQuestion;
+    final couple = context.select<AppStateProvider, CoupleModel?>((p) => p.couple);
+    final activePartner = context.select<AppStateProvider, UserModel>((p) => p.activePartner);
+    final otherPartner = context.select<AppStateProvider, UserModel>((p) => p.otherPartner);
+    final currentQ = context.select<AppStateProvider, QuestionModel?>((p) => p.currentQuestion);
 
-    final isBothAnswered =
-        currentQ != null && provider.isBothAnswered(currentQ.id);
-    final activeAnswer =
-        currentQ != null ? provider.getAnswerForActivePartner(currentQ.id) : null;
-    final otherAnswer =
-        currentQ != null ? provider.getAnswerForOtherPartner(currentQ.id) : null;
+    final isBothAnswered = currentQ != null &&
+        context.select<AppStateProvider, bool>((p) => p.isBothAnswered(currentQ.id));
+    final activeAnswer = currentQ != null
+        ? context.select<AppStateProvider, AnswerModel?>(
+            (p) => p.getAnswerForActivePartner(currentQ.id))
+        : null;
+    final otherAnswer = currentQ != null
+        ? context.select<AppStateProvider, AnswerModel?>(
+            (p) => p.getAnswerForOtherPartner(currentQ.id))
+        : null;
 
-    final activeChallenge = provider.challenges.firstOrNull;
-    final upcomingDate = provider.specialDates.firstOrNull;
-    final featuredInterest = provider.sharedInterests.firstOrNull;
+    final activeChallenge = context.select<AppStateProvider, ChallengeModel?>(
+      (p) => p.challenges.firstOrNull,
+    );
+    final upcomingDate = context.select<AppStateProvider, SpecialDateModel?>(
+      (p) => p.specialDates.firstOrNull,
+    );
+    final featuredInterest = context.select<AppStateProvider, SharedInterestModel?>(
+      (p) => p.sharedInterests.firstOrNull,
+    );
 
     return Scaffold(
       appBar: const RomanticAppBar(),
@@ -122,7 +138,7 @@ class HomeDashboardScreen extends StatelessWidget {
               const SizedBox(height: 18),
 
               // Soul Connection Invite Card (Displayed when Partner is not linked yet)
-              if (!provider.isPartnerLinked) ...[
+              if (!isPartnerLinked) ...[
                 GlassCard(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   gradient: isDark
@@ -237,7 +253,7 @@ class HomeDashboardScreen extends StatelessWidget {
                             tooltip:
                                 isTr ? 'Başka Soru Çek' : 'Draw Another Question',
                             onPressed: () {
-                              provider.drawRandomQuestion();
+                              context.read<AppStateProvider>().drawRandomQuestion();
                             },
                           ),
                         ],
@@ -261,7 +277,7 @@ class HomeDashboardScreen extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: _buildMiniAvatarStatus(
+                            child: MiniPartnerAvatarStatus(
                               avatar: activePartner.avatar,
                               name: activePartner.name,
                               hasAnswered: activeAnswer != null,
@@ -271,7 +287,7 @@ class HomeDashboardScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: _buildMiniAvatarStatus(
+                            child: MiniPartnerAvatarStatus(
                               avatar: otherPartner.avatar,
                               name: otherPartner.name,
                               hasAnswered: otherAnswer != null,
@@ -564,13 +580,37 @@ class HomeDashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMiniAvatarStatus({
-    required String avatar,
-    required String name,
-    required bool hasAnswered,
-    required bool isDark,
-    required bool isTr,
-  }) {
+  String _getGreeting(bool isTr) {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return isTr ? 'Günaydın sevgililer ✨' : 'Good morning, lovely souls ✨';
+    } else if (hour < 18) {
+      return isTr ? 'Tünaydın güzel kalpler ☀️' : 'Good afternoon, sweethearts ☀️';
+    } else {
+      return isTr ? 'İyi akşamlar sevgililer 🌙' : 'Good evening, beloved souls 🌙';
+    }
+  }
+}
+
+/// Dedicated widget for displaying a partner's mini avatar status.
+class MiniPartnerAvatarStatus extends StatelessWidget {
+  final String avatar;
+  final String name;
+  final bool hasAnswered;
+  final bool isDark;
+  final bool isTr;
+
+  const MiniPartnerAvatarStatus({
+    super.key,
+    required this.avatar,
+    required this.name,
+    required this.hasAnswered,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Stack(
@@ -639,16 +679,5 @@ class HomeDashboardScreen extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _getGreeting(bool isTr) {
-    final hour = DateTime.now().hour;
-    if (hour < 12) {
-      return isTr ? 'Günaydın sevgililer ✨' : 'Good morning, lovely souls ✨';
-    } else if (hour < 18) {
-      return isTr ? 'Tünaydın güzel kalpler ☀️' : 'Good afternoon, sweethearts ☀️';
-    } else {
-      return isTr ? 'İyi akşamlar sevgililer 🌙' : 'Good evening, beloved souls 🌙';
-    }
   }
 }

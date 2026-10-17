@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../models/question_model.dart';
+import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/confetti_overlay.dart';
 import '../../widgets/glass_card.dart';
@@ -46,13 +47,18 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
 
-    final answers = provider.getAnswersForQuestion(widget.question.id);
-    final partner1 = provider.couple?.partner1 ?? provider.activePartner;
-    final partner2 = provider.couple?.partner2 ?? provider.otherPartner;
+    final answers = context.select<AppStateProvider, List<AnswerModel>>(
+      (p) => p.getAnswersForQuestion(widget.question.id),
+    );
+    final partner1 = context.select<AppStateProvider, UserModel>(
+      (p) => p.couple?.partner1 ?? p.activePartner,
+    );
+    final partner2 = context.select<AppStateProvider, UserModel>(
+      (p) => p.couple?.partner2 ?? p.otherPartner,
+    );
 
     final ans1 = answers.where((a) => a.authorId == partner1.id).firstOrNull;
     final ans2 = answers.where((a) => a.authorId == partner2.id).firstOrNull;
@@ -197,26 +203,24 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
 
               // Partner 1 Answer Card
               if (ans1 != null)
-                _buildAnswerCard(
-                  context: context,
+                RevealedAnswerCard(
                   partner: partner1,
                   answer: ans1,
+                  questionId: widget.question.id,
                   isDark: isDark,
                   isTr: isTr,
-                  provider: provider,
                 ),
 
               const SizedBox(height: 16),
 
               // Partner 2 Answer Card
               if (ans2 != null)
-                _buildAnswerCard(
-                  context: context,
+                RevealedAnswerCard(
                   partner: partner2,
                   answer: ans2,
+                  questionId: widget.question.id,
                   isDark: isDark,
                   isTr: isTr,
-                  provider: provider,
                 ),
 
               const SizedBox(height: 32),
@@ -228,7 +232,7 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                     : 'Save this Memory to Journal 📖',
                 onPressed: () {
                   final snippet = widget.question.text(isTr);
-                  provider.addJournalEntry(
+                  context.read<AppStateProvider>().addJournalEntry(
                     title: isTr
                         ? '${widget.question.categoryName(isTr)} Sohbetimiz'
                         : 'Our Conversation: ${widget.question.categoryName(isTr)}',
@@ -278,14 +282,27 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
     );
   }
 
-  Widget _buildAnswerCard({
-    required BuildContext context,
-    required dynamic partner,
-    required AnswerModel answer,
-    required bool isDark,
-    required bool isTr,
-    required AppStateProvider provider,
-  }) {
+}
+
+/// Dedicated widget for displaying a partner's revealed answer.
+class RevealedAnswerCard extends StatelessWidget {
+  final UserModel partner;
+  final AnswerModel answer;
+  final String questionId;
+  final bool isDark;
+  final bool isTr;
+
+  const RevealedAnswerCard({
+    super.key,
+    required this.partner,
+    required this.answer,
+    required this.questionId,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GlassCard(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -399,11 +416,11 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
               for (final emoji in ['💖', '🥰', '✨', '🥺', '🌹'])
                 GestureDetector(
                   onTap: () {
-                    provider.addReactionEmoji(
-                      widget.question.id,
-                      answer.id,
-                      emoji,
-                    );
+                    context.read<AppStateProvider>().addReactionEmoji(
+                          questionId,
+                          answer.id,
+                          emoji,
+                        );
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),

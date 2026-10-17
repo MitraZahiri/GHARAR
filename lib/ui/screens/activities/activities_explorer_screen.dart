@@ -25,11 +25,11 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final activities = context.select<AppStateProvider, List<ActivityModel>>((p) => p.activities);
 
-    var filtered = provider.activities;
+    var filtered = activities;
     if (_budgetFilter != null) {
       filtered = filtered.where((a) => a.budget == _budgetFilter).toList();
     }
@@ -226,8 +226,11 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {
                       final act = filtered[index];
-                      return _buildActivityCard(
-                          act, provider, isDark, isTr, context);
+                      return ActivityCardItem(
+                        act: act,
+                        isDark: isDark,
+                        isTr: isTr,
+                      );
                     },
                   ),
           ),
@@ -251,14 +254,23 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
       },
     );
   }
+}
 
-  Widget _buildActivityCard(
-    ActivityModel act,
-    AppStateProvider provider,
-    bool isDark,
-    bool isTr,
-    BuildContext context,
-  ) {
+/// Dedicated widget for displaying an activity card with independent rebuilds.
+class ActivityCardItem extends StatelessWidget {
+  final ActivityModel act;
+  final bool isDark;
+  final bool isTr;
+
+  const ActivityCardItem({
+    super.key,
+    required this.act,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GlassCard(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(18),
@@ -320,7 +332,7 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                             size: 22,
                           ),
                           onPressed: () {
-                            provider.toggleSaveActivity(act.id);
+                            context.read<AppStateProvider>().toggleSaveActivity(act.id);
                           },
                         ),
                       ],
@@ -353,10 +365,10 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
             spacing: 6,
             runSpacing: 6,
             children: [
-              _buildTag(act.settingDisplay(isTr), isDark),
-              _buildTag(act.vibeDisplay(isTr), isDark),
-              _buildTag(act.budgetDisplay, isDark),
-              _buildTag('⏱️ ${act.duration}', isDark),
+              ActivityTagPill(text: act.settingDisplay(isTr), isDark: isDark),
+              ActivityTagPill(text: act.vibeDisplay(isTr), isDark: isDark),
+              ActivityTagPill(text: act.budgetDisplay, isDark: isDark),
+              ActivityTagPill(text: '⏱️ ${act.duration}', isDark: isDark),
             ],
           ),
 
@@ -426,7 +438,7 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                   ),
                 ),
                 onPressed: () {
-                  provider.toggleCompleteActivity(act.id);
+                  context.read<AppStateProvider>().toggleCompleteActivity(act.id);
                 },
               ),
             ),
@@ -435,8 +447,21 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
       ),
     );
   }
+}
 
-  Widget _buildTag(String text, bool isDark) {
+/// Dedicated widget for attribute tags.
+class ActivityTagPill extends StatelessWidget {
+  final String text;
+  final bool isDark;
+
+  const ActivityTagPill({
+    super.key,
+    required this.text,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(

@@ -34,13 +34,13 @@ class _AuthScreenState extends State<AuthScreen> {
     super.dispose();
   }
 
-  void _submitEmailAuth(AppStateProvider provider, BuildContext context) async {
+  void _submitEmailAuth(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      await provider.authenticateWithEmail(
+      await context.read<AppStateProvider>().authenticateWithEmail(
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
@@ -51,10 +51,10 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  void _submitAppleAuth(AppStateProvider provider) async {
+  void _submitAppleAuth(BuildContext context) async {
     setState(() => _isLoading = true);
     try {
-      await provider.signInWithApple();
+      await context.read<AppStateProvider>().signInWithApple();
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -62,9 +62,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final currentLanguage = context.select<AppStateProvider, AppLanguage>((p) => p.currentLanguage);
     final loc = AppLocalizations.of(context);
-    final isDark = provider.isDarkMode;
 
     return Scaffold(
       body: SafeArea(
@@ -93,7 +93,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ),
                         Text(
-                          provider.currentLanguage.tagline,
+                          currentLanguage.tagline,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
@@ -111,7 +111,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   // Multilingual Language Switcher Chip (8 Languages & RTL)
                   InkWell(
                     borderRadius: BorderRadius.circular(20),
-                    onTap: () => _showLanguagePickerSheet(context, provider),
+                    onTap: () => _showLanguagePickerSheet(context, isDark, currentLanguage),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
@@ -128,11 +128,11 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(provider.currentLanguage.flag,
+                          Text(currentLanguage.flag,
                               style: const TextStyle(fontSize: 15)),
                           const SizedBox(width: 5),
                           Text(
-                            provider.currentLanguage.nativeName,
+                            currentLanguage.nativeName,
                             style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                               fontWeight: FontWeight.w700,
                               fontSize: 12,
@@ -192,7 +192,12 @@ class _AuthScreenState extends State<AuthScreen> {
               const SizedBox(height: 24),
 
               // Sign in with Apple ID Button (Apple HIG Compliance)
-              _buildAppleSignInButton(context, provider, loc, isDark),
+              AppleSignInButton(
+                isDark: isDark,
+                isLoading: _isLoading,
+                label: loc?.translate('signInWithApple') ?? 'Sign in with Apple',
+                onPressed: _isLoading ? null : () => _submitAppleAuth(context),
+              ),
 
               const SizedBox(height: 18),
 
@@ -422,7 +427,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         text: _isLoading
                             ? '...'
                             : (loc?.translate('authContinue') ?? 'Enter Sanctuary ➔'),
-                        onPressed: _isLoading ? null : () => _submitEmailAuth(provider, context),
+                        onPressed: _isLoading ? null : () => _submitEmailAuth(context),
                       ),
                     ],
                   ),
@@ -462,67 +467,9 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildAppleSignInButton(
-    BuildContext context,
-    AppStateProvider provider,
-    AppLocalizations? loc,
-    bool isDark,
-  ) {
-    // Official Apple Sign In Button styling per Apple HIG:
-    // Light mode: Solid Black background, White text & logo.
-    // Dark mode: Solid White background, Black text & logo.
-    final bgColor = isDark ? Colors.white : Colors.black;
-    final fgColor = isDark ? Colors.black : Colors.white;
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(16),
-      onTap: _isLoading ? null : () => _submitAppleAuth(provider),
-      child: Container(
-        height: 52,
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.apple, color: fgColor, size: 24),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  loc?.translate('signInWithApple') ?? 'Sign in with Apple',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: fgColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   void _showLanguagePickerSheet(
-      BuildContext context, AppStateProvider provider) {
-    final isDark = provider.isDarkMode;
-    final currentLang = provider.currentLanguage;
-    final isTr = provider.isTurkish;
+      BuildContext context, bool isDark, AppLanguage currentLang) {
+    final isTr = currentLang.code == 'tr';
 
     showModalBottomSheet(
       context: context,
@@ -605,7 +552,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     return InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        provider.setLanguageCode(lang.code);
+                        context.read<AppStateProvider>().setLanguageCode(lang.code);
                         Navigator.of(ctx).pop();
                       },
                       child: Container(
@@ -724,6 +671,73 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class AppleSignInButton extends StatelessWidget {
+  final bool isDark;
+  final bool isLoading;
+  final String label;
+  final VoidCallback? onPressed;
+
+  const AppleSignInButton({
+    super.key,
+    required this.isDark,
+    required this.isLoading,
+    required this.label,
+    this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Official Apple Sign In Button styling per Apple HIG:
+    // Light mode: Solid Black background, White text & logo.
+    // Dark mode: Solid White background, Black text & logo.
+    final bgColor = isDark ? Colors.white : Colors.black;
+    final fgColor = isDark ? Colors.black : Colors.white;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onPressed,
+      child: Container(
+        height: 52,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.apple, color: fgColor, size: 24),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: fgColor,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

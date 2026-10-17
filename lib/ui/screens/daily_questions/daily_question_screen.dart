@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../models/question_model.dart';
+import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/gradient_button.dart';
@@ -54,11 +55,11 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
 
-    final question = widget.initialQuestion ?? provider.currentQuestion;
+    final currentQ = context.select<AppStateProvider, QuestionModel?>((p) => p.currentQuestion);
+    final question = widget.initialQuestion ?? currentQ;
 
     if (question == null) {
       return Scaffold(
@@ -69,11 +70,21 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
       );
     }
 
-    final activeAnswer = provider.getAnswerForActivePartner(question.id);
-    final otherAnswer = provider.getAnswerForOtherPartner(question.id);
-    final isBothDone = provider.isBothAnswered(question.id);
-    final activePartner = provider.activePartner;
-    final otherPartner = provider.otherPartner;
+    final activeAnswer = context.select<AppStateProvider, AnswerModel?>(
+      (p) => p.getAnswerForActivePartner(question.id),
+    );
+    final otherAnswer = context.select<AppStateProvider, AnswerModel?>(
+      (p) => p.getAnswerForOtherPartner(question.id),
+    );
+    final isBothDone = context.select<AppStateProvider, bool>(
+      (p) => p.isBothAnswered(question.id),
+    );
+    final activePartner = context.select<AppStateProvider, UserModel>(
+      (p) => p.activePartner,
+    );
+    final otherPartner = context.select<AppStateProvider, UserModel>(
+      (p) => p.otherPartner,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -154,7 +165,10 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                       ),
                       const SizedBox(width: 8),
                       // Intensity Badge
-                      _buildIntensityBadge(question.intensity, isDark, isTr),
+                      QuestionIntensityBadge(
+                        intensity: question.intensity,
+                        isTr: isTr,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -229,10 +243,9 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
             const SizedBox(height: 16),
 
             // Partner Status Notice
-            _buildPartnerStatusBox(
+            PartnerStatusNoticeBox(
               otherPartner: otherPartner,
               hasOtherAnswered: otherAnswer != null,
-              hasActiveAnswered: activeAnswer != null,
               isDark: isDark,
               isTr: isTr,
             ),
@@ -395,13 +408,13 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                   return;
                 }
 
-                provider.submitAnswer(
+                context.read<AppStateProvider>().submitAnswer(
                   questionId: question.id,
                   answerText: _answerController.text.trim(),
                   selectedOptionIndex: _selectedOptionIndex,
                 );
 
-                if (provider.isBothAnswered(question.id)) {
+                if (context.read<AppStateProvider>().isBothAnswered(question.id)) {
                   // Direct to reveal!
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
@@ -443,7 +456,7 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                   minimumSize: const Size.fromHeight(48),
                 ),
                 onPressed: () {
-                  provider.simulatePartnerAnswer(question.id);
+                  context.read<AppStateProvider>().simulatePartnerAnswer(question.id);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       backgroundColor: AppColors.successGreen,
@@ -477,7 +490,7 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   onPressed: () {
-                    provider.drawRandomQuestion();
+                    context.read<AppStateProvider>().drawRandomQuestion();
                     _answerController.clear();
                     _selectedOptionIndex = null;
                     _loadExistingAnswer();
@@ -491,7 +504,7 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   onPressed: () {
-                    provider.nextQuestion();
+                    context.read<AppStateProvider>().nextQuestion();
                     _answerController.clear();
                     _selectedOptionIndex = null;
                     _loadExistingAnswer();
@@ -506,9 +519,21 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
       ),
     );
   }
+}
 
-  Widget _buildIntensityBadge(
-      QuestionIntensity intensity, bool isDark, bool isTr) {
+/// Dedicated widget for displaying question intensity badge.
+class QuestionIntensityBadge extends StatelessWidget {
+  final QuestionIntensity intensity;
+  final bool isTr;
+
+  const QuestionIntensityBadge({
+    super.key,
+    required this.intensity,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     String label;
     Color color;
 
@@ -544,14 +569,25 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
       ),
     );
   }
+}
 
-  Widget _buildPartnerStatusBox({
-    required dynamic otherPartner,
-    required bool hasOtherAnswered,
-    required bool hasActiveAnswered,
-    required bool isDark,
-    required bool isTr,
-  }) {
+/// Dedicated widget for partner answering status notice.
+class PartnerStatusNoticeBox extends StatelessWidget {
+  final UserModel otherPartner;
+  final bool hasOtherAnswered;
+  final bool isDark;
+  final bool isTr;
+
+  const PartnerStatusNoticeBox({
+    super.key,
+    required this.otherPartner,
+    required this.hasOtherAnswered,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final statusColor = hasOtherAnswered
         ? AppColors.successGreen
         : AppColors.champagneGold;
