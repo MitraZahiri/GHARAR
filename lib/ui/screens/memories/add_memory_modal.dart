@@ -27,9 +27,8 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
 
     return Container(
       padding: EdgeInsets.only(
@@ -76,28 +75,11 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
               child: Row(
                 children: [
                   for (final m in _moods)
-                    GestureDetector(
+                    MoodPickerItem(
+                      emoji: m,
+                      isSelected: _selectedMood == m,
+                      isDark: isDark,
                       onTap: () => setState(() => _selectedMood = m),
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: _selectedMood == m
-                              ? (isDark
-                                  ? AppColors.blushPinkDeep.withValues(alpha: 0.25)
-                                  : AppColors.blushPinkLight)
-                              : Colors.transparent,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: _selectedMood == m
-                                ? (isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy)
-                                : Colors.transparent,
-                          ),
-                        ),
-                        child: Text(m, style: const TextStyle(fontSize: 22)),
-                      ),
                     ),
                 ],
               ),
@@ -146,7 +128,7 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
                   return;
                 }
 
-                provider.addJournalEntry(
+                context.read<AppStateProvider>().addJournalEntry(
                   title: _titleController.text.trim(),
                   notes: _notesController.text.trim(),
                   moodEmoji: _selectedMood,
@@ -171,6 +153,48 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MoodPickerItem extends StatelessWidget {
+  final String emoji;
+  final bool isSelected;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const MoodPickerItem({
+    super.key,
+    required this.emoji,
+    required this.isSelected,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(right: 10),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark
+                  ? AppColors.blushPinkDeep.withValues(alpha: 0.25)
+                  : AppColors.blushPinkLight)
+              : Colors.transparent,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isSelected
+                ? (isDark
+                    ? AppColors.blushPinkDeep
+                    : AppColors.deepBurgundy)
+                : Colors.transparent,
+          ),
+        ),
+        child: Text(emoji, style: const TextStyle(fontSize: 22)),
       ),
     );
   }

@@ -51,11 +51,13 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final messages =
+        context.select<AppStateProvider, List<AIMessageModel>>((p) => p.aiMessages);
+    final isGeneratingAI =
+        context.select<AppStateProvider, bool>((p) => p.isGeneratingAI);
 
-    final messages = provider.aiMessages;
     final quickPrompts = isTr ? _quickPromptsTr : _quickPromptsEn;
 
     return Scaffold(
@@ -115,100 +117,16 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final msg = messages[index];
-                final isUser = msg.sender == MessageSender.user;
-
-                return Align(
-                  alignment:
-                      isUser ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.sizeOf(context).width * 0.84,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: isUser
-                          ? (isDark
-                              ? AppColors.blushPinkDeep
-                              : AppColors.deepBurgundy)
-                          : (isDark
-                              ? AppColors.darkCard
-                              : Colors.white),
-                      gradient: !isUser && !isDark
-                          ? AppColors.intimateCardGradient
-                          : null,
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(20),
-                        topRight: const Radius.circular(20),
-                        bottomLeft: isUser
-                            ? const Radius.circular(20)
-                            : const Radius.circular(4),
-                        bottomRight: isUser
-                            ? const Radius.circular(4)
-                            : const Radius.circular(20),
-                      ),
-                      border: !isUser
-                          ? Border.all(
-                              color: isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder,
-                            )
-                          : null,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (!isUser) ...[
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('✨', style: TextStyle(fontSize: 14)),
-                              const SizedBox(width: 4),
-                              Text(
-                                'Noor',
-                                style: AppTextStyles.bodySmall(isDark: isDark)
-                                    .copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: isDark
-                                      ? AppColors.blushPinkDeep
-                                      : AppColors.deepBurgundy,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                        ],
-                        Text(
-                          msg.content(isTr),
-                          style:
-                              AppTextStyles.bodyMedium(isDark: isDark).copyWith(
-                            color: isUser
-                                ? (isDark
-                                    ? AppColors.burgundyWine
-                                    : Colors.white)
-                                : (isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightTextPrimary),
-                            height: 1.45,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                return AIMessageBubble(
+                  message: msg,
+                  isDark: isDark,
+                  isTr: isTr,
                 );
               },
             ),
           ),
 
-          if (provider.isGeneratingAI) ...[
+          if (isGeneratingAI) ...[
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(
@@ -236,24 +154,11 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
             child: Row(
               children: [
                 for (final prompt in quickPrompts) ...[
-                  ActionChip(
-                    backgroundColor: isDark
-                        ? AppColors.darkCardElevated
-                        : AppColors.blushPinkLight,
-                    side: BorderSide(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.blushPink,
-                    ),
-                    label: Text(
-                      prompt,
-                      style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                  QuickPromptChip(
+                    prompt: prompt,
+                    isDark: isDark,
                     onPressed: () {
-                      provider.sendAIMessage(prompt);
+                      context.read<AppStateProvider>().sendAIMessage(prompt);
                       _scrollToBottom();
                     },
                   ),
@@ -289,7 +194,7 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
                       ),
                       onSubmitted: (val) {
                         if (val.trim().isNotEmpty) {
-                          provider.sendAIMessage(val);
+                          context.read<AppStateProvider>().sendAIMessage(val);
                           _textController.clear();
                           _scrollToBottom();
                         }
@@ -308,8 +213,9 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
                           color: Colors.white, size: 20),
                     ),
                     onPressed: () {
-                      if (_textController.text.trim().isNotEmpty) {
-                        provider.sendAIMessage(_textController.text);
+                      final text = _textController.text.trim();
+                      if (text.isNotEmpty) {
+                        context.read<AppStateProvider>().sendAIMessage(text);
                         _textController.clear();
                         _scrollToBottom();
                       }
@@ -321,6 +227,126 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class AIMessageBubble extends StatelessWidget {
+  final AIMessageModel message;
+  final bool isDark;
+  final bool isTr;
+
+  const AIMessageBubble({
+    super.key,
+    required this.message,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isUser = message.sender == MessageSender.user;
+
+    return Align(
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.sizeOf(context).width * 0.84,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: isUser
+              ? (isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy)
+              : (isDark ? AppColors.darkCard : Colors.white),
+          gradient: !isUser && !isDark ? AppColors.intimateCardGradient : null,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(20),
+            topRight: const Radius.circular(20),
+            bottomLeft: isUser ? const Radius.circular(20) : const Radius.circular(4),
+            bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(20),
+          ),
+          border: !isUser
+              ? Border.all(
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                )
+              : null,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!isUser) ...[
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('✨', style: TextStyle(fontSize: 14)),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Noor',
+                    style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: isDark
+                          ? AppColors.blushPinkDeep
+                          : AppColors.deepBurgundy,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+            ],
+            Text(
+              message.content(isTr),
+              style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
+                color: isUser
+                    ? (isDark ? AppColors.burgundyWine : Colors.white)
+                    : (isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary),
+                height: 1.45,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class QuickPromptChip extends StatelessWidget {
+  final String prompt;
+  final bool isDark;
+  final VoidCallback onPressed;
+
+  const QuickPromptChip({
+    super.key,
+    required this.prompt,
+    required this.isDark,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionChip(
+      backgroundColor:
+          isDark ? AppColors.darkCardElevated : AppColors.blushPinkLight,
+      side: BorderSide(
+        color: isDark ? AppColors.darkBorder : AppColors.blushPink,
+      ),
+      label: Text(
+        prompt,
+        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      onPressed: onPressed,
     );
   }
 }

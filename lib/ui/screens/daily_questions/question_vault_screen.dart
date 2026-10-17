@@ -20,11 +20,12 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final allQuestions =
+        context.select<AppStateProvider, List<QuestionModel>>((p) => p.questions);
 
-    var filtered = provider.questions;
+    var filtered = allQuestions;
     if (_selectedCategory != null) {
       filtered =
           filtered.where((q) => q.category == _selectedCategory).toList();
@@ -92,13 +93,40 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
                       .copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(width: 10),
-                _intensityChip('All', null, isDark),
+                IntensityChoiceChip(
+                  label: 'All',
+                  isSelected: _selectedIntensity == null,
+                  onSelected: (selected) {
+                    setState(() => _selectedIntensity = null);
+                  },
+                ),
                 const SizedBox(width: 6),
-                _intensityChip('🌱', QuestionIntensity.icebreaker, isDark),
+                IntensityChoiceChip(
+                  label: '🌱',
+                  isSelected: _selectedIntensity == QuestionIntensity.icebreaker,
+                  onSelected: (selected) {
+                    setState(() => _selectedIntensity =
+                        selected ? QuestionIntensity.icebreaker : null);
+                  },
+                ),
                 const SizedBox(width: 6),
-                _intensityChip('🌿', QuestionIntensity.meaningful, isDark),
+                IntensityChoiceChip(
+                  label: '🌿',
+                  isSelected: _selectedIntensity == QuestionIntensity.meaningful,
+                  onSelected: (selected) {
+                    setState(() => _selectedIntensity =
+                        selected ? QuestionIntensity.meaningful : null);
+                  },
+                ),
                 const SizedBox(width: 6),
-                _intensityChip('🌺', QuestionIntensity.deepSoul, isDark),
+                IntensityChoiceChip(
+                  label: '🌺',
+                  isSelected: _selectedIntensity == QuestionIntensity.deepSoul,
+                  onSelected: (selected) {
+                    setState(() => _selectedIntensity =
+                        selected ? QuestionIntensity.deepSoul : null);
+                  },
+                ),
               ],
             ),
           ),
@@ -121,15 +149,21 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {
                       final q = filtered[index];
-                      final isAnswered =
-                          provider.getAnswersForQuestion(q.id).isNotEmpty;
-                      final isBoth = provider.isBothAnswered(q.id);
+                      final isAnswered = context.select<AppStateProvider, bool>(
+                        (p) => p.getAnswersForQuestion(q.id).isNotEmpty,
+                      );
+                      final isBoth = context.select<AppStateProvider, bool>(
+                        (p) => p.isBothAnswered(q.id),
+                      );
 
-                      return GlassCard(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(16),
+                      return QuestionVaultItemCard(
+                        question: q,
+                        isAnswered: isAnswered,
+                        isBoth: isBoth,
+                        isDark: isDark,
+                        isTr: isTr,
                         onTap: () {
-                          // Select and navigate to question
+                          final provider = context.read<AppStateProvider>();
                           final realIdx = provider.questions.indexOf(q);
                           if (realIdx != -1) {
                             provider.setQuestionIndex(realIdx);
@@ -141,112 +175,12 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
                             ),
                           );
                         },
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(q.categoryIcon,
-                                style: const TextStyle(fontSize: 24)),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        q.categoryName(isTr).toUpperCase(),
-                                        style: AppTextStyles.bodySmall(
-                                                isDark: isDark)
-                                            .copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 10,
-                                          letterSpacing: 1,
-                                          color: isDark
-                                              ? AppColors.blushPinkDeep
-                                              : AppColors.burgundyRose,
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      if (isBoth)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.successGreen
-                                                .withValues(alpha: 0.15),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          child: Text(
-                                            isTr
-                                                ? 'Tamamlandı ✨'
-                                                : 'Revealed ✨',
-                                            style: const TextStyle(
-                                              color: AppColors.successGreen,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        )
-                                      else if (isAnswered)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.champagneGold
-                                                .withValues(alpha: 0.15),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          child: Text(
-                                            isTr ? 'Bekliyor' : 'Pending',
-                                            style: const TextStyle(
-                                              color: AppColors.champagneGold,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    q.text(isTr),
-                                    style: AppTextStyles.titleMedium(
-                                            isDark: isDark)
-                                        .copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.arrow_forward_ios_rounded,
-                                size: 14, color: AppColors.lightTextMuted),
-                          ],
-                        ),
                       );
                     },
                   ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _intensityChip(
-      String label, QuestionIntensity? intensity, bool isDark) {
-    final isSelected = _selectedIntensity == intensity;
-    return ChoiceChip(
-      label: Text(label, style: const TextStyle(fontSize: 12)),
-      selected: isSelected,
-      onSelected: (selected) {
-        setState(() {
-          _selectedIntensity = selected ? intensity : null;
-        });
-      },
     );
   }
 
@@ -334,5 +268,130 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
       case QuestionCategory.deepConversations:
         return 'Deep Dive';
     }
+  }
+}
+
+class QuestionVaultItemCard extends StatelessWidget {
+  final QuestionModel question;
+  final bool isAnswered;
+  final bool isBoth;
+  final bool isDark;
+  final bool isTr;
+  final VoidCallback onTap;
+
+  const QuestionVaultItemCard({
+    super.key,
+    required this.question,
+    required this.isAnswered,
+    required this.isBoth,
+    required this.isDark,
+    required this.isTr,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      onTap: onTap,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(question.categoryIcon, style: const TextStyle(fontSize: 24)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      question.categoryName(isTr).toUpperCase(),
+                      style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 10,
+                        letterSpacing: 1,
+                        color: isDark
+                            ? AppColors.blushPinkDeep
+                            : AppColors.burgundyRose,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (isBoth)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.successGreen.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          isTr ? 'Tamamlandı ✨' : 'Revealed ✨',
+                          style: const TextStyle(
+                            color: AppColors.successGreen,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      )
+                    else if (isAnswered)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.champagneGold.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          isTr ? 'Bekliyor' : 'Pending',
+                          style: const TextStyle(
+                            color: AppColors.champagneGold,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  question.text(isTr),
+                  style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Icon(Icons.arrow_forward_ios_rounded,
+              size: 14, color: AppColors.lightTextMuted),
+        ],
+      ),
+    );
+  }
+}
+
+class IntensityChoiceChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final ValueChanged<bool> onSelected;
+
+  const IntensityChoiceChip({
+    super.key,
+    required this.label,
+    required this.isSelected,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ChoiceChip(
+      label: Text(label, style: const TextStyle(fontSize: 12)),
+      selected: isSelected,
+      onSelected: onSelected,
+    );
   }
 }

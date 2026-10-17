@@ -159,13 +159,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   OnboardingWelcomeSlide(isDark: isDark, isTr: isTr),
 
                   // 2. Profile Setup (Name & Avatar)
-                  _buildProfileSlide(isDark, isTr),
+                  OnboardingProfileSlide(
+                    nameController: _nameController,
+                    avatars: _avatars,
+                    selectedAvatar: _selectedAvatar,
+                    isDark: isDark,
+                    isTr: isTr,
+                    onAvatarSelected: (av) =>
+                        setState(() => _selectedAvatar = av),
+                  ),
 
                   // 3. Relationship Stage
-                  _buildRelationshipStageSlide(isDark, isTr),
+                  OnboardingStageSlide(
+                    selectedStage: _selectedStage,
+                    isDark: isDark,
+                    isTr: isTr,
+                    onStageSelected: (stage) =>
+                        setState(() => _selectedStage = stage),
+                  ),
 
                   // 4. Goals & Intentions
-                  _buildGoalsSlide(isDark, isTr),
+                  OnboardingGoalsSlide(
+                    selectedGoals: _selectedGoals,
+                    isDark: isDark,
+                    isTr: isTr,
+                    onToggleGoal: (key) {
+                      setState(() {
+                        if (_selectedGoals.contains(key)) {
+                          _selectedGoals.remove(key);
+                        } else {
+                          _selectedGoals.add(key);
+                        }
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
@@ -208,172 +235,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildProfileSlide(bool isDark, bool isTr) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isTr ? 'Kendinizi Tanıtın' : 'Create Your Profile',
-            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            isTr
-                ? 'Partnerinizin ekranda göreceği adınızı ve sevimli avatarınızı seçin.'
-                : 'Choose your name and avatar as it will appear in your shared space.',
-            style: AppTextStyles.bodyMedium(isDark: isDark),
-          ),
-          const SizedBox(height: 24),
-
-          // Name Input
-          Text(isTr ? 'Adınız:' : 'What should your partner call you?',
-              style: AppTextStyles.labelLarge(isDark: isDark)),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _nameController,
-            decoration: InputDecoration(
-              hintText: isTr ? 'Adınızı girin' : 'Enter your name',
-              prefixIcon: const Icon(Icons.person_rounded),
-            ),
-          ),
-
-          const SizedBox(height: 24),
-
-          // Avatar Picker
-          Text(isTr ? 'Avatarınızı Seçin:' : 'Pick Your Romantic Avatar:',
-              style: AppTextStyles.labelLarge(isDark: isDark)),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              for (final av in _avatars)
-                AvatarOptionBubble(
-                  avatar: av,
-                  isSelected: _selectedAvatar == av,
-                  isDark: isDark,
-                  onTap: () => setState(() => _selectedAvatar = av),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRelationshipStageSlide(bool isDark, bool isTr) {
-    final stages = [
-      {'key': 'stageDating', 'labelEn': 'Dating & Exploring', 'labelTr': 'Flört & Tanıma', 'icon': '🌱'},
-      {'key': 'stageEngaged', 'labelEn': 'Engaged & Planning', 'labelTr': 'Nişanlı & Evlilik Hazırlığı', 'icon': '💍'},
-      {'key': 'stageNewlywed', 'labelEn': 'Newlyweds (1st Years)', 'labelTr': 'Yeni Evli (İlk Yıllar)', 'icon': '🥂'},
-      {'key': 'stageLongTerm', 'labelEn': 'Long-term Companions', 'labelTr': 'Uzun Süreli Birliktelik', 'icon': '🌿'},
-      {'key': 'stageMarriedWithKids', 'labelEn': 'Married with Children', 'labelTr': 'Çocuklu Evli Çift', 'icon': '🏡'},
-      {'key': 'stageLongDistance', 'labelEn': 'Long Distance Love', 'labelTr': 'Uzak Mesafe Aşkı', 'icon': '✈️'},
-    ];
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isTr ? 'İlişkiniz Hangi Evrede?' : 'Where Are You in Love?',
-            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            isTr
-                ? 'Soruları ve randevu önerilerini sizin döneminize göre kişiselleştirelim.'
-                : 'This helps GHARAR tailor questions and activities specifically to your journey.',
-            style: AppTextStyles.bodyMedium(isDark: isDark),
-          ),
-          const SizedBox(height: 20),
-
-          for (final s in stages) ...[
-            RelationshipStageCard(
-              icon: s['icon']!,
-              label: isTr ? s['labelTr']! : s['labelEn']!,
-              isSelected: _selectedStage == s['key'],
-              isDark: isDark,
-              onTap: () => setState(() => _selectedStage = s['key']!),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGoalsSlide(bool isDark, bool isTr) {
-    final goals = [
-      {'key': 'goalDeeperConversations', 'labelEn': 'Deeper Conversations', 'labelTr': 'Daha Derin Sohbetler', 'icon': '💬'},
-      {'key': 'goalSpontaneousRomance', 'labelEn': 'Spontaneous Romance', 'labelTr': 'Spontane Romantizm', 'icon': '🌹'},
-      {'key': 'goalUnderstandingNeeds', 'labelEn': 'Understanding Emotional Needs', 'labelTr': 'Duygusal İhtiyaçları Anlamak', 'icon': '🕊️'},
-      {'key': 'goalFuturePlanning', 'labelEn': 'Aligning on Future Dreams', 'labelTr': 'Gelecek Hayallerinde Uyum', 'icon': '✨'},
-      {'key': 'goalFunAdventures', 'labelEn': 'Playful Fun & Date Adventures', 'labelTr': 'Eğlenceli Randevular & Macera', 'icon': '🎉'},
-      {'key': 'goalConflictResolution', 'labelEn': 'Gentle Conflict Resolution', 'labelTr': 'Şefkatli İletişim & Çözüm', 'icon': '🕯️'},
-    ];
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isTr ? 'Birlikte Neyi Büyütmek İstersiniz?' : 'What Would You Like to Nurture?',
-            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            isTr
-                ? 'En çok önemsediğiniz hedefleri seçin (birden fazla seçebilirsiniz).'
-                : 'Select all intentions that resonate with your love story right now.',
-            style: AppTextStyles.bodyMedium(isDark: isDark),
-          ),
-          const SizedBox(height: 20),
-
-          for (final g in goals)
-            Builder(
-              builder: (context) {
-                final isSelected = _selectedGoals.contains(g['key']);
-                return GoalSelectionCard(
-                  icon: g['icon']!,
-                  label: isTr ? g['labelTr']! : g['labelEn']!,
-                  isSelected: isSelected,
-                  isDark: isDark,
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        _selectedGoals.remove(g['key']);
-                      } else {
-                        _selectedGoals.add(g['key']!);
-                      }
-                    });
-                  },
-                  onChanged: (val) {
-                    setState(() {
-                      if (val == true) {
-                        _selectedGoals.add(g['key']!);
-                      } else {
-                        _selectedGoals.remove(g['key']);
-                      }
-                    });
-                  },
-                );
-              },
-            ),
-        ],
       ),
     );
   }
@@ -822,6 +683,203 @@ class GoalSelectionCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class OnboardingProfileSlide extends StatelessWidget {
+  final TextEditingController nameController;
+  final List<String> avatars;
+  final String selectedAvatar;
+  final bool isDark;
+  final bool isTr;
+  final ValueChanged<String> onAvatarSelected;
+
+  const OnboardingProfileSlide({
+    super.key,
+    required this.nameController,
+    required this.avatars,
+    required this.selectedAvatar,
+    required this.isDark,
+    required this.isTr,
+    required this.onAvatarSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isTr ? 'Kendinizi Tanıtın' : 'Create Your Profile',
+            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            isTr
+                ? 'Partnerinizin ekranda göreceği adınızı ve sevimli avatarınızı seçin.'
+                : 'Choose your name and avatar as it will appear in your shared space.',
+            style: AppTextStyles.bodyMedium(isDark: isDark),
+          ),
+          const SizedBox(height: 24),
+
+          // Name Input
+          Text(isTr ? 'Adınız:' : 'What should your partner call you?',
+              style: AppTextStyles.labelLarge(isDark: isDark)),
+          const SizedBox(height: 8),
+          TextField(
+            controller: nameController,
+            decoration: InputDecoration(
+              hintText: isTr ? 'Adınızı girin' : 'Enter your name',
+              prefixIcon: const Icon(Icons.person_rounded),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Avatar Picker
+          Text(isTr ? 'Avatarınızı Seçin:' : 'Pick Your Romantic Avatar:',
+              style: AppTextStyles.labelLarge(isDark: isDark)),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              for (final av in avatars)
+                AvatarOptionBubble(
+                  avatar: av,
+                  isSelected: selectedAvatar == av,
+                  isDark: isDark,
+                  onTap: () => onAvatarSelected(av),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class OnboardingStageSlide extends StatelessWidget {
+  final String selectedStage;
+  final bool isDark;
+  final bool isTr;
+  final ValueChanged<String> onStageSelected;
+
+  const OnboardingStageSlide({
+    super.key,
+    required this.selectedStage,
+    required this.isDark,
+    required this.isTr,
+    required this.onStageSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final stages = [
+      {'key': 'stageDating', 'labelEn': 'Dating & Exploring', 'labelTr': 'Flört & Tanıma', 'icon': '🌱'},
+      {'key': 'stageEngaged', 'labelEn': 'Engaged & Planning', 'labelTr': 'Nişanlı & Evlilik Hazırlığı', 'icon': '💍'},
+      {'key': 'stageNewlywed', 'labelEn': 'Newlyweds (1st Years)', 'labelTr': 'Yeni Evli (İlk Yıllar)', 'icon': '🥂'},
+      {'key': 'stageLongTerm', 'labelEn': 'Long-term Companions', 'labelTr': 'Uzun Süreli Birliktelik', 'icon': '🌿'},
+      {'key': 'stageMarriedWithKids', 'labelEn': 'Married with Children', 'labelTr': 'Çocuklu Evli Çift', 'icon': '🏡'},
+      {'key': 'stageLongDistance', 'labelEn': 'Long Distance Love', 'labelTr': 'Uzak Mesafe Aşkı', 'icon': '✈️'},
+    ];
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isTr ? 'İlişkiniz Hangi Evrede?' : 'Where Are You in Love?',
+            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            isTr
+                ? 'Soruları ve randevu önerilerini sizin döneminize göre kişiselleştirelim.'
+                : 'This helps GHARAR tailor questions and activities specifically to your journey.',
+            style: AppTextStyles.bodyMedium(isDark: isDark),
+          ),
+          const SizedBox(height: 20),
+
+          for (final s in stages) ...[
+            RelationshipStageCard(
+              icon: s['icon']!,
+              label: isTr ? s['labelTr']! : s['labelEn']!,
+              isSelected: selectedStage == s['key'],
+              isDark: isDark,
+              onTap: () => onStageSelected(s['key']!),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class OnboardingGoalsSlide extends StatelessWidget {
+  final List<String> selectedGoals;
+  final bool isDark;
+  final bool isTr;
+  final ValueChanged<String> onToggleGoal;
+
+  const OnboardingGoalsSlide({
+    super.key,
+    required this.selectedGoals,
+    required this.isDark,
+    required this.isTr,
+    required this.onToggleGoal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final goals = [
+      {'key': 'goalDeeperConversations', 'labelEn': 'Deeper Conversations', 'labelTr': 'Daha Derin Sohbetler', 'icon': '💬'},
+      {'key': 'goalSpontaneousRomance', 'labelEn': 'Spontaneous Romance', 'labelTr': 'Spontane Romantizm', 'icon': '🌹'},
+      {'key': 'goalUnderstandingNeeds', 'labelEn': 'Understanding Emotional Needs', 'labelTr': 'Duygusal İhtiyaçları Anlamak', 'icon': '🕊️'},
+      {'key': 'goalFuturePlanning', 'labelEn': 'Aligning on Future Dreams', 'labelTr': 'Gelecek Hayallerinde Uyum', 'icon': '✨'},
+      {'key': 'goalFunAdventures', 'labelEn': 'Playful Fun & Date Adventures', 'labelTr': 'Eğlenceli Randevular & Macera', 'icon': '🎉'},
+      {'key': 'goalConflictResolution', 'labelEn': 'Gentle Conflict Resolution', 'labelTr': 'Şefkatli İletişim & Çözüm', 'icon': '🕯️'},
+    ];
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isTr ? 'Birlikte Neyi Büyütmek İstersiniz?' : 'What Would You Like to Nurture?',
+            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            isTr
+                ? 'En çok önemsediğiniz hedefleri seçin (birden fazla seçebilirsiniz).'
+                : 'Select all intentions that resonate with your love story right now.',
+            style: AppTextStyles.bodyMedium(isDark: isDark),
+          ),
+          const SizedBox(height: 20),
+
+          for (final g in goals)
+            GoalSelectionCard(
+              icon: g['icon']!,
+              label: isTr ? g['labelTr']! : g['labelEn']!,
+              isSelected: selectedGoals.contains(g['key']),
+              isDark: isDark,
+              onTap: () => onToggleGoal(g['key']!),
+              onChanged: (_) => onToggleGoal(g['key']!),
+            ),
+        ],
       ),
     );
   }

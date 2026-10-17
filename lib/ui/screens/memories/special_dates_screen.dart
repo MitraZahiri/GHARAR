@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../models/special_date_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/gradient_button.dart';
@@ -12,11 +13,11 @@ class SpecialDatesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
-
-    final dates = provider.specialDates;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final dates = context.select<AppStateProvider, List<SpecialDateModel>>(
+      (p) => p.specialDates,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -30,7 +31,7 @@ class SpecialDatesScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add_circle_outline_rounded),
             tooltip: isTr ? 'Özel Gün Ekle' : 'Add Special Date',
-            onPressed: () => _showAddDateModal(context, provider, isDark, isTr),
+            onPressed: () => _showAddDateModal(context, isDark, isTr),
           ),
         ],
       ),
@@ -39,124 +40,17 @@ class SpecialDatesScreen extends StatelessWidget {
         itemCount: dates.length,
         itemBuilder: (context, index) {
           final item = dates[index];
-          final days = item.daysUntil;
-
-          return GlassCard(
-            margin: const EdgeInsets.only(bottom: 14),
-            padding: const EdgeInsets.all(18),
-            child: Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkCardElevated
-                        : AppColors.blushPinkLight,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(item.icon, style: const TextStyle(fontSize: 24)),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.category.toUpperCase(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                          fontSize: 10,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w700,
-                          color: isDark
-                              ? AppColors.blushPinkDeep
-                              : AppColors.burgundyRose,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        item.title(isTr),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 15,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        DateFormat('MMMM d, yyyy').format(item.date),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.bodySmall(isDark: isDark),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // Days Countdown Pill
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    gradient: days <= 14
-                        ? AppColors.sunsetGold
-                        : (isDark
-                            ? AppColors.darkCardGradient
-                            : AppColors.intimateCardGradient),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: days <= 14
-                          ? AppColors.streakFlame
-                          : (isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '$days',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: days <= 14
-                              ? Colors.white
-                              : (isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.deepBurgundy),
-                        ),
-                      ),
-                      Text(
-                        isTr ? 'gün kaldı' : 'days left',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: days <= 14
-                              ? Colors.white.withValues(alpha: 0.9)
-                              : (isDark
-                                  ? AppColors.darkTextMuted
-                                  : AppColors.lightTextMuted),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          return SpecialDateItemTile(
+            item: item,
+            isDark: isDark,
+            isTr: isTr,
           );
         },
       ),
     );
   }
 
-  void _showAddDateModal(BuildContext context, AppStateProvider provider,
-      bool isDark, bool isTr) {
+  void _showAddDateModal(BuildContext context, bool isDark, bool isTr) {
     final titleController = TextEditingController();
     DateTime selectedDate = DateTime.now().add(const Duration(days: 30));
     String category = 'Anniversary';
@@ -246,7 +140,7 @@ class SpecialDatesScreen extends StatelessWidget {
                       text: isTr ? 'Geri Sayımı Başlat ⏳' : 'Start Countdown ⏳',
                       onPressed: () {
                         if (titleController.text.trim().isEmpty) return;
-                        provider.addSpecialDate(
+                        context.read<AppStateProvider>().addSpecialDate(
                           titleEn: titleController.text.trim(),
                           titleTr: titleController.text.trim(),
                           date: selectedDate,
@@ -263,6 +157,133 @@ class SpecialDatesScreen extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class SpecialDateItemTile extends StatelessWidget {
+  final SpecialDateModel item;
+  final bool isDark;
+  final bool isTr;
+
+  const SpecialDateItemTile({
+    super.key,
+    required this.item,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final days = item.daysUntil;
+
+    return GlassCard(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(18),
+      child: Row(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: isDark
+                  ? AppColors.darkCardElevated
+                  : AppColors.blushPinkLight,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(item.icon, style: const TextStyle(fontSize: 24)),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.category.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                    fontSize: 10,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.w700,
+                    color: isDark
+                        ? AppColors.blushPinkDeep
+                        : AppColors.burgundyRose,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  item.title(isTr),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  DateFormat('MMMM d, yyyy').format(item.date),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodySmall(isDark: isDark),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Days Countdown Pill
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              gradient: days <= 14
+                  ? AppColors.sunsetGold
+                  : (isDark
+                      ? AppColors.darkCardGradient
+                      : AppColors.intimateCardGradient),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: days <= 14
+                    ? AppColors.streakFlame
+                    : (isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder),
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '$days',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: days <= 14
+                        ? Colors.white
+                        : (isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.deepBurgundy),
+                  ),
+                ),
+                Text(
+                  isTr ? 'gün kaldı' : 'days left',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: days <= 14
+                        ? Colors.white.withValues(alpha: 0.9)
+                        : (isDark
+                            ? AppColors.darkTextMuted
+                            : AppColors.lightTextMuted),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

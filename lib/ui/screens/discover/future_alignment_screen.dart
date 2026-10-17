@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 
@@ -10,12 +11,14 @@ class FutureAlignmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
-
-    final partner1 = provider.couple?.partner1 ?? provider.activePartner;
-    final partner2 = provider.couple?.partner2 ?? provider.otherPartner;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final partner1 = context.select<AppStateProvider, UserModel>(
+      (p) => p.couple?.partner1 ?? p.activePartner,
+    );
+    final partner2 = context.select<AppStateProvider, UserModel>(
+      (p) => p.couple?.partner2 ?? p.otherPartner,
+    );
 
     final pillars = [
       {
@@ -137,146 +140,168 @@ class FutureAlignmentScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             for (final p in pillars) ...[
-              GlassCard(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header
-                    Row(
-                      children: [
-                        Text(p['icon'] as String,
-                            style: const TextStyle(fontSize: 22)),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            isTr ? p['titleTr'] as String : p['titleEn'] as String,
-                            style: AppTextStyles.titleMedium(isDark: isDark)
-                                .copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.champagneGold.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        isTr
-                            ? p['statusTr'] as String
-                            : p['statusEn'] as String,
-                        style: const TextStyle(
-                          color: AppColors.champagneGold,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const Divider(height: 20),
-
-                    // Partner 1 Thought
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(partner1.avatar,
-                            style: const TextStyle(fontSize: 16)),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              style: AppTextStyles.bodySmall(isDark: isDark)
-                                  .copyWith(fontSize: 13),
-                              children: [
-                                TextSpan(
-                                  text: '${partner1.name}: ',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                TextSpan(
-                                    text: isTr
-                                        ? p['p1Tr'] as String
-                                        : p['p1En'] as String),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    // Partner 2 Thought
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(partner2.avatar,
-                            style: const TextStyle(fontSize: 16)),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              style: AppTextStyles.bodySmall(isDark: isDark)
-                                  .copyWith(fontSize: 13),
-                              children: [
-                                TextSpan(
-                                  text: '${partner2.name}: ',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                TextSpan(
-                                    text: isTr
-                                        ? p['p2Tr'] as String
-                                        : p['p2En'] as String),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    // Bridge Reflection
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkCardElevated
-                            : AppColors.warmIvory,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('🕊️', style: TextStyle(fontSize: 16)),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              isTr
-                                  ? p['bridgeTr'] as String
-                                  : p['bridgeEn'] as String,
-                              style: AppTextStyles.bodySmall(isDark: isDark)
-                                  .copyWith(
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              FuturePillarCard(
+                pillar: p,
+                partner1: partner1,
+                partner2: partner2,
+                isDark: isDark,
+                isTr: isTr,
               ),
             ],
 
             const SizedBox(height: 20),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class FuturePillarCard extends StatelessWidget {
+  final Map<String, dynamic> pillar;
+  final UserModel partner1;
+  final UserModel partner2;
+  final bool isDark;
+  final bool isTr;
+
+  const FuturePillarCard({
+    super.key,
+    required this.pillar,
+    required this.partner1,
+    required this.partner2,
+    required this.isDark,
+    required this.isTr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Text(pillar['icon'] as String,
+                  style: const TextStyle(fontSize: 22)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  isTr ? pillar['titleTr'] as String : pillar['titleEn'] as String,
+                  style: AppTextStyles.titleMedium(isDark: isDark)
+                      .copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.champagneGold.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              isTr
+                  ? pillar['statusTr'] as String
+                  : pillar['statusEn'] as String,
+              style: const TextStyle(
+                color: AppColors.champagneGold,
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const Divider(height: 20),
+
+          // Partner 1 Thought
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(partner1.avatar, style: const TextStyle(fontSize: 16)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: AppTextStyles.bodySmall(isDark: isDark)
+                        .copyWith(fontSize: 13),
+                    children: [
+                      TextSpan(
+                        text: '${partner1.name}: ',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      TextSpan(
+                        text: isTr
+                            ? pillar['p1Tr'] as String
+                            : pillar['p1En'] as String,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          // Partner 2 Thought
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(partner2.avatar, style: const TextStyle(fontSize: 16)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: AppTextStyles.bodySmall(isDark: isDark)
+                        .copyWith(fontSize: 13),
+                    children: [
+                      TextSpan(
+                        text: '${partner2.name}: ',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      TextSpan(
+                        text: isTr
+                            ? pillar['p2Tr'] as String
+                            : pillar['p2En'] as String,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 14),
+
+          // Bridge Reflection
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkCardElevated : AppColors.warmIvory,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('🕊️', style: TextStyle(fontSize: 16)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    isTr
+                        ? pillar['bridgeTr'] as String
+                        : pillar['bridgeEn'] as String,
+                    style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

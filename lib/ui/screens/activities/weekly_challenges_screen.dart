@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../models/challenge_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/confetti_overlay.dart';
 import '../../widgets/glass_card.dart';
@@ -16,13 +17,26 @@ class WeeklyChallengesScreen extends StatefulWidget {
 class _WeeklyChallengesScreenState extends State<WeeklyChallengesScreen> {
   bool _playConfetti = false;
 
+  void _triggerConfetti() {
+    setState(() {
+      _playConfetti = true;
+    });
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      if (mounted) {
+        setState(() {
+          _playConfetti = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
-
-    final challenges = provider.challenges;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final challenges = context.select<AppStateProvider, List<ChallengeModel>>(
+      (p) => p.challenges,
+    );
     final completedCount = challenges.where((c) => c.isCompleted).length;
 
     return ConfettiOverlay(
@@ -120,143 +134,17 @@ class _WeeklyChallengesScreenState extends State<WeeklyChallengesScreen> {
               const SizedBox(height: 12),
 
               for (final ch in challenges) ...[
-                GlassCard(
-                  margin: const EdgeInsets.only(bottom: 14),
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: (ch.isCompleted
-                                      ? AppColors.successGreen
-                                      : AppColors.lavenderDeep)
-                                  .withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              isTr
-                                  ? 'Hafta ${ch.weekNumber}'
-                                  : 'Week ${ch.weekNumber}',
-                              style: TextStyle(
-                                color: ch.isCompleted
-                                    ? AppColors.successGreen
-                                    : AppColors.lavenderDeep,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          // Badge preview
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? AppColors.darkCardElevated
-                                  : AppColors.warmCream,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isDark
-                                    ? AppColors.darkBorder
-                                    : AppColors.lightBorder,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(ch.rewardBadge,
-                                    style: const TextStyle(fontSize: 14)),
-                                const SizedBox(width: 4),
-                                Text(
-                                  ch.badgeName(isTr),
-                                  style: AppTextStyles.bodySmall(isDark: isDark)
-                                      .copyWith(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        ch.title(isTr),
-                        style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        ch.description(isTr),
-                        style: AppTextStyles.bodyMedium(isDark: isDark),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '“${ch.encouragement(isTr)}”',
-                        style: AppTextStyles.quote(isDark: isDark).copyWith(
-                          fontSize: 12,
-                        ),
-                      ),
-                      const Divider(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton.icon(
-                            icon: Icon(
-                              ch.isCompleted
-                                  ? Icons.check_circle_rounded
-                                  : Icons.circle_outlined,
-                              color: ch.isCompleted
-                                  ? AppColors.successGreen
-                                  : (isDark
-                                      ? AppColors.darkTextMuted
-                                      : AppColors.lightTextMuted),
-                            ),
-                            label: Text(
-                              ch.isCompleted
-                                  ? (isTr ? 'Kutlandı & Bitti ✨' : 'Celebrated! ✨')
-                                  : (isTr
-                                      ? 'Tamamlandı Olarak İşaretle'
-                                      : 'Mark as Completed'),
-                              style: TextStyle(
-                                color: ch.isCompleted
-                                    ? AppColors.successGreen
-                                    : (isDark
-                                        ? AppColors.darkTextPrimary
-                                        : AppColors.deepBurgundy),
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            onPressed: () {
-                              provider.toggleCompleteChallenge(ch.id);
-                              if (!ch.isCompleted) {
-                                setState(() {
-                                  _playConfetti = true;
-                                });
-                                Future.delayed(
-                                    const Duration(milliseconds: 2500), () {
-                                  if (mounted) {
-                                    setState(() {
-                                      _playConfetti = false;
-                                    });
-                                  }
-                                });
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                ChallengeCardItem(
+                  challenge: ch,
+                  isDark: isDark,
+                  isTr: isTr,
+                  onToggle: () {
+                    final wasCompleted = ch.isCompleted;
+                    context.read<AppStateProvider>().toggleCompleteChallenge(ch.id);
+                    if (!wasCompleted) {
+                      _triggerConfetti();
+                    }
+                  },
                 ),
               ],
 
@@ -264,6 +152,143 @@ class _WeeklyChallengesScreenState extends State<WeeklyChallengesScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ChallengeCardItem extends StatelessWidget {
+  final ChallengeModel challenge;
+  final bool isDark;
+  final bool isTr;
+  final VoidCallback onToggle;
+
+  const ChallengeCardItem({
+    super.key,
+    required this.challenge,
+    required this.isDark,
+    required this.isTr,
+    required this.onToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: (challenge.isCompleted
+                          ? AppColors.successGreen
+                          : AppColors.lavenderDeep)
+                      .withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  isTr
+                      ? 'Hafta ${challenge.weekNumber}'
+                      : 'Week ${challenge.weekNumber}',
+                  style: TextStyle(
+                    color: challenge.isCompleted
+                        ? AppColors.successGreen
+                        : AppColors.lavenderDeep,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              // Badge preview
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkCardElevated
+                      : AppColors.warmCream,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(challenge.rewardBadge,
+                        style: const TextStyle(fontSize: 14)),
+                    const SizedBox(width: 4),
+                    Text(
+                      challenge.badgeName(isTr),
+                      style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            challenge.title(isTr),
+            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            challenge.description(isTr),
+            style: AppTextStyles.bodyMedium(isDark: isDark),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            '“${challenge.encouragement(isTr)}”',
+            style: AppTextStyles.quote(isDark: isDark).copyWith(
+              fontSize: 12,
+            ),
+          ),
+          const Divider(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton.icon(
+                icon: Icon(
+                  challenge.isCompleted
+                      ? Icons.check_circle_rounded
+                      : Icons.circle_outlined,
+                  color: challenge.isCompleted
+                      ? AppColors.successGreen
+                      : (isDark
+                          ? AppColors.darkTextMuted
+                          : AppColors.lightTextMuted),
+                ),
+                label: Text(
+                  challenge.isCompleted
+                      ? (isTr ? 'Kutlandı & Bitti ✨' : 'Celebrated! ✨')
+                      : (isTr
+                          ? 'Tamamlandı Olarak İşaretle'
+                          : 'Mark as Completed'),
+                  style: TextStyle(
+                    color: challenge.isCompleted
+                        ? AppColors.successGreen
+                        : (isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.deepBurgundy),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                onPressed: onToggle,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

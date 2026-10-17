@@ -43,9 +43,8 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
-    final isDark = provider.isDarkMode;
-    final isTr = provider.isTurkish;
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
 
     final idea = isTr
         ? SeedDataService.romanticSurpriseIdeasTr[_currentSurpriseIndex]

@@ -28,15 +28,22 @@ class GhararApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppStateProvider>();
+    final isDarkMode =
+        context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final locale =
+        context.select<AppStateProvider, Locale>((p) => p.locale);
+    final isAuthenticated =
+        context.select<AppStateProvider, bool>((p) => p.isAuthenticated);
+    final hasOnboarded =
+        context.select<AppStateProvider, bool>((p) => p.hasOnboarded);
 
     return MaterialApp(
       title: 'GHARAR',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: provider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      locale: provider.locale,
+      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      locale: locale,
       supportedLocales: AppLanguage.supportedLanguages
           .map((lang) => Locale(lang.code))
           .toList(),
@@ -58,9 +65,9 @@ class GhararApp extends StatelessWidget {
           child: child ?? const SizedBox(),
         );
       },
-      home: !provider.isAuthenticated
+      home: !isAuthenticated
           ? const AuthScreen()
-          : provider.hasOnboarded
+          : hasOnboarded
               ? const MainNavigationShell()
               : const OnboardingScreen(),
     );

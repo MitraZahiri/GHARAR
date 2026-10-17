@@ -142,14 +142,14 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                 const SizedBox(width: 8),
 
                 // Setting Filters
-                _buildFilterChip<ActivitySetting>(
+                ActivityCategoryFilterChip<ActivitySetting>(
                   label: isTr ? 'Evde' : 'At Home',
                   value: ActivitySetting.atHome,
                   current: _settingFilter,
                   onChanged: (v) => setState(() => _settingFilter = v),
                 ),
                 const SizedBox(width: 8),
-                _buildFilterChip<ActivitySetting>(
+                ActivityCategoryFilterChip<ActivitySetting>(
                   label: isTr ? 'Açık Hava' : 'Outdoors',
                   value: ActivitySetting.outdoor,
                   current: _settingFilter,
@@ -158,14 +158,14 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                 const SizedBox(width: 8),
 
                 // Budget Filters
-                _buildFilterChip<ActivityBudget>(
+                ActivityCategoryFilterChip<ActivityBudget>(
                   label: isTr ? 'Ücretsiz' : 'Free',
                   value: ActivityBudget.free,
                   current: _budgetFilter,
                   onChanged: (v) => setState(() => _budgetFilter = v),
                 ),
                 const SizedBox(width: 8),
-                _buildFilterChip<ActivityBudget>(
+                ActivityCategoryFilterChip<ActivityBudget>(
                   label: r'$ Düşük',
                   value: ActivityBudget.low,
                   current: _budgetFilter,
@@ -174,14 +174,14 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                 const SizedBox(width: 8),
 
                 // Vibe Filters
-                _buildFilterChip<ActivityVibe>(
+                ActivityCategoryFilterChip<ActivityVibe>(
                   label: isTr ? 'Romantik' : 'Romantic',
                   value: ActivityVibe.romantic,
                   current: _vibeFilter,
                   onChanged: (v) => setState(() => _vibeFilter = v),
                 ),
                 const SizedBox(width: 8),
-                _buildFilterChip<ActivityVibe>(
+                ActivityCategoryFilterChip<ActivityVibe>(
                   label: isTr ? 'Oyun & Neşe' : 'Playful',
                   value: ActivityVibe.playful,
                   current: _vibeFilter,
@@ -238,13 +238,24 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
       ),
     );
   }
+}
 
-  Widget _buildFilterChip<T>({
-    required String label,
-    required T value,
-    required T? current,
-    required ValueChanged<T?> onChanged,
-  }) {
+class ActivityCategoryFilterChip<T> extends StatelessWidget {
+  final String label;
+  final T value;
+  final T? current;
+  final ValueChanged<T?> onChanged;
+
+  const ActivityCategoryFilterChip({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.current,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final isSelected = current == value;
     return FilterChip(
       label: Text(label),
