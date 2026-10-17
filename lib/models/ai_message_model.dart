@@ -8,7 +8,7 @@ class AIMessageModel {
   final DateTime timestamp;
   final String? suggestedActionPrompt;
 
-  AIMessageModel({
+  const AIMessageModel({
     required this.id,
     required this.sender,
     required this.contentEn,
@@ -18,6 +18,25 @@ class AIMessageModel {
   });
 
   String content(bool isTr) => isTr ? contentTr : contentEn;
+
+  AIMessageModel copyWith({
+    String? id,
+    MessageSender? sender,
+    String? contentEn,
+    String? contentTr,
+    DateTime? timestamp,
+    String? suggestedActionPrompt,
+  }) {
+    return AIMessageModel(
+      id: id ?? this.id,
+      sender: sender ?? this.sender,
+      contentEn: contentEn ?? this.contentEn,
+      contentTr: contentTr ?? this.contentTr,
+      timestamp: timestamp ?? this.timestamp,
+      suggestedActionPrompt:
+          suggestedActionPrompt ?? this.suggestedActionPrompt,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -41,4 +60,25 @@ class AIMessageModel {
       suggestedActionPrompt: json['suggestedActionPrompt'] as String?,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AIMessageModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          sender == other.sender &&
+          contentEn == other.contentEn &&
+          contentTr == other.contentTr &&
+          timestamp == other.timestamp &&
+          suggestedActionPrompt == other.suggestedActionPrompt;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      sender.hashCode ^
+      contentEn.hashCode ^
+      contentTr.hashCode ^
+      timestamp.hashCode ^
+      suggestedActionPrompt.hashCode;
 }

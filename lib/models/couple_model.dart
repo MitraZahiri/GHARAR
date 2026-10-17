@@ -11,7 +11,7 @@ class CoupleModel {
   final bool isLinked;
   final bool isPremium;
 
-  CoupleModel({
+  const CoupleModel({
     required this.id,
     required this.partner1,
     this.partner2,
@@ -85,4 +85,31 @@ class CoupleModel {
       isPremium: json['isPremium'] as bool? ?? false,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CoupleModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          partner1 == other.partner1 &&
+          partner2 == other.partner2 &&
+          inviteCode == other.inviteCode &&
+          anniversaryDate == other.anniversaryDate &&
+          connectionStreak == other.connectionStreak &&
+          streakLastMaintained == other.streakLastMaintained &&
+          isLinked == other.isLinked &&
+          isPremium == other.isPremium;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      partner1.hashCode ^
+      partner2.hashCode ^
+      inviteCode.hashCode ^
+      anniversaryDate.hashCode ^
+      connectionStreak.hashCode ^
+      streakLastMaintained.hashCode ^
+      isLinked.hashCode ^
+      isPremium.hashCode;
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 enum ActivityBudget { free, low, medium, luxury }
 enum ActivitySetting { atHome, indoor, outdoor }
 enum ActivityVibe { romantic, adventurous, relaxing, playful }
@@ -21,7 +23,7 @@ class ActivityModel {
   final bool isSaved;
   final DateTime? completedAt;
 
-  ActivityModel({
+  const ActivityModel({
     required this.id,
     required this.titleEn,
     required this.titleTr,
@@ -191,11 +193,11 @@ class ActivityModel {
       tipsEn: (json['tipsEn'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
-          [],
+          const [],
       tipsTr: (json['tipsTr'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
-          [],
+          const [],
       isCompleted: json['isCompleted'] as bool? ?? false,
       isSaved: json['isSaved'] as bool? ?? false,
       completedAt: json['completedAt'] != null
@@ -203,4 +205,47 @@ class ActivityModel {
           : null,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ActivityModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          titleEn == other.titleEn &&
+          titleTr == other.titleTr &&
+          descriptionEn == other.descriptionEn &&
+          descriptionTr == other.descriptionTr &&
+          categoryEn == other.categoryEn &&
+          categoryTr == other.categoryTr &&
+          budget == other.budget &&
+          setting == other.setting &&
+          vibe == other.vibe &&
+          duration == other.duration &&
+          icon == other.icon &&
+          listEquals(tipsEn, other.tipsEn) &&
+          listEquals(tipsTr, other.tipsTr) &&
+          isCompleted == other.isCompleted &&
+          isSaved == other.isSaved &&
+          completedAt == other.completedAt;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      titleEn.hashCode ^
+      titleTr.hashCode ^
+      descriptionEn.hashCode ^
+      descriptionTr.hashCode ^
+      categoryEn.hashCode ^
+      categoryTr.hashCode ^
+      budget.hashCode ^
+      setting.hashCode ^
+      vibe.hashCode ^
+      duration.hashCode ^
+      icon.hashCode ^
+      Object.hashAll(tipsEn) ^
+      Object.hashAll(tipsTr) ^
+      isCompleted.hashCode ^
+      isSaved.hashCode ^
+      completedAt.hashCode;
 }

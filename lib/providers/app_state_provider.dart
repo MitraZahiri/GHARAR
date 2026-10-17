@@ -7,6 +7,7 @@ import '../models/activity_model.dart';
 import '../models/challenge_model.dart';
 import '../models/shared_interest_model.dart';
 import '../models/journal_entry_model.dart';
+import '../models/milestone_model.dart';
 import '../models/special_date_model.dart';
 import '../models/ai_message_model.dart';
 import '../core/localization/app_language.dart';

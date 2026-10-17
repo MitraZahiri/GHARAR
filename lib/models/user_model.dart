@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class UserModel {
   final String id;
   final String name;
@@ -9,7 +11,7 @@ class UserModel {
   final String? email;
   final String? authProvider; // 'apple', 'email', 'demo'
 
-  UserModel({
+  const UserModel({
     required this.id,
     required this.name,
     required this.avatar,
@@ -67,11 +69,38 @@ class UserModel {
       selectedGoals: (json['selectedGoals'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
-          [],
+          const [],
       joinedAt: DateTime.tryParse(json['joinedAt'] as String? ?? '') ??
           DateTime.now(),
       email: json['email'] as String?,
       authProvider: json['authProvider'] as String?,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          avatar == other.avatar &&
+          preferredLanguage == other.preferredLanguage &&
+          relationshipStage == other.relationshipStage &&
+          listEquals(selectedGoals, other.selectedGoals) &&
+          joinedAt == other.joinedAt &&
+          email == other.email &&
+          authProvider == other.authProvider;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      avatar.hashCode ^
+      preferredLanguage.hashCode ^
+      relationshipStage.hashCode ^
+      Object.hashAll(selectedGoals) ^
+      joinedAt.hashCode ^
+      email.hashCode ^
+      authProvider.hashCode;
 }

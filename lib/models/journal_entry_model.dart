@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class JournalEntryModel {
   final String id;
   final String title;
@@ -11,7 +13,7 @@ class JournalEntryModel {
   final String? imagePlaceholder; // icon or color token representation
   final List<String> tags;
 
-  JournalEntryModel({
+  const JournalEntryModel({
     required this.id,
     required this.title,
     required this.notes,
@@ -24,6 +26,34 @@ class JournalEntryModel {
     this.imagePlaceholder,
     this.tags = const [],
   });
+
+  JournalEntryModel copyWith({
+    String? id,
+    String? title,
+    String? notes,
+    String? authorId,
+    String? authorName,
+    DateTime? date,
+    String? moodEmoji,
+    String? questionId,
+    String? questionSnippet,
+    String? imagePlaceholder,
+    List<String>? tags,
+  }) {
+    return JournalEntryModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      notes: notes ?? this.notes,
+      authorId: authorId ?? this.authorId,
+      authorName: authorName ?? this.authorName,
+      date: date ?? this.date,
+      moodEmoji: moodEmoji ?? this.moodEmoji,
+      questionId: questionId ?? this.questionId,
+      questionSnippet: questionSnippet ?? this.questionSnippet,
+      imagePlaceholder: imagePlaceholder ?? this.imagePlaceholder,
+      tags: tags ?? this.tags,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -52,67 +82,38 @@ class JournalEntryModel {
       questionSnippet: json['questionSnippet'] as String?,
       imagePlaceholder: json['imagePlaceholder'] as String?,
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ??
-          [],
+          const [],
     );
   }
-}
 
-class MilestoneModel {
-  final String id;
-  final String titleEn;
-  final String titleTr;
-  final String descriptionEn;
-  final String descriptionTr;
-  final DateTime milestoneDate;
-  final String icon;
-  final String badgeTextEn;
-  final String badgeTextTr;
-  final bool isCelebrated;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is JournalEntryModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          title == other.title &&
+          notes == other.notes &&
+          authorId == other.authorId &&
+          authorName == other.authorName &&
+          date == other.date &&
+          moodEmoji == other.moodEmoji &&
+          questionId == other.questionId &&
+          questionSnippet == other.questionSnippet &&
+          imagePlaceholder == other.imagePlaceholder &&
+          listEquals(tags, other.tags);
 
-  MilestoneModel({
-    required this.id,
-    required this.titleEn,
-    required this.titleTr,
-    required this.descriptionEn,
-    required this.descriptionTr,
-    required this.milestoneDate,
-    required this.icon,
-    required this.badgeTextEn,
-    required this.badgeTextTr,
-    this.isCelebrated = false,
-  });
-
-  String title(bool isTr) => isTr ? titleTr : titleEn;
-  String description(bool isTr) => isTr ? descriptionTr : descriptionEn;
-  String badgeText(bool isTr) => isTr ? badgeTextTr : badgeTextEn;
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'titleEn': titleEn,
-        'titleTr': titleTr,
-        'descriptionEn': descriptionEn,
-        'descriptionTr': descriptionTr,
-        'milestoneDate': milestoneDate.toIso8601String(),
-        'icon': icon,
-        'badgeTextEn': badgeTextEn,
-        'badgeTextTr': badgeTextTr,
-        'isCelebrated': isCelebrated,
-      };
-
-  factory MilestoneModel.fromJson(Map<String, dynamic> json) {
-    return MilestoneModel(
-      id: json['id'] as String,
-      titleEn: json['titleEn'] as String,
-      titleTr: json['titleTr'] as String,
-      descriptionEn: json['descriptionEn'] as String,
-      descriptionTr: json['descriptionTr'] as String,
-      milestoneDate:
-          DateTime.tryParse(json['milestoneDate'] as String? ?? '') ??
-              DateTime.now(),
-      icon: json['icon'] as String? ?? '🌟',
-      badgeTextEn: json['badgeTextEn'] as String? ?? 'Milestone',
-      badgeTextTr: json['badgeTextTr'] as String? ?? 'Dönüm Noktası',
-      isCelebrated: json['isCelebrated'] as bool? ?? false,
-    );
-  }
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      title.hashCode ^
+      notes.hashCode ^
+      authorId.hashCode ^
+      authorName.hashCode ^
+      date.hashCode ^
+      moodEmoji.hashCode ^
+      questionId.hashCode ^
+      questionSnippet.hashCode ^
+      imagePlaceholder.hashCode ^
+      Object.hashAll(tags);
 }

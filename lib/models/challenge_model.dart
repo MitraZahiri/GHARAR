@@ -13,7 +13,7 @@ class ChallengeModel {
   final bool isCompleted;
   final DateTime? completedAt;
 
-  ChallengeModel({
+  const ChallengeModel({
     required this.id,
     required this.weekNumber,
     required this.titleEn,
@@ -101,4 +101,39 @@ class ChallengeModel {
           : null,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChallengeModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          weekNumber == other.weekNumber &&
+          titleEn == other.titleEn &&
+          titleTr == other.titleTr &&
+          descriptionEn == other.descriptionEn &&
+          descriptionTr == other.descriptionTr &&
+          rewardBadge == other.rewardBadge &&
+          badgeNameEn == other.badgeNameEn &&
+          badgeNameTr == other.badgeNameTr &&
+          encouragementEn == other.encouragementEn &&
+          encouragementTr == other.encouragementTr &&
+          isCompleted == other.isCompleted &&
+          completedAt == other.completedAt;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      weekNumber.hashCode ^
+      titleEn.hashCode ^
+      titleTr.hashCode ^
+      descriptionEn.hashCode ^
+      descriptionTr.hashCode ^
+      rewardBadge.hashCode ^
+      badgeNameEn.hashCode ^
+      badgeNameTr.hashCode ^
+      encouragementEn.hashCode ^
+      encouragementTr.hashCode ^
+      isCompleted.hashCode ^
+      completedAt.hashCode;
 }

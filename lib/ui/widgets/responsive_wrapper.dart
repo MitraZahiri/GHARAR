@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../../core/theme/app_colors.dart';
 
 /// Ensures GHARAR delivers a native mobile app look and feel
 /// On large screens (web, desktop, tablet), it centers a sleek phone canvas

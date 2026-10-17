@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/utils/responsive_wrapper.dart';
+import '../widgets/responsive_wrapper.dart';
 import '../../providers/app_state_provider.dart';
 import 'home/home_dashboard_screen.dart';
 import 'discover/discover_hub_screen.dart';

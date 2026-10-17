@@ -8,7 +8,7 @@ class SpecialDateModel {
   final String notes;
   final bool reminderEnabled;
 
-  SpecialDateModel({
+  const SpecialDateModel({
     required this.id,
     required this.titleEn,
     required this.titleTr,
@@ -30,6 +30,28 @@ class SpecialDateModel {
       target = DateTime(today.year + 1, date.month, date.day);
     }
     return target.difference(today).inDays;
+  }
+
+  SpecialDateModel copyWith({
+    String? id,
+    String? titleEn,
+    String? titleTr,
+    DateTime? date,
+    String? category,
+    String? icon,
+    String? notes,
+    bool? reminderEnabled,
+  }) {
+    return SpecialDateModel(
+      id: id ?? this.id,
+      titleEn: titleEn ?? this.titleEn,
+      titleTr: titleTr ?? this.titleTr,
+      date: date ?? this.date,
+      category: category ?? this.category,
+      icon: icon ?? this.icon,
+      notes: notes ?? this.notes,
+      reminderEnabled: reminderEnabled ?? this.reminderEnabled,
+    );
   }
 
   Map<String, dynamic> toJson() => {
@@ -55,4 +77,29 @@ class SpecialDateModel {
       reminderEnabled: json['reminderEnabled'] as bool? ?? true,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SpecialDateModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          titleEn == other.titleEn &&
+          titleTr == other.titleTr &&
+          date == other.date &&
+          category == other.category &&
+          icon == other.icon &&
+          notes == other.notes &&
+          reminderEnabled == other.reminderEnabled;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      titleEn.hashCode ^
+      titleTr.hashCode ^
+      date.hashCode ^
+      category.hashCode ^
+      icon.hashCode ^
+      notes.hashCode ^
+      reminderEnabled.hashCode;
 }

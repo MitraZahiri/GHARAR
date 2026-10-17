@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 enum QuestionIntensity {
   icebreaker,
   meaningful,
@@ -30,7 +32,7 @@ class QuestionModel {
   final String? inspirationTipEn;
   final String? inspirationTipTr;
 
-  QuestionModel({
+  const QuestionModel({
     required this.id,
     required this.textEn,
     required this.textTr,
@@ -134,6 +136,30 @@ class QuestionModel {
     }
   }
 
+  QuestionModel copyWith({
+    String? id,
+    String? textEn,
+    String? textTr,
+    QuestionCategory? category,
+    QuestionIntensity? intensity,
+    List<String>? optionsEn,
+    List<String>? optionsTr,
+    String? inspirationTipEn,
+    String? inspirationTipTr,
+  }) {
+    return QuestionModel(
+      id: id ?? this.id,
+      textEn: textEn ?? this.textEn,
+      textTr: textTr ?? this.textTr,
+      category: category ?? this.category,
+      intensity: intensity ?? this.intensity,
+      optionsEn: optionsEn ?? this.optionsEn,
+      optionsTr: optionsTr ?? this.optionsTr,
+      inspirationTipEn: inspirationTipEn ?? this.inspirationTipEn,
+      inspirationTipTr: inspirationTipTr ?? this.inspirationTipTr,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'textEn': textEn,
@@ -169,6 +195,33 @@ class QuestionModel {
       inspirationTipTr: json['inspirationTipTr'] as String?,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QuestionModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          textEn == other.textEn &&
+          textTr == other.textTr &&
+          category == other.category &&
+          intensity == other.intensity &&
+          listEquals(optionsEn, other.optionsEn) &&
+          listEquals(optionsTr, other.optionsTr) &&
+          inspirationTipEn == other.inspirationTipEn &&
+          inspirationTipTr == other.inspirationTipTr;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      textEn.hashCode ^
+      textTr.hashCode ^
+      category.hashCode ^
+      intensity.hashCode ^
+      (optionsEn != null ? Object.hashAll(optionsEn!) : 0) ^
+      (optionsTr != null ? Object.hashAll(optionsTr!) : 0) ^
+      inspirationTipEn.hashCode ^
+      inspirationTipTr.hashCode;
 }
 
 class AnswerModel {
@@ -181,7 +234,7 @@ class AnswerModel {
   final DateTime answeredAt;
   final String? reactionEmoji; // e.g. ❤️, 🥰, ✨
 
-  AnswerModel({
+  const AnswerModel({
     required this.id,
     required this.questionId,
     required this.authorId,
@@ -238,4 +291,29 @@ class AnswerModel {
       reactionEmoji: json['reactionEmoji'] as String?,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AnswerModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          questionId == other.questionId &&
+          authorId == other.authorId &&
+          authorName == other.authorName &&
+          answerText == other.answerText &&
+          selectedOptionIndex == other.selectedOptionIndex &&
+          answeredAt == other.answeredAt &&
+          reactionEmoji == other.reactionEmoji;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      questionId.hashCode ^
+      authorId.hashCode ^
+      authorName.hashCode ^
+      answerText.hashCode ^
+      selectedOptionIndex.hashCode ^
+      answeredAt.hashCode ^
+      reactionEmoji.hashCode;
 }

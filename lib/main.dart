@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'core/localization/app_language.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/responsive_utils.dart';
 import 'providers/app_state_provider.dart';
 import 'services/storage_service.dart';
 import 'ui/screens/auth/auth_screen.dart';
@@ -46,13 +47,14 @@ class GhararApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       builder: (context, child) {
-        final mediaQuery = MediaQuery.of(context);
-        final clampedScaler = mediaQuery.textScaler.clamp(
-          minScaleFactor: 0.85,
-          maxScaleFactor: 1.25,
-        );
         return MediaQuery(
-          data: mediaQuery.copyWith(textScaler: clampedScaler),
+          data: MediaQuery.of(context).copyWith(
+            textScaler: ResponsiveUtils.clampedTextScaler(
+              context,
+              min: 0.85,
+              max: 1.25,
+            ),
+          ),
           child: child ?? const SizedBox(),
         );
       },

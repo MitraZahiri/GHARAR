@@ -16,7 +16,7 @@ class SharedInterestModel {
   final String? bridgeConversationEn;
   final String? bridgeConversationTr;
 
-  SharedInterestModel({
+  const SharedInterestModel({
     required this.id,
     required this.titleEn,
     required this.titleTr,
@@ -44,6 +44,44 @@ class SharedInterestModel {
       isTr ? partner2PreferenceTr : partner2PreferenceEn;
   String? bridgeConv(bool isTr) =>
       isTr ? bridgeConversationTr : bridgeConversationEn;
+
+  SharedInterestModel copyWith({
+    String? id,
+    String? titleEn,
+    String? titleTr,
+    String? category,
+    String? descriptionEn,
+    String? descriptionTr,
+    String? suggestedDateEn,
+    String? suggestedDateTr,
+    String? icon,
+    bool? bothEnjoy,
+    String? partner1PreferenceEn,
+    String? partner1PreferenceTr,
+    String? partner2PreferenceEn,
+    String? partner2PreferenceTr,
+    String? bridgeConversationEn,
+    String? bridgeConversationTr,
+  }) {
+    return SharedInterestModel(
+      id: id ?? this.id,
+      titleEn: titleEn ?? this.titleEn,
+      titleTr: titleTr ?? this.titleTr,
+      category: category ?? this.category,
+      descriptionEn: descriptionEn ?? this.descriptionEn,
+      descriptionTr: descriptionTr ?? this.descriptionTr,
+      suggestedDateEn: suggestedDateEn ?? this.suggestedDateEn,
+      suggestedDateTr: suggestedDateTr ?? this.suggestedDateTr,
+      icon: icon ?? this.icon,
+      bothEnjoy: bothEnjoy ?? this.bothEnjoy,
+      partner1PreferenceEn: partner1PreferenceEn ?? this.partner1PreferenceEn,
+      partner1PreferenceTr: partner1PreferenceTr ?? this.partner1PreferenceTr,
+      partner2PreferenceEn: partner2PreferenceEn ?? this.partner2PreferenceEn,
+      partner2PreferenceTr: partner2PreferenceTr ?? this.partner2PreferenceTr,
+      bridgeConversationEn: bridgeConversationEn ?? this.bridgeConversationEn,
+      bridgeConversationTr: bridgeConversationTr ?? this.bridgeConversationTr,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -84,4 +122,45 @@ class SharedInterestModel {
       bridgeConversationTr: json['bridgeConversationTr'] as String?,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SharedInterestModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          titleEn == other.titleEn &&
+          titleTr == other.titleTr &&
+          category == other.category &&
+          descriptionEn == other.descriptionEn &&
+          descriptionTr == other.descriptionTr &&
+          suggestedDateEn == other.suggestedDateEn &&
+          suggestedDateTr == other.suggestedDateTr &&
+          icon == other.icon &&
+          bothEnjoy == other.bothEnjoy &&
+          partner1PreferenceEn == other.partner1PreferenceEn &&
+          partner1PreferenceTr == other.partner1PreferenceTr &&
+          partner2PreferenceEn == other.partner2PreferenceEn &&
+          partner2PreferenceTr == other.partner2PreferenceTr &&
+          bridgeConversationEn == other.bridgeConversationEn &&
+          bridgeConversationTr == other.bridgeConversationTr;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      titleEn.hashCode ^
+      titleTr.hashCode ^
+      category.hashCode ^
+      descriptionEn.hashCode ^
+      descriptionTr.hashCode ^
+      suggestedDateEn.hashCode ^
+      suggestedDateTr.hashCode ^
+      icon.hashCode ^
+      bothEnjoy.hashCode ^
+      partner1PreferenceEn.hashCode ^
+      partner1PreferenceTr.hashCode ^
+      partner2PreferenceEn.hashCode ^
+      partner2PreferenceTr.hashCode ^
+      bridgeConversationEn.hashCode ^
+      bridgeConversationTr.hashCode;
 }
