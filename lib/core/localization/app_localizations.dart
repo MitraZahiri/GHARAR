@@ -221,6 +221,18 @@ class AppLocalizations {
       'nameRequired': 'Please enter your name',
       'passwordRequired': 'Password must be at least 6 characters',
       'invalidEmail': 'Please enter a valid email address',
+      'loginTitle': 'Login',
+      'registerTitle': 'Create Account',
+      'continueWithGoogle': 'Continue with Google',
+      'continueWithApple': 'Continue with Apple',
+      'continueAsGuest': 'Continue As Guest',
+      'forgotPassword': 'Forgot Password?',
+      'needAccount': 'Need an account? ',
+      'alreadyHaveAccount': 'Already have an account? ',
+      'signUpLink': 'Sign up',
+      'logInLink': 'Log in',
+      'or': 'or',
+      'passwordResetSent': 'Password reset instructions sent to your email.',
     },
 
     // ==========================================
@@ -415,6 +427,19 @@ class AppLocalizations {
       'nameRequired': 'Lütfen adınızı girin',
       'passwordRequired': 'Şifre en az 6 karakter olmalıdır',
       'invalidEmail': 'Lütfen geçerli bir e-posta adresi girin',
+      'loginTitle': 'Giriş Yap',
+      'registerTitle': 'Hesap Oluştur',
+      'continueWithGoogle': 'Google ile Devam Et',
+      'continueWithApple': 'Apple ile Devam Et',
+      'continueAsGuest': 'Misafir Olarak Devam Et',
+      'forgotPassword': 'Şifrenizi mi unuttunuz?',
+      'needAccount': 'Hesabınız yok mu? ',
+      'alreadyHaveAccount': 'Zaten bir hesabınız var mı? ',
+      'signUpLink': 'Kayıt Ol',
+      'logInLink': 'Giriş Yap',
+      'or': 'veya',
+      'passwordResetSent':
+          'Şifre sıfırlama talimatları e-postanıza gönderildi.',
     },
 
     // ==========================================

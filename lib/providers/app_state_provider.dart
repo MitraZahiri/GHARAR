@@ -641,6 +641,63 @@ class AppStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> signInWithGoogle() async {
+    const googleEmail = 'user.google@gmail.com';
+    _isAuthenticated = true;
+    _authProvider = 'google';
+    _userEmail = googleEmail;
+    _storage.setIsAuthenticated(true);
+    _storage.setAuthProvider('google');
+    _storage.setUserEmail(googleEmail);
+
+    if (_currentUser == null) {
+      _currentUser = UserModel(
+        id: 'user_${DateTime.now().millisecondsSinceEpoch}',
+        name: isTurkish ? 'Ben' : 'You',
+        avatar: '🌸',
+        preferredLanguage: _locale.languageCode,
+        relationshipStage: 'stageDating',
+        selectedGoals: [],
+        joinedAt: DateTime.now(),
+        email: googleEmail,
+        authProvider: 'google',
+      );
+      _storage.saveUser(_currentUser!);
+    } else {
+      _currentUser = _currentUser!.copyWith(
+        email: googleEmail,
+        authProvider: 'google',
+      );
+      _storage.saveUser(_currentUser!);
+    }
+    notifyListeners();
+  }
+
+  Future<void> continueAsGuest() async {
+    _isAuthenticated = true;
+    _authProvider = 'guest';
+    _userEmail = null;
+    _storage.setIsAuthenticated(true);
+    _storage.setAuthProvider('guest');
+    _storage.setUserEmail(null);
+
+    if (_currentUser == null) {
+      _currentUser = UserModel(
+        id: 'user_guest_${DateTime.now().millisecondsSinceEpoch}',
+        name: isTurkish ? 'Misafir' : 'Guest',
+        avatar: '🌿',
+        preferredLanguage: _locale.languageCode,
+        relationshipStage: 'stageDating',
+        selectedGoals: [],
+        joinedAt: DateTime.now(),
+        email: null,
+        authProvider: 'guest',
+      );
+      _storage.saveUser(_currentUser!);
+    }
+    notifyListeners();
+  }
+
   Future<void> signOut() async {
     _isAuthenticated = false;
     _storage.setIsAuthenticated(false);

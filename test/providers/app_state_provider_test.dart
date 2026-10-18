@@ -218,24 +218,37 @@ void main() {
       ); // user msg + AI response
     });
 
-    test('Authentication flows: Apple, Email, and Sign Out', () async {
-      await provider.signInWithApple();
-      expect(provider.isAuthenticated, isTrue);
-      expect(provider.authProvider, 'apple');
-      expect(provider.userEmail, contains('@privaterelay.appleid.com'));
+    test(
+      'Authentication flows: Apple, Email, Google, Guest, and Sign Out',
+      () async {
+        await provider.signInWithApple();
+        expect(provider.isAuthenticated, isTrue);
+        expect(provider.authProvider, 'apple');
+        expect(provider.userEmail, contains('@privaterelay.appleid.com'));
 
-      await provider.authenticateWithEmail(
-        name: 'Leyla',
-        email: 'leyla@gharar.love',
-        password: 'securePassword123',
-      );
-      expect(provider.isAuthenticated, isTrue);
-      expect(provider.authProvider, 'email');
-      expect(provider.userEmail, 'leyla@gharar.love');
-      expect(provider.currentUser?.name, 'Leyla');
+        await provider.signInWithGoogle();
+        expect(provider.isAuthenticated, isTrue);
+        expect(provider.authProvider, 'google');
+        expect(provider.userEmail, equals('user.google@gmail.com'));
 
-      await provider.signOut();
-      expect(provider.isAuthenticated, isFalse);
-    });
+        await provider.continueAsGuest();
+        expect(provider.isAuthenticated, isTrue);
+        expect(provider.authProvider, 'guest');
+        expect(provider.userEmail, isNull);
+
+        await provider.authenticateWithEmail(
+          name: 'Leyla',
+          email: 'leyla@gharar.love',
+          password: 'securePassword123',
+        );
+        expect(provider.isAuthenticated, isTrue);
+        expect(provider.authProvider, 'email');
+        expect(provider.userEmail, 'leyla@gharar.love');
+        expect(provider.currentUser?.name, 'Leyla');
+
+        await provider.signOut();
+        expect(provider.isAuthenticated, isFalse);
+      },
+    );
   });
 }
