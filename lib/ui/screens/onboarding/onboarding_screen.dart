@@ -4,7 +4,8 @@ import '../../../core/localization/app_language.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
-import '../../widgets/gradient_button.dart';
+import '../../widgets/concentric_soul_background.dart';
+import '../../widgets/custom_primary_button.dart';
 import '../../widgets/soul_connection_art.dart';
 import 'partner_invite_screen.dart';
 
@@ -27,7 +28,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     'goalSpontaneousRomance',
   ];
 
-  final List<String> _avatars = ['🌸', '🌿', '🕊️', '👑', '✨', '🌺', '☕', '🌟'];
+  static const List<String> _avatars = [
+    '🌸',
+    '🌿',
+    '🕊️',
+    '👑',
+    '✨',
+    '🌺',
+    '☕',
+    '🌟',
+  ];
 
   @override
   void initState() {
@@ -49,6 +59,57 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  void _onNextPressed(bool isTr) {
+    if (_currentPage < 3) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      final appState = context.read<AppStateProvider>();
+      appState.completeOnboarding(
+        name:
+            _nameController.text.trim().isEmpty
+                ? (isTr ? 'Ben' : 'You')
+                : _nameController.text.trim(),
+        avatar: _selectedAvatar,
+        relationshipStage: _selectedStage,
+        goals: _selectedGoals,
+        languageCode: appState.locale.languageCode,
+      );
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const PartnerInviteScreen()),
+      );
+    }
+  }
+
+  void _onPreviousPressed() {
+    if (_currentPage > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _showLanguagePickerSheet(
+    BuildContext context,
+    bool isDark,
+    AppLanguage currentLang,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder:
+          (ctx) => OnboardingLanguagePickerSheet(
+            isDark: isDark,
+            currentLang: currentLang,
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
@@ -58,442 +119,223 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Top Bar with Language Selector & Progress Dots
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              child: Row(
-                children: [
-                  Text(
-                    'GHARAR',
-                    style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.5,
-                      fontSize: 18,
-                      color:
-                          isDark
-                              ? AppColors.blushPinkDeep
-                              : AppColors.deepBurgundy,
-                    ),
-                  ),
-                  const Spacer(),
-                  // Multilingual Language Switcher Chip (8 Languages & RTL)
-                  InkWell(
-                    borderRadius: BorderRadius.circular(20),
-                    onTap:
-                        () => _showLanguagePickerSheet(
-                          context,
-                          isDark,
-                          currentLanguage,
-                        ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            isDark
-                                ? AppColors.darkCardElevated
-                                : AppColors.blushPinkLight,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color:
-                              isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.blushPinkDeep.withValues(
-                                    alpha: 0.35,
-                                  ),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            currentLanguage.flag,
-                            style: const TextStyle(fontSize: 15),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            currentLanguage.nativeName,
-                            style: AppTextStyles.bodySmall(
-                              isDark: isDark,
-                            ).copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            size: 16,
-                            color:
-                                isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Page Indicator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 0; i < 4; i++)
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: _currentPage == i ? 24 : 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color:
-                          _currentPage == i
-                              ? (isDark
-                                  ? AppColors.blushPinkDeep
-                                  : AppColors.deepBurgundy)
-                              : (isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            // PageView Content
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const BouncingScrollPhysics(),
-                onPageChanged: (idx) {
-                  setState(() => _currentPage = idx);
-                },
-                children: [
-                  // 1. Welcome Slide
-                  OnboardingWelcomeSlide(isDark: isDark, isTr: isTr),
-
-                  // 2. Profile Setup (Name & Avatar)
-                  OnboardingProfileSlide(
-                    nameController: _nameController,
-                    avatars: _avatars,
-                    selectedAvatar: _selectedAvatar,
-                    isDark: isDark,
-                    isTr: isTr,
-                    onAvatarSelected:
-                        (av) => setState(() => _selectedAvatar = av),
-                  ),
-
-                  // 3. Relationship Stage
-                  OnboardingStageSlide(
-                    selectedStage: _selectedStage,
-                    isDark: isDark,
-                    isTr: isTr,
-                    onStageSelected:
-                        (stage) => setState(() => _selectedStage = stage),
-                  ),
-
-                  // 4. Goals & Intentions
-                  OnboardingGoalsSlide(
-                    selectedGoals: _selectedGoals,
-                    isDark: isDark,
-                    isTr: isTr,
-                    onToggleGoal: (key) {
-                      setState(() {
-                        if (_selectedGoals.contains(key)) {
-                          _selectedGoals.remove(key);
-                        } else {
-                          _selectedGoals.add(key);
-                        }
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            // Bottom Navigation CTA
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: GradientButton(
-                text:
-                    _currentPage == 3
-                        ? (isTr
-                            ? 'Partnerimi Davet Et 💌'
-                            : 'Invite My Partner 💌')
-                        : (isTr ? 'Devam Et ➔' : 'Continue ➔'),
-                onPressed: () {
-                  if (_currentPage < 3) {
-                    _pageController.nextPage(
-                      duration: const Duration(milliseconds: 350),
-                      curve: Curves.easeInOut,
-                    );
-                  } else {
-                    final appState = context.read<AppStateProvider>();
-                    appState.completeOnboarding(
-                      name:
-                          _nameController.text.trim().isEmpty
-                              ? (isTr ? 'Ben' : 'You')
-                              : _nameController.text.trim(),
-                      avatar: _selectedAvatar,
-                      relationshipStage: _selectedStage,
-                      goals: _selectedGoals,
-                      languageCode: appState.locale.languageCode,
-                    );
-
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const PartnerInviteScreen(),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showLanguagePickerSheet(
-    BuildContext context,
-    bool isDark,
-    AppLanguage currentLang,
-  ) {
-    final isTr = currentLang.code == 'tr';
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(ctx).size.height * 0.78,
-          ),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCardElevated : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 20,
-                offset: const Offset(0, -4),
-              ),
-            ],
-          ),
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      body: ConcentricSoulBackground(
+        isDark: isDark,
+        child: SafeArea(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 12),
-              Container(
-                width: 44,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              const SizedBox(height: 16),
+              // Top Bar: Brand, Back navigation & Multilingual selector
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 10,
+                ),
                 child: Row(
                   children: [
-                    const Text('🌍', style: TextStyle(fontSize: 26)),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isTr
-                                ? 'Uygulama Dili Seçin'
-                                : 'Choose App Language',
-                            style: AppTextStyles.titleMedium(
-                              isDark: isDark,
-                            ).copyWith(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 18,
+                    if (_currentPage > 0)
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 18,
+                          color:
+                              isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.inkCharcoal,
+                        ),
+                        onPressed: _onPreviousPressed,
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    if (_currentPage > 0) const SizedBox(width: 8),
+                    Text(
+                      'GHARAR',
+                      style: AppTextStyles.displaySmall(
+                        isDark: isDark,
+                      ).copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 2.0,
+                        fontSize: 18,
+                        color:
+                            isDark
+                                ? AppColors.blushPinkDeep
+                                : AppColors.deepBurgundy,
+                      ),
+                    ),
+                    const Spacer(),
+                    // Multilingual Language Switcher Chip
+                    InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap:
+                          () => _showLanguagePickerSheet(
+                            context,
+                            isDark,
+                            currentLanguage,
+                          ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              isDark
+                                  ? AppColors.darkCardElevated
+                                  : Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color:
+                                isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.parchmentBorder,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              currentLanguage.flag,
+                              style: const TextStyle(fontSize: 14),
                             ),
-                          ),
-                          Text(
-                            isTr
-                                ? '8 dil desteği ve sağdan sola (RTL) tam uyum'
-                                : '8 languages supported with full RTL & LTR script harmony',
-                            style: AppTextStyles.bodySmall(isDark: isDark),
-                          ),
-                        ],
+                            const SizedBox(width: 5),
+                            Text(
+                              currentLanguage.nativeName,
+                              style: AppTextStyles.bodySmall(
+                                isDark: isDark,
+                              ).copyWith(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Icon(
+                              Icons.arrow_drop_down_rounded,
+                              size: 16,
+                              color:
+                                  isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
-              Divider(
-                height: 1,
-                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-              ),
-              Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  itemCount: AppLanguage.supportedLanguages.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (ctx, index) {
-                    final lang = AppLanguage.supportedLanguages[index];
-                    final isSelected = lang.code == currentLang.code;
 
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: () {
-                        context.read<AppStateProvider>().setLanguageCode(
-                          lang.code,
-                        );
-                        Navigator.of(ctx).pop();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              isSelected
-                                  ? (isDark
-                                      ? AppColors.blushPinkDeep.withValues(
-                                        alpha: 0.22,
-                                      )
-                                      : AppColors.blushPinkLight)
-                                  : Colors.transparent,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
+              // Segmented Horizontal Progress Bars
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 6,
+                ),
+                child: Row(
+                  children: [
+                    for (int i = 0; i < 4; i++)
+                      Expanded(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          height: 4.5,
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          decoration: BoxDecoration(
                             color:
-                                isSelected
+                                _currentPage >= i
                                     ? (isDark
-                                        ? AppColors.blushPinkDeep
-                                        : AppColors.deepBurgundy)
+                                        ? AppColors.terracottaLight
+                                        : AppColors.terracotta)
                                     : (isDark
-                                        ? AppColors.darkBorder.withValues(
-                                          alpha: 0.5,
-                                        )
-                                        : AppColors.lightBorder),
-                            width: isSelected ? 1.8 : 1.0,
+                                        ? AppColors.darkBorder
+                                        : AppColors.parchmentBorder),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            Text(
-                              lang.flag,
-                              style: const TextStyle(fontSize: 28),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        lang.nativeName,
-                                        style: AppTextStyles.titleMedium(
-                                          isDark: isDark,
-                                        ).copyWith(
-                                          fontWeight:
-                                              isSelected
-                                                  ? FontWeight.w800
-                                                  : FontWeight.w600,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '(${lang.name})',
-                                        style: AppTextStyles.bodySmall(
-                                          isDark: isDark,
-                                        ).copyWith(
-                                          fontSize: 12,
-                                          color:
-                                              isDark
-                                                  ? AppColors.darkTextSecondary
-                                                  : AppColors.lightTextMuted,
-                                        ),
-                                      ),
-                                      if (lang.isRtl) ...[
-                                        const SizedBox(width: 6),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 2,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.champagneGold
-                                                .withValues(alpha: 0.2),
-                                            borderRadius: BorderRadius.circular(
-                                              6,
-                                            ),
-                                          ),
-                                          child: const Text(
-                                            'RTL',
-                                            style: TextStyle(
-                                              fontSize: 9,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppColors.champagneGold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    lang.tagline,
-                                    style: AppTextStyles.bodySmall(
-                                      isDark: isDark,
-                                    ).copyWith(
-                                      fontSize: 11,
-                                      fontStyle: FontStyle.italic,
-                                      color:
-                                          isDark
-                                              ? AppColors.lavenderAccent
-                                              : AppColors.burgundyRose,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (isSelected)
-                              Icon(
-                                Icons.check_circle_rounded,
-                                color:
-                                    isDark
-                                        ? AppColors.blushPinkDeep
-                                        : AppColors.deepBurgundy,
-                                size: 22,
-                              ),
-                          ],
-                        ),
                       ),
-                    );
-                  },
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
+
+              const SizedBox(height: 8),
+
+              // PageView Content
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  physics: const BouncingScrollPhysics(),
+                  onPageChanged: (idx) {
+                    setState(() => _currentPage = idx);
+                  },
+                  children: [
+                    // 1. Welcome Slide
+                    OnboardingWelcomeSlide(isDark: isDark, isTr: isTr),
+
+                    // 2. Profile Setup (Name & Avatar)
+                    OnboardingProfileSlide(
+                      nameController: _nameController,
+                      avatars: _avatars,
+                      selectedAvatar: _selectedAvatar,
+                      isDark: isDark,
+                      isTr: isTr,
+                      onAvatarSelected:
+                          (av) => setState(() => _selectedAvatar = av),
+                    ),
+
+                    // 3. Relationship Stage
+                    OnboardingStageSlide(
+                      selectedStage: _selectedStage,
+                      isDark: isDark,
+                      isTr: isTr,
+                      onStageSelected:
+                          (stage) => setState(() => _selectedStage = stage),
+                    ),
+
+                    // 4. Goals & Intentions
+                    OnboardingGoalsSlide(
+                      selectedGoals: _selectedGoals,
+                      isDark: isDark,
+                      isTr: isTr,
+                      onToggleGoal: (key) {
+                        setState(() {
+                          if (_selectedGoals.contains(key)) {
+                            _selectedGoals.remove(key);
+                          } else {
+                            _selectedGoals.add(key);
+                          }
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              // Bottom Navigation CTA
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 14,
+                ),
+                child: CustomPrimaryButton(
+                  text:
+                      _currentPage == 3
+                          ? (isTr
+                              ? 'Partnerimi Davet Et 💌'
+                              : 'Invite My Partner 💌')
+                          : (isTr ? 'Devam Et ➔' : 'Continue ➔'),
+                  height: 52,
+                  borderRadius: 26,
+                  backgroundColor:
+                      isDark ? AppColors.terracotta : AppColors.inkCharcoal,
+                  textColor: Colors.white,
+                  onPressed: () => _onNextPressed(isTr),
+                ),
+              ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -517,26 +359,61 @@ class OnboardingWelcomeSlide extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SoulConnectionArt(width: 240, height: 190, animateGlow: true),
-            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              decoration: BoxDecoration(
+                color:
+                    isDark
+                        ? AppColors.darkCardElevated.withValues(alpha: 0.6)
+                        : Colors.white.withValues(alpha: 0.8),
+                borderRadius: BorderRadius.circular(32),
+                border: Border.all(
+                  color:
+                      isDark ? AppColors.darkBorder : AppColors.parchmentBorder,
+                  width: 1.0,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                    blurRadius: 18,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: const SoulConnectionArt(
+                width: 240,
+                height: 180,
+                animateGlow: true,
+              ),
+            ),
+            const SizedBox(height: 24),
             Text(
               isTr
                   ? 'İkinize Özel Masalsı Bir Alan'
                   : 'A Sacred Sanctuary Just for the Two of You',
               textAlign: TextAlign.center,
-              style: AppTextStyles.displayMedium(
-                isDark: isDark,
-              ).copyWith(fontWeight: FontWeight.w800, fontSize: 24),
+              style: AppTextStyles.displayMedium(isDark: isDark).copyWith(
+                fontWeight: FontWeight.w800,
+                fontSize: 24,
+                letterSpacing: -0.4,
+                color:
+                    isDark ? AppColors.darkTextPrimary : AppColors.inkCharcoal,
+              ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             Text(
               isTr
                   ? 'GHARAR; ilişkinizi derinleştirmek, birbirinizi yargılamadan anlamak, gizli sorularla heyecanı canlı tutmak ve ömürlük anılar biriktirmek için tasarlandı.'
                   : 'GHARAR is exclusively designed to deepen your bond, understand each other without judgment, spark romance with private questions, and cherish every moment.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyLarge(
-                isDark: isDark,
-              ).copyWith(fontSize: 15),
+              style: AppTextStyles.bodyLarge(isDark: isDark).copyWith(
+                fontSize: 14,
+                height: 1.5,
+                color:
+                    isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+              ),
             ),
           ],
         ),
@@ -563,26 +440,39 @@ class AvatarOptionBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         width: 58,
         height: 58,
         decoration: BoxDecoration(
           color:
               isSelected
                   ? (isDark
-                      ? AppColors.blushPinkDeep.withValues(alpha: 0.3)
+                      ? AppColors.terracotta.withValues(alpha: 0.25)
                       : AppColors.blushPinkLight)
-                  : (isDark ? AppColors.darkCard : Colors.white),
+                  : (isDark ? AppColors.darkCardElevated : Colors.white),
           shape: BoxShape.circle,
           border: Border.all(
             color:
                 isSelected
                     ? (isDark
-                        ? AppColors.blushPinkDeep
-                        : AppColors.deepBurgundy)
-                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                        ? AppColors.terracottaLight
+                        : AppColors.terracotta)
+                    : (isDark
+                        ? AppColors.darkBorder
+                        : AppColors.parchmentBorder),
             width: isSelected ? 2.5 : 1.0,
           ),
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: AppColors.terracotta.withValues(alpha: 0.25),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                  : null,
         ),
         child: Center(
           child: Text(avatar, style: const TextStyle(fontSize: 26)),
@@ -611,28 +501,38 @@ class RelationshipStageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(20),
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color:
               isSelected
                   ? (isDark
-                      ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
-                      : AppColors.blushPinkLight)
-                  : (isDark ? AppColors.darkCard : Colors.white),
-          borderRadius: BorderRadius.circular(18),
+                      ? AppColors.terracotta.withValues(alpha: 0.16)
+                      : AppColors.terracotta.withValues(alpha: 0.08))
+                  : (isDark ? AppColors.darkCardElevated : Colors.white),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color:
                 isSelected
                     ? (isDark
-                        ? AppColors.blushPinkDeep
-                        : AppColors.deepBurgundy)
-                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-            width: isSelected ? 2.0 : 1.0,
+                        ? AppColors.terracottaLight
+                        : AppColors.terracotta)
+                    : (isDark
+                        ? AppColors.darkBorder
+                        : AppColors.parchmentBorder),
+            width: isSelected ? 1.8 : 1.0,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -643,6 +543,11 @@ class RelationshipStageCard extends StatelessWidget {
                 label,
                 style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  fontSize: 15,
+                  color:
+                      isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.inkCharcoal,
                 ),
               ),
             ),
@@ -650,7 +555,8 @@ class RelationshipStageCard extends StatelessWidget {
               Icon(
                 Icons.check_circle_rounded,
                 color:
-                    isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+                    isDark ? AppColors.terracottaLight : AppColors.terracotta,
+                size: 22,
               ),
           ],
         ),
@@ -680,28 +586,38 @@ class GoalSelectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(20),
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color:
               isSelected
                   ? (isDark
-                      ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
-                      : AppColors.blushPinkLight)
-                  : (isDark ? AppColors.darkCard : Colors.white),
-          borderRadius: BorderRadius.circular(18),
+                      ? AppColors.terracotta.withValues(alpha: 0.16)
+                      : AppColors.terracotta.withValues(alpha: 0.08))
+                  : (isDark ? AppColors.darkCardElevated : Colors.white),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color:
                 isSelected
                     ? (isDark
-                        ? AppColors.blushPinkDeep
-                        : AppColors.deepBurgundy)
-                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-            width: isSelected ? 2.0 : 1.0,
+                        ? AppColors.terracottaLight
+                        : AppColors.terracotta)
+                    : (isDark
+                        ? AppColors.darkBorder
+                        : AppColors.parchmentBorder),
+            width: isSelected ? 1.8 : 1.0,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -712,13 +628,18 @@ class GoalSelectionCard extends StatelessWidget {
                 label,
                 style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  fontSize: 14,
+                  color:
+                      isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.inkCharcoal,
                 ),
               ),
             ),
             Checkbox(
               value: isSelected,
               activeColor:
-                  isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+                  isDark ? AppColors.terracottaLight : AppColors.terracotta,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
               ),
@@ -752,45 +673,96 @@ class OnboardingProfileSlide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             isTr ? 'Kendinizi Tanıtın' : 'Create Your Profile',
-            style: AppTextStyles.displaySmall(
-              isDark: isDark,
-            ).copyWith(fontWeight: FontWeight.w800),
+            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+              fontWeight: FontWeight.w800,
+              fontSize: 24,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.inkCharcoal,
+            ),
           ),
           const SizedBox(height: 6),
           Text(
             isTr
                 ? 'Partnerinizin ekranda göreceği adınızı ve sevimli avatarınızı seçin.'
                 : 'Choose your name and avatar as it will appear in your shared space.',
-            style: AppTextStyles.bodyMedium(isDark: isDark),
+            style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
+              color:
+                  isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+            ),
           ),
           const SizedBox(height: 24),
 
-          // Name Input
+          // Name Input in Pill Field
           Text(
             isTr ? 'Adınız:' : 'What should your partner call you?',
-            style: AppTextStyles.labelLarge(isDark: isDark),
+            style: AppTextStyles.labelLarge(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-              hintText: isTr ? 'Adınızı girin' : 'Enter your name',
-              prefixIcon: const Icon(Icons.person_rounded),
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkCardElevated : Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color:
+                    isDark ? AppColors.darkBorder : AppColors.parchmentBorder,
+                width: 1.2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+            child: TextField(
+              controller: nameController,
+              style: TextStyle(
+                fontSize: 15,
+                color:
+                    isDark ? AppColors.darkTextPrimary : AppColors.inkCharcoal,
+                fontWeight: FontWeight.w500,
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                hintText: isTr ? 'Adınızı girin' : 'Enter your name',
+                hintStyle: TextStyle(
+                  color:
+                      isDark
+                          ? AppColors.darkTextMuted
+                          : AppColors.lightTextMuted,
+                  fontSize: 14,
+                ),
+                icon: Icon(
+                  Icons.person_outline_rounded,
+                  color:
+                      isDark ? AppColors.terracottaLight : AppColors.terracotta,
+                ),
+              ),
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
           // Avatar Picker
           Text(
             isTr ? 'Avatarınızı Seçin:' : 'Pick Your Romantic Avatar:',
-            style: AppTextStyles.labelLarge(isDark: isDark),
+            style: AppTextStyles.labelLarge(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -828,7 +800,7 @@ class OnboardingStageSlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stages = [
+    const stages = [
       {
         'key': 'stageDating',
         'labelEn': 'Dating & Exploring',
@@ -868,26 +840,34 @@ class OnboardingStageSlide extends StatelessWidget {
     ];
 
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             isTr ? 'İlişkiniz Hangi Evrede?' : 'Where Are You in Love?',
-            style: AppTextStyles.displaySmall(
-              isDark: isDark,
-            ).copyWith(fontWeight: FontWeight.w800),
+            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+              fontWeight: FontWeight.w800,
+              fontSize: 24,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.inkCharcoal,
+            ),
           ),
           const SizedBox(height: 6),
           Text(
             isTr
                 ? 'Soruları ve randevu önerilerini sizin döneminize göre kişiselleştirelim.'
                 : 'This helps GHARAR tailor questions and activities specifically to your journey.',
-            style: AppTextStyles.bodyMedium(isDark: isDark),
+            style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
+              color:
+                  isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+            ),
           ),
           const SizedBox(height: 20),
 
-          for (final s in stages) ...[
+          for (final s in stages)
             RelationshipStageCard(
               icon: s['icon']!,
               label: isTr ? s['labelTr']! : s['labelEn']!,
@@ -895,7 +875,6 @@ class OnboardingStageSlide extends StatelessWidget {
               isDark: isDark,
               onTap: () => onStageSelected(s['key']!),
             ),
-          ],
         ],
       ),
     );
@@ -918,7 +897,7 @@ class OnboardingGoalsSlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final goals = [
+    const goals = [
       {
         'key': 'goalDeeperConversations',
         'labelEn': 'Deeper Conversations',
@@ -958,6 +937,7 @@ class OnboardingGoalsSlide extends StatelessWidget {
     ];
 
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -966,16 +946,23 @@ class OnboardingGoalsSlide extends StatelessWidget {
             isTr
                 ? 'Birlikte Neyi Büyütmek İstersiniz?'
                 : 'What Would You Like to Nurture?',
-            style: AppTextStyles.displaySmall(
-              isDark: isDark,
-            ).copyWith(fontWeight: FontWeight.w800),
+            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+              fontWeight: FontWeight.w800,
+              fontSize: 24,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.inkCharcoal,
+            ),
           ),
           const SizedBox(height: 6),
           Text(
             isTr
                 ? 'En çok önemsediğiniz hedefleri seçin (birden fazla seçebilirsiniz).'
                 : 'Select all intentions that resonate with your love story right now.',
-            style: AppTextStyles.bodyMedium(isDark: isDark),
+            style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
+              color:
+                  isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+            ),
           ),
           const SizedBox(height: 20),
 
@@ -988,6 +975,218 @@ class OnboardingGoalsSlide extends StatelessWidget {
               onTap: () => onToggleGoal(g['key']!),
               onChanged: (_) => onToggleGoal(g['key']!),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class OnboardingLanguagePickerSheet extends StatelessWidget {
+  final bool isDark;
+  final AppLanguage currentLang;
+
+  const OnboardingLanguagePickerSheet({
+    super.key,
+    required this.isDark,
+    required this.currentLang,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isTr = currentLang.code == 'tr';
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.78,
+      ),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkCardElevated : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 12),
+          Container(
+            width: 44,
+            height: 5,
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkBorder : AppColors.parchmentBorder,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.language_rounded,
+                  color:
+                      isDark ? AppColors.terracottaLight : AppColors.terracotta,
+                  size: 22,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  isTr ? 'Dil Seçimi' : 'Choose Language',
+                  style: AppTextStyles.titleMedium(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w800, fontSize: 18),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded, size: 20),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          Flexible(
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              itemCount: AppLanguage.supportedLanguages.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (ctx, index) {
+                final lang = AppLanguage.supportedLanguages[index];
+                final isSelected = lang.code == currentLang.code;
+
+                return InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    context.read<AppStateProvider>().setLanguageCode(lang.code);
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected
+                              ? (isDark
+                                  ? AppColors.terracotta.withValues(alpha: 0.18)
+                                  : AppColors.terracotta.withValues(
+                                    alpha: 0.08,
+                                  ))
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color:
+                            isSelected
+                                ? (isDark
+                                    ? AppColors.terracottaLight
+                                    : AppColors.terracotta)
+                                : (isDark
+                                    ? AppColors.darkBorder.withValues(
+                                      alpha: 0.5,
+                                    )
+                                    : AppColors.parchmentBorder),
+                        width: isSelected ? 1.8 : 1.0,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(lang.flag, style: const TextStyle(fontSize: 26)),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    lang.nativeName,
+                                    style: AppTextStyles.titleMedium(
+                                      isDark: isDark,
+                                    ).copyWith(
+                                      fontWeight:
+                                          isSelected
+                                              ? FontWeight.w800
+                                              : FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '(${lang.name})',
+                                    style: AppTextStyles.bodySmall(
+                                      isDark: isDark,
+                                    ).copyWith(
+                                      fontSize: 12,
+                                      color:
+                                          isDark
+                                              ? AppColors.darkTextSecondary
+                                              : AppColors.lightTextMuted,
+                                    ),
+                                  ),
+                                  if (lang.isRtl) ...[
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.champagneGold
+                                            .withValues(alpha: 0.2),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: const Text(
+                                        'RTL',
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.champagneGold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                lang.tagline,
+                                style: AppTextStyles.bodySmall(
+                                  isDark: isDark,
+                                ).copyWith(
+                                  fontSize: 11,
+                                  fontStyle: FontStyle.italic,
+                                  color:
+                                      isDark
+                                          ? AppColors.lavenderAccent
+                                          : AppColors.burgundyRose,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (isSelected)
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color:
+                                isDark
+                                    ? AppColors.terracottaLight
+                                    : AppColors.terracotta,
+                            size: 22,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
         ],
       ),
     );

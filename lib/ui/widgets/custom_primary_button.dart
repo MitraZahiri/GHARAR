@@ -83,25 +83,28 @@ class CustomPrimaryButton extends StatelessWidget {
                             ),
                           ),
                         )
-                        : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (icon != null) ...[
-                              icon!,
-                              const SizedBox(width: 8),
-                            ],
-                            Text(
-                              text,
-                              style: AppTextStyles.headline(
-                                isDark: false,
-                              ).copyWith(
-                                color: textColor ?? Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                        : FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (icon != null) ...[
+                                icon!,
+                                const SizedBox(width: 8),
+                              ],
+                              Text(
+                                text,
+                                style: AppTextStyles.headline(
+                                  isDark: false,
+                                ).copyWith(
+                                  color: textColor ?? Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
               ),
             ),

@@ -6,6 +6,7 @@ import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
+import '../../widgets/concentric_soul_background.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -724,42 +725,6 @@ class _AuthScreenState extends State<AuthScreen> {
               AuthLanguagePickerSheet(isDark: isDark, currentLang: currentLang),
     );
   }
-}
-
-/// Custom Background Painter drawing graceful concentric resonance waves matching the design
-class ConcentricSoulBackgroundPainter extends CustomPainter {
-  final bool isDark;
-
-  const ConcentricSoulBackgroundPainter({required this.isDark});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final strokeColor =
-        isDark
-            ? const Color(0xFF332F37).withValues(alpha: 0.35)
-            : const Color(0xFFE4D8C5).withValues(alpha: 0.55);
-
-    final paint =
-        Paint()
-          ..color = strokeColor
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.0
-          ..isAntiAlias = true;
-
-    // Center point located slightly above left/center as in reference mockup
-    final center = Offset(size.width * 0.45, size.height * 0.35);
-    final maxRadius =
-        math.sqrt(size.width * size.width + size.height * size.height) * 0.9;
-
-    // Draw concentric organic resonance rings
-    for (double r = 80; r < maxRadius; r += 55) {
-      canvas.drawCircle(center, r, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant ConcentricSoulBackgroundPainter oldDelegate) =>
-      oldDelegate.isDark != isDark;
 }
 
 /// Rounded Pill Text Field matching the clean reference image
