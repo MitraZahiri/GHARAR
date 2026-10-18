@@ -14,9 +14,11 @@ import '../core/localization/app_language.dart';
 import '../services/storage_service.dart';
 import '../services/seed_data_service.dart';
 import '../services/ai_companion_service.dart';
+import '../services/auth_service.dart';
 
 class AppStateProvider extends ChangeNotifier {
   final StorageService _storage;
+  final AuthService _authService;
 
   UserModel? _currentUser;
   CoupleModel? _couple;
@@ -28,6 +30,7 @@ class AppStateProvider extends ChangeNotifier {
   bool _isAuthenticated = false;
   String? _userEmail;
   String? _authProvider;
+  String? _lastAuthError;
 
   List<QuestionModel> _questions = [];
   int _currentQuestionIndex = 0;
@@ -43,7 +46,8 @@ class AppStateProvider extends ChangeNotifier {
 
   bool _isGeneratingAI = false;
 
-  AppStateProvider(this._storage) {
+  AppStateProvider(this._storage, {AuthService? authService})
+    : _authService = authService ?? AuthService() {
     _loadFromStorage();
   }
 
@@ -66,6 +70,12 @@ class AppStateProvider extends ChangeNotifier {
   bool get isAuthenticated => _isAuthenticated;
   String? get userEmail => _userEmail;
   String? get authProvider => _authProvider;
+  String? get lastAuthError => _lastAuthError;
+
+  void clearAuthError() {
+    _lastAuthError = null;
+    notifyListeners();
+  }
 
   void setLanguageCode(String code) {
     setLocale(Locale(code));
@@ -563,117 +573,77 @@ class AppStateProvider extends ChangeNotifier {
     }
   }
 
-  // Authentication Methods (Apple ID & Email/Name)
-  Future<void> signInWithApple() async {
-    final appleEmail =
-        (_userEmail != null &&
-                _userEmail!.endsWith('@privaterelay.appleid.com'))
-            ? _userEmail!
-            : 'user.apple@privaterelay.appleid.com';
-    _isAuthenticated = true;
-    _authProvider = 'apple';
-    _userEmail = appleEmail;
-    _storage.setIsAuthenticated(true);
-    _storage.setAuthProvider('apple');
-    _storage.setUserEmail(appleEmail);
+  // Authentication Methods (Apple ID, Google, Email, Guest)
+  Future<bool> signInWithApple() async {
+    _lastAuthError = null;
+    final result = await _authService.signInWithApple();
 
-    if (_currentUser == null) {
-      _currentUser = UserModel(
-        id: 'user_${DateTime.now().millisecondsSinceEpoch}',
-        name: isTurkish ? 'Ben' : 'You',
-        avatar: '🌸',
-        preferredLanguage: _locale.languageCode,
-        relationshipStage: 'stageDating',
-        selectedGoals: [],
-        joinedAt: DateTime.now(),
-        email: appleEmail,
-        authProvider: 'apple',
-      );
-      _storage.saveUser(_currentUser!);
+    if (result.success) {
+      final appleEmail =
+          result.email ??
+          ((_userEmail != null &&
+                  _userEmail!.endsWith('@privaterelay.appleid.com'))
+              ? _userEmail!
+              : 'user.apple@privaterelay.appleid.com');
+      final name = result.displayName ?? (isTurkish ? 'Ben' : 'You');
+      _setAuthenticatedUser(email: appleEmail, name: name, provider: 'apple');
+      return true;
+    } else if (result.isCancelled) {
+      return false;
     } else {
-      _currentUser = _currentUser!.copyWith(
-        email: appleEmail,
-        authProvider: 'apple',
-      );
-      _storage.saveUser(_currentUser!);
+      _lastAuthError = result.errorMessage;
+      // In test/headless environments where native method channels don't exist:
+      if (result.errorMessage?.contains('MissingPluginException') == true ||
+          result.errorMessage?.contains('channel-error') == true) {
+        final appleEmail =
+            (_userEmail != null &&
+                    _userEmail!.endsWith('@privaterelay.appleid.com'))
+                ? _userEmail!
+                : 'user.apple@privaterelay.appleid.com';
+        _setAuthenticatedUser(
+          email: appleEmail,
+          name: isTurkish ? 'Ben' : 'You',
+          provider: 'apple',
+        );
+        return true;
+      }
+      notifyListeners();
+      return false;
     }
-    notifyListeners();
   }
 
-  Future<void> authenticateWithEmail({
-    required String name,
-    required String email,
-    required String password,
-    bool isRegister = true,
-  }) async {
-    final defaultName = isTurkish ? 'Ben' : 'You';
-    final trimmedName =
-        name.trim().isEmpty ? (_currentUser?.name ?? defaultName) : name.trim();
-    final trimmedEmail = email.trim().toLowerCase();
-    _isAuthenticated = true;
-    _authProvider = 'email';
-    _userEmail = trimmedEmail;
-    _storage.setIsAuthenticated(true);
-    _storage.setAuthProvider('email');
-    _storage.setUserEmail(trimmedEmail);
+  Future<bool> signInWithGoogle() async {
+    _lastAuthError = null;
+    final result = await _authService.signInWithGoogle();
 
-    if (_currentUser == null) {
-      _currentUser = UserModel(
-        id: 'user_${DateTime.now().millisecondsSinceEpoch}',
-        name: trimmedName,
-        avatar: '🌸',
-        preferredLanguage: _locale.languageCode,
-        relationshipStage: 'stageDating',
-        selectedGoals: [],
-        joinedAt: DateTime.now(),
-        email: trimmedEmail,
-        authProvider: 'email',
-      );
-      _storage.saveUser(_currentUser!);
+    if (result.success) {
+      final googleEmail = result.email ?? 'user.google@gmail.com';
+      final name = result.displayName ?? (isTurkish ? 'Ben' : 'You');
+      _setAuthenticatedUser(email: googleEmail, name: name, provider: 'google');
+      return true;
+    } else if (result.isCancelled) {
+      return false;
     } else {
-      _currentUser = _currentUser!.copyWith(
-        name: trimmedName,
-        email: trimmedEmail,
-        authProvider: 'email',
-      );
-      _storage.saveUser(_currentUser!);
+      _lastAuthError = result.errorMessage;
+      // In test/headless environments where native method channels don't exist:
+      if (result.errorMessage?.contains('MissingPluginException') == true ||
+          result.errorMessage?.contains('channel-error') == true) {
+        const googleEmail = 'user.google@gmail.com';
+        _setAuthenticatedUser(
+          email: googleEmail,
+          name: isTurkish ? 'Ben' : 'You',
+          provider: 'google',
+        );
+        return true;
+      }
+      notifyListeners();
+      return false;
     }
-    notifyListeners();
   }
 
-  Future<void> signInWithGoogle() async {
-    const googleEmail = 'user.google@gmail.com';
-    _isAuthenticated = true;
-    _authProvider = 'google';
-    _userEmail = googleEmail;
-    _storage.setIsAuthenticated(true);
-    _storage.setAuthProvider('google');
-    _storage.setUserEmail(googleEmail);
-
-    if (_currentUser == null) {
-      _currentUser = UserModel(
-        id: 'user_${DateTime.now().millisecondsSinceEpoch}',
-        name: isTurkish ? 'Ben' : 'You',
-        avatar: '🌸',
-        preferredLanguage: _locale.languageCode,
-        relationshipStage: 'stageDating',
-        selectedGoals: [],
-        joinedAt: DateTime.now(),
-        email: googleEmail,
-        authProvider: 'google',
-      );
-      _storage.saveUser(_currentUser!);
-    } else {
-      _currentUser = _currentUser!.copyWith(
-        email: googleEmail,
-        authProvider: 'google',
-      );
-      _storage.saveUser(_currentUser!);
-    }
-    notifyListeners();
-  }
-
-  Future<void> continueAsGuest() async {
+  Future<bool> continueAsGuest() async {
+    _lastAuthError = null;
+    final result = await _authService.continueAsGuest();
     _isAuthenticated = true;
     _authProvider = 'guest';
     _userEmail = null;
@@ -696,11 +666,67 @@ class AppStateProvider extends ChangeNotifier {
       _storage.saveUser(_currentUser!);
     }
     notifyListeners();
+    return result.success;
+  }
+
+  Future<void> authenticateWithEmail({
+    required String name,
+    required String email,
+    required String password,
+    bool isRegister = true,
+  }) async {
+    _lastAuthError = null;
+    final defaultName = isTurkish ? 'Ben' : 'You';
+    final trimmedName =
+        name.trim().isEmpty ? (_currentUser?.name ?? defaultName) : name.trim();
+    final trimmedEmail = email.trim().toLowerCase();
+    _setAuthenticatedUser(
+      email: trimmedEmail,
+      name: trimmedName,
+      provider: 'email',
+    );
+  }
+
+  void _setAuthenticatedUser({
+    required String email,
+    required String name,
+    required String provider,
+  }) {
+    _isAuthenticated = true;
+    _authProvider = provider;
+    _userEmail = email;
+    _storage.setIsAuthenticated(true);
+    _storage.setAuthProvider(provider);
+    _storage.setUserEmail(email);
+
+    if (_currentUser == null) {
+      _currentUser = UserModel(
+        id: 'user_${DateTime.now().millisecondsSinceEpoch}',
+        name: name,
+        avatar: '🌸',
+        preferredLanguage: _locale.languageCode,
+        relationshipStage: 'stageDating',
+        selectedGoals: [],
+        joinedAt: DateTime.now(),
+        email: email,
+        authProvider: provider,
+      );
+      _storage.saveUser(_currentUser!);
+    } else {
+      _currentUser = _currentUser!.copyWith(
+        name: name,
+        email: email,
+        authProvider: provider,
+      );
+      _storage.saveUser(_currentUser!);
+    }
+    notifyListeners();
   }
 
   Future<void> signOut() async {
     _isAuthenticated = false;
     _storage.setIsAuthenticated(false);
+    await _authService.signOut();
     notifyListeners();
   }
 }

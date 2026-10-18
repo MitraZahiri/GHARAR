@@ -50,18 +50,52 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void _submitAppleAuth(BuildContext context) async {
+    final provider = context.read<AppStateProvider>();
+    final messenger = ScaffoldMessenger.of(context);
     setState(() => _isLoading = true);
     try {
-      await context.read<AppStateProvider>().signInWithApple();
+      final success = await provider.signInWithApple();
+      if (!success && mounted) {
+        final error = provider.lastAuthError;
+        if (error != null) {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(error),
+              backgroundColor: Colors.redAccent,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          );
+        }
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   void _submitGoogleAuth(BuildContext context) async {
+    final provider = context.read<AppStateProvider>();
+    final messenger = ScaffoldMessenger.of(context);
     setState(() => _isLoading = true);
     try {
-      await context.read<AppStateProvider>().signInWithGoogle();
+      final success = await provider.signInWithGoogle();
+      if (!success && mounted) {
+        final error = provider.lastAuthError;
+        if (error != null) {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(error),
+              backgroundColor: Colors.redAccent,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          );
+        }
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

@@ -4,6 +4,7 @@ import 'package:gharar/services/storage_service.dart';
 import 'package:gharar/providers/app_state_provider.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('AppStateProvider Comprehensive Unit Tests', () {
     late StorageService storage;
     late AppStateProvider provider;
