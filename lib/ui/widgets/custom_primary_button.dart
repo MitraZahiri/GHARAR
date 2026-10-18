@@ -45,19 +45,23 @@ class CustomPrimaryButton extends StatelessWidget {
         width: width ?? double.infinity,
         height: height,
         decoration: BoxDecoration(
-          color: _isEnabled
-              ? effectiveBackgroundColor
-              : (isDark ? AppColors.earthSlateDeep : AppColors.parchmentBorder),
+          color:
+              _isEnabled
+                  ? effectiveBackgroundColor
+                  : (isDark
+                      ? AppColors.earthSlateDeep
+                      : AppColors.parchmentBorder),
           borderRadius: BorderRadius.circular(borderRadius),
-          boxShadow: _isEnabled
-              ? [
-                  BoxShadow(
-                    color: effectiveBackgroundColor.withValues(alpha: 0.24),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : null,
+          boxShadow:
+              _isEnabled
+                  ? [
+                    BoxShadow(
+                      color: effectiveBackgroundColor.withValues(alpha: 0.24),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                  : null,
         ),
         child: Material(
           color: Colors.transparent,
@@ -67,33 +71,38 @@ class CustomPrimaryButton extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Center(
-                child: isLoading
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (icon != null) ...[
-                            icon!,
-                            const SizedBox(width: 8),
-                          ],
-                          Text(
-                            text,
-                            style: AppTextStyles.headline(isDark: false).copyWith(
-                              color: textColor ?? Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                child:
+                    isLoading
+                        ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
                             ),
                           ),
-                        ],
-                      ),
+                        )
+                        : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (icon != null) ...[
+                              icon!,
+                              const SizedBox(width: 8),
+                            ],
+                            Text(
+                              text,
+                              style: AppTextStyles.headline(
+                                isDark: false,
+                              ).copyWith(
+                                color: textColor ?? Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
               ),
             ),
           ),

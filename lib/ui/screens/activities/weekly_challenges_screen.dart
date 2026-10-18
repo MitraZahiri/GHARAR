@@ -45,9 +45,9 @@ class _WeeklyChallengesScreenState extends State<WeeklyChallengesScreen> {
         appBar: AppBar(
           title: Text(
             isTr ? 'Haftalık Çift Görevleri' : 'Weekly Couple Challenges',
-            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTextStyles.titleMedium(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         body: SingleChildScrollView(
@@ -59,12 +59,14 @@ class _WeeklyChallengesScreenState extends State<WeeklyChallengesScreen> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: isDark
-                      ? AppColors.darkCardGradient
-                      : AppColors.intimateCardGradient,
+                  gradient:
+                      isDark
+                          ? AppColors.darkCardGradient
+                          : AppColors.intimateCardGradient,
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    color:
+                        isDark ? AppColors.darkBorder : AppColors.lightBorder,
                   ),
                 ),
                 child: Row(
@@ -93,16 +95,21 @@ class _WeeklyChallengesScreenState extends State<WeeklyChallengesScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isTr ? 'Aşk Rozeti Koleksiyonu' : 'Love Badge Collection',
-                            style: AppTextStyles.titleMedium(isDark: isDark)
-                                .copyWith(fontWeight: FontWeight.w700),
+                            isTr
+                                ? 'Aşk Rozeti Koleksiyonu'
+                                : 'Love Badge Collection',
+                            style: AppTextStyles.titleMedium(
+                              isDark: isDark,
+                            ).copyWith(fontWeight: FontWeight.w700),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             isTr
                                 ? '$completedCount / ${challenges.length} Başarıyla Tamamlandı'
                                 : '$completedCount of ${challenges.length} Completed Together',
-                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(
                               color: AppColors.champagneGold,
                               fontWeight: FontWeight.w700,
                             ),
@@ -112,7 +119,9 @@ class _WeeklyChallengesScreenState extends State<WeeklyChallengesScreen> {
                             isTr
                                 ? 'Görevleri kaçırsanız da suçluluk yok; sevgi her zaman kendi hızında akar!'
                                 : 'Gentle streaks with zero guilt. Love always flows at its own pace.',
-                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(
                               fontSize: 11,
                               fontStyle: FontStyle.italic,
                             ),
@@ -140,7 +149,9 @@ class _WeeklyChallengesScreenState extends State<WeeklyChallengesScreen> {
                   isTr: isTr,
                   onToggle: () {
                     final wasCompleted = ch.isCompleted;
-                    context.read<AppStateProvider>().toggleCompleteChallenge(ch.id);
+                    context.read<AppStateProvider>().toggleCompleteChallenge(
+                      ch.id,
+                    );
                     if (!wasCompleted) {
                       _triggerConfetti();
                     }
@@ -182,7 +193,10 @@ class ChallengeCardItem extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: (challenge.isCompleted
                           ? AppColors.successGreen
@@ -195,9 +209,10 @@ class ChallengeCardItem extends StatelessWidget {
                       ? 'Hafta ${challenge.weekNumber}'
                       : 'Week ${challenge.weekNumber}',
                   style: TextStyle(
-                    color: challenge.isCompleted
-                        ? AppColors.successGreen
-                        : AppColors.lavenderDeep,
+                    color:
+                        challenge.isCompleted
+                            ? AppColors.successGreen
+                            : AppColors.lavenderDeep,
                     fontWeight: FontWeight.w700,
                     fontSize: 11,
                   ),
@@ -208,26 +223,27 @@ class ChallengeCardItem extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkCardElevated
-                      : AppColors.warmCream,
+                  color:
+                      isDark ? AppColors.darkCardElevated : AppColors.warmCream,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    color:
+                        isDark ? AppColors.darkBorder : AppColors.lightBorder,
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(challenge.rewardBadge,
-                        style: const TextStyle(fontSize: 14)),
+                    Text(
+                      challenge.rewardBadge,
+                      style: const TextStyle(fontSize: 14),
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       challenge.badgeName(isTr),
-                      style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTextStyles.bodySmall(
+                        isDark: isDark,
+                      ).copyWith(fontSize: 11, fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
@@ -237,10 +253,9 @@ class ChallengeCardItem extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             challenge.title(isTr),
-            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-            ),
+            style: AppTextStyles.titleMedium(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w700, fontSize: 16),
           ),
           const SizedBox(height: 6),
           Text(
@@ -250,9 +265,7 @@ class ChallengeCardItem extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             '“${challenge.encouragement(isTr)}”',
-            style: AppTextStyles.quote(isDark: isDark).copyWith(
-              fontSize: 12,
-            ),
+            style: AppTextStyles.quote(isDark: isDark).copyWith(fontSize: 12),
           ),
           const Divider(height: 20),
           Row(
@@ -263,11 +276,12 @@ class ChallengeCardItem extends StatelessWidget {
                   challenge.isCompleted
                       ? Icons.check_circle_rounded
                       : Icons.circle_outlined,
-                  color: challenge.isCompleted
-                      ? AppColors.successGreen
-                      : (isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.lightTextMuted),
+                  color:
+                      challenge.isCompleted
+                          ? AppColors.successGreen
+                          : (isDark
+                              ? AppColors.darkTextMuted
+                              : AppColors.lightTextMuted),
                 ),
                 label: Text(
                   challenge.isCompleted
@@ -276,11 +290,12 @@ class ChallengeCardItem extends StatelessWidget {
                           ? 'Tamamlandı Olarak İşaretle'
                           : 'Mark as Completed'),
                   style: TextStyle(
-                    color: challenge.isCompleted
-                        ? AppColors.successGreen
-                        : (isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.deepBurgundy),
+                    color:
+                        challenge.isCompleted
+                            ? AppColors.successGreen
+                            : (isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.deepBurgundy),
                     fontWeight: FontWeight.w700,
                   ),
                 ),

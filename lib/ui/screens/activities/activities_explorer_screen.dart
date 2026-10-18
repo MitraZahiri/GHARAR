@@ -27,7 +27,9 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-    final activities = context.select<AppStateProvider, List<ActivityModel>>((p) => p.activities);
+    final activities = context.select<AppStateProvider, List<ActivityModel>>(
+      (p) => p.activities,
+    );
 
     var filtered = activities;
     if (_budgetFilter != null) {
@@ -72,9 +74,10 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: GlassCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              gradient: isDark
-                  ? AppColors.darkCardGradient
-                  : AppColors.intimateCardGradient,
+              gradient:
+                  isDark
+                      ? AppColors.darkCardGradient
+                      : AppColors.intimateCardGradient,
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -96,8 +99,9 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                               : 'Weekly Challenges & Badges',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.titleMedium(isDark: isDark)
-                              .copyWith(fontWeight: FontWeight.w700, fontSize: 14),
+                          style: AppTextStyles.titleMedium(
+                            isDark: isDark,
+                          ).copyWith(fontWeight: FontWeight.w700, fontSize: 14),
                         ),
                         Text(
                           isTr
@@ -105,15 +109,19 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                               : 'Complete this week’s love mission',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodySmall(isDark: isDark)
-                              .copyWith(fontSize: 11),
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 11),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const Icon(Icons.arrow_forward_ios_rounded,
-                      size: 14, color: AppColors.lightTextMuted),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: AppColors.lightTextMuted,
+                  ),
                 ],
               ),
             ),
@@ -128,7 +136,9 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
                 // Saved Filter
                 FilterChip(
                   avatar: Icon(
-                    _onlySaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                    _onlySaved
+                        ? Icons.bookmark_rounded
+                        : Icons.bookmark_border_rounded,
                     size: 16,
                   ),
                   label: Text(isTr ? 'Kaydedilenler' : 'Saved'),
@@ -211,28 +221,33 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
 
           // Activities List
           Expanded(
-            child: filtered.isEmpty
-                ? Center(
-                    child: Text(
-                      isTr
-                          ? 'Bu kriterlere uygun randevu fikri bulunamadı.'
-                          : 'No activities match these filters.',
-                      style: AppTextStyles.bodyMedium(isDark: isDark),
+            child:
+                filtered.isEmpty
+                    ? Center(
+                      child: Text(
+                        isTr
+                            ? 'Bu kriterlere uygun randevu fikri bulunamadı.'
+                            : 'No activities match these filters.',
+                        style: AppTextStyles.bodyMedium(isDark: isDark),
+                      ),
+                    )
+                    : ListView.builder(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        top: 4,
+                        bottom: 80,
+                      ),
+                      itemCount: filtered.length,
+                      itemBuilder: (context, index) {
+                        final act = filtered[index];
+                        return ActivityCardItem(
+                          act: act,
+                          isDark: isDark,
+                          isTr: isTr,
+                        );
+                      },
                     ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.only(
-                        left: 16, right: 16, top: 4, bottom: 80),
-                    itemCount: filtered.length,
-                    itemBuilder: (context, index) {
-                      final act = filtered[index];
-                      return ActivityCardItem(
-                        act: act,
-                        isDark: isDark,
-                        isTr: isTr,
-                      );
-                    },
-                  ),
           ),
         ],
       ),
@@ -295,9 +310,10 @@ class ActivityCardItem extends StatelessWidget {
                 width: 46,
                 height: 46,
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkCardElevated
-                      : AppColors.blushPinkLight,
+                  color:
+                      isDark
+                          ? AppColors.darkCardElevated
+                          : AppColors.blushPinkLight,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
@@ -316,13 +332,16 @@ class ActivityCardItem extends StatelessWidget {
                             act.category(isTr).toUpperCase(),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
-                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(
                               fontSize: 10,
                               letterSpacing: 1,
                               fontWeight: FontWeight.w700,
-                              color: isDark
-                                  ? AppColors.blushPinkDeep
-                                  : AppColors.burgundyRose,
+                              color:
+                                  isDark
+                                      ? AppColors.blushPinkDeep
+                                      : AppColors.burgundyRose,
                             ),
                           ),
                         ),
@@ -335,15 +354,18 @@ class ActivityCardItem extends StatelessWidget {
                             act.isSaved
                                 ? Icons.bookmark_rounded
                                 : Icons.bookmark_border_rounded,
-                            color: act.isSaved
-                                ? AppColors.champagneGold
-                                : (isDark
-                                    ? AppColors.darkTextMuted
-                                    : AppColors.lightTextMuted),
+                            color:
+                                act.isSaved
+                                    ? AppColors.champagneGold
+                                    : (isDark
+                                        ? AppColors.darkTextMuted
+                                        : AppColors.lightTextMuted),
                             size: 22,
                           ),
                           onPressed: () {
-                            context.read<AppStateProvider>().toggleSaveActivity(act.id);
+                            context.read<AppStateProvider>().toggleSaveActivity(
+                              act.id,
+                            );
                           },
                         ),
                       ],
@@ -351,10 +373,9 @@ class ActivityCardItem extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       act.title(isTr),
-                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
+                      style: AppTextStyles.titleMedium(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w700, fontSize: 16),
                     ),
                   ],
                 ),
@@ -388,7 +409,8 @@ class ActivityCardItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkCardElevated : AppColors.warmCream,
+                color:
+                    isDark ? AppColors.darkCardElevated : AppColors.warmCream,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -400,13 +422,16 @@ class ActivityCardItem extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('• ',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          const Text(
+                            '• ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           Expanded(
                             child: Text(
                               tip,
-                              style: AppTextStyles.bodySmall(isDark: isDark)
-                                  .copyWith(fontSize: 12),
+                              style: AppTextStyles.bodySmall(
+                                isDark: isDark,
+                              ).copyWith(fontSize: 12),
                             ),
                           ),
                         ],
@@ -429,27 +454,31 @@ class ActivityCardItem extends StatelessWidget {
                   act.isCompleted
                       ? Icons.check_circle_rounded
                       : Icons.circle_outlined,
-                  color: act.isCompleted
-                      ? AppColors.successGreen
-                      : (isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.lightTextMuted),
+                  color:
+                      act.isCompleted
+                          ? AppColors.successGreen
+                          : (isDark
+                              ? AppColors.darkTextMuted
+                              : AppColors.lightTextMuted),
                 ),
                 label: Text(
                   act.isCompleted
                       ? (isTr ? 'Bunu Yaptık! ✨' : 'Completed Together! ✨')
                       : (isTr ? 'Yaptık Olarak İşaretle' : 'Mark as Done'),
                   style: TextStyle(
-                    color: act.isCompleted
-                        ? AppColors.successGreen
-                        : (isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.deepBurgundy),
+                    color:
+                        act.isCompleted
+                            ? AppColors.successGreen
+                            : (isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.deepBurgundy),
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 onPressed: () {
-                  context.read<AppStateProvider>().toggleCompleteActivity(act.id);
+                  context.read<AppStateProvider>().toggleCompleteActivity(
+                    act.id,
+                  );
                 },
               ),
             ),
@@ -465,11 +494,7 @@ class ActivityTagPill extends StatelessWidget {
   final String text;
   final bool isDark;
 
-  const ActivityTagPill({
-    super.key,
-    required this.text,
-    required this.isDark,
-  });
+  const ActivityTagPill({super.key, required this.text, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
@@ -485,10 +510,9 @@ class ActivityTagPill extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-        ),
+        style: AppTextStyles.bodySmall(
+          isDark: isDark,
+        ).copyWith(fontSize: 11, fontWeight: FontWeight.w600),
       ),
     );
   }

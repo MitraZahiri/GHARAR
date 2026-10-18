@@ -6,11 +6,7 @@ class StreakBadge extends StatefulWidget {
   final int streakDays;
   final VoidCallback? onTap;
 
-  const StreakBadge({
-    super.key,
-    required this.streakDays,
-    this.onTap,
-  });
+  const StreakBadge({super.key, required this.streakDays, this.onTap});
 
   @override
   State<StreakBadge> createState() => _StreakBadgeState();
@@ -56,7 +52,9 @@ class _StreakBadgeState extends State<StreakBadge>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.streakFlame.withValues(alpha: isDark ? 0.25 : 0.15),
+                    AppColors.streakFlame.withValues(
+                      alpha: isDark ? 0.25 : 0.15,
+                    ),
                     AppColors.coralGold.withValues(alpha: isDark ? 0.35 : 0.2),
                   ],
                   begin: Alignment.topLeft,
@@ -78,16 +76,14 @@ class _StreakBadgeState extends State<StreakBadge>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    '🔥',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  const Text('🔥', style: TextStyle(fontSize: 16)),
                   const SizedBox(width: 6),
                   Text(
                     '${widget.streakDays}',
                     style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
                       fontWeight: FontWeight.w800,
-                      color: isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
+                      color:
+                          isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -95,7 +91,8 @@ class _StreakBadgeState extends State<StreakBadge>
                     'Days',
                     style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                       fontWeight: FontWeight.w600,
-                      color: isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
+                      color:
+                          isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
                     ),
                   ),
                 ],

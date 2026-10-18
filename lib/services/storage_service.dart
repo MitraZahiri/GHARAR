@@ -38,14 +38,16 @@ class StorageService {
       _prefs.setBool(_keyIsAuthenticated, val);
 
   String? get userEmail => _prefs.getString(_keyUserEmail);
-  Future<void> setUserEmail(String? email) => email != null
-      ? _prefs.setString(_keyUserEmail, email)
-      : _prefs.remove(_keyUserEmail);
+  Future<void> setUserEmail(String? email) =>
+      email != null
+          ? _prefs.setString(_keyUserEmail, email)
+          : _prefs.remove(_keyUserEmail);
 
   String? get authProvider => _prefs.getString(_keyAuthProvider);
-  Future<void> setAuthProvider(String? provider) => provider != null
-      ? _prefs.setString(_keyAuthProvider, provider)
-      : _prefs.remove(_keyAuthProvider);
+  Future<void> setAuthProvider(String? provider) =>
+      provider != null
+          ? _prefs.setString(_keyAuthProvider, provider)
+          : _prefs.remove(_keyAuthProvider);
 
   // Onboarding status
   bool get hasOnboarded => _prefs.getBool(_keyHasOnboarded) ?? false;
@@ -96,9 +98,10 @@ class StorageService {
       final result = <String, List<AnswerModel>>{};
       decoded.forEach((qId, list) {
         if (list is List) {
-          result[qId] = list
-              .map((e) => AnswerModel.fromJson(e as Map<String, dynamic>))
-              .toList();
+          result[qId] =
+              list
+                  .map((e) => AnswerModel.fromJson(e as Map<String, dynamic>))
+                  .toList();
         }
       });
       return result;
@@ -130,8 +133,10 @@ class StorageService {
   }
 
   Future<void> saveActivities(List<ActivityModel> activities) =>
-      _prefs.setString(_keyActivities,
-          jsonEncode(activities.map((a) => a.toJson()).toList()));
+      _prefs.setString(
+        _keyActivities,
+        jsonEncode(activities.map((a) => a.toJson()).toList()),
+      );
 
   // Challenges
   List<ChallengeModel>? getChallenges() {
@@ -148,8 +153,10 @@ class StorageService {
   }
 
   Future<void> saveChallenges(List<ChallengeModel> challenges) =>
-      _prefs.setString(_keyChallenges,
-          jsonEncode(challenges.map((c) => c.toJson()).toList()));
+      _prefs.setString(
+        _keyChallenges,
+        jsonEncode(challenges.map((c) => c.toJson()).toList()),
+      );
 
   // Journal
   List<JournalEntryModel>? getJournal() {
@@ -165,9 +172,10 @@ class StorageService {
     }
   }
 
-  Future<void> saveJournal(List<JournalEntryModel> journal) =>
-      _prefs.setString(_keyJournal,
-          jsonEncode(journal.map((j) => j.toJson()).toList()));
+  Future<void> saveJournal(List<JournalEntryModel> journal) => _prefs.setString(
+    _keyJournal,
+    jsonEncode(journal.map((j) => j.toJson()).toList()),
+  );
 
   // Special Dates
   List<SpecialDateModel>? getSpecialDates() {
@@ -184,8 +192,10 @@ class StorageService {
   }
 
   Future<void> saveSpecialDates(List<SpecialDateModel> dates) =>
-      _prefs.setString(_keySpecialDates,
-          jsonEncode(dates.map((d) => d.toJson()).toList()));
+      _prefs.setString(
+        _keySpecialDates,
+        jsonEncode(dates.map((d) => d.toJson()).toList()),
+      );
 
   Future<void> clearAll() async {
     await _prefs.clear();

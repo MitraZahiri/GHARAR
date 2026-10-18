@@ -84,23 +84,23 @@ class SharedInterestModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'titleEn': titleEn,
-        'titleTr': titleTr,
-        'category': category,
-        'descriptionEn': descriptionEn,
-        'descriptionTr': descriptionTr,
-        'suggestedDateEn': suggestedDateEn,
-        'suggestedDateTr': suggestedDateTr,
-        'icon': icon,
-        'bothEnjoy': bothEnjoy,
-        'partner1PreferenceEn': partner1PreferenceEn,
-        'partner1PreferenceTr': partner1PreferenceTr,
-        'partner2PreferenceEn': partner2PreferenceEn,
-        'partner2PreferenceTr': partner2PreferenceTr,
-        'bridgeConversationEn': bridgeConversationEn,
-        'bridgeConversationTr': bridgeConversationTr,
-      };
+    'id': id,
+    'titleEn': titleEn,
+    'titleTr': titleTr,
+    'category': category,
+    'descriptionEn': descriptionEn,
+    'descriptionTr': descriptionTr,
+    'suggestedDateEn': suggestedDateEn,
+    'suggestedDateTr': suggestedDateTr,
+    'icon': icon,
+    'bothEnjoy': bothEnjoy,
+    'partner1PreferenceEn': partner1PreferenceEn,
+    'partner1PreferenceTr': partner1PreferenceTr,
+    'partner2PreferenceEn': partner2PreferenceEn,
+    'partner2PreferenceTr': partner2PreferenceTr,
+    'bridgeConversationEn': bridgeConversationEn,
+    'bridgeConversationTr': bridgeConversationTr,
+  };
 
   factory SharedInterestModel.fromJson(Map<String, dynamic> json) {
     return SharedInterestModel(

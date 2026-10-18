@@ -119,7 +119,9 @@ class CoupleJournalTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-    final list = context.select<AppStateProvider, List<JournalEntryModel>>((p) => p.journalEntries);
+    final list = context.select<AppStateProvider, List<JournalEntryModel>>(
+      (p) => p.journalEntries,
+    );
 
     if (list.isEmpty) {
       return Center(
@@ -137,10 +139,7 @@ class CoupleJournalTabView extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 80),
       itemCount: list.length,
       itemBuilder: (context, index) {
-        return JournalEntryCard(
-          entry: list[index],
-          isDark: isDark,
-        );
+        return JournalEntryCard(entry: list[index], isDark: isDark);
       },
     );
   }
@@ -175,8 +174,9 @@ class JournalEntryCard extends StatelessWidget {
                   children: [
                     Text(
                       entry.title,
-                      style: AppTextStyles.titleMedium(isDark: isDark)
-                          .copyWith(fontWeight: FontWeight.w700),
+                      style: AppTextStyles.titleMedium(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w700),
                     ),
                     Text(
                       '${entry.authorName} • ${DateFormat('MMMM d, yyyy').format(entry.date)}',
@@ -192,28 +192,28 @@ class JournalEntryCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkCardElevated
-                    : AppColors.blushPinkLight,
+                color:
+                    isDark
+                        ? AppColors.darkCardElevated
+                        : AppColors.blushPinkLight,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
                 '💬 "${entry.questionSnippet!}"',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                  fontSize: 11,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: AppTextStyles.bodySmall(
+                  isDark: isDark,
+                ).copyWith(fontSize: 11, fontStyle: FontStyle.italic),
               ),
             ),
           ],
           const SizedBox(height: 12),
           Text(
             entry.notes,
-            style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
-              height: 1.5,
-            ),
+            style: AppTextStyles.bodyMedium(
+              isDark: isDark,
+            ).copyWith(height: 1.5),
           ),
           if (entry.tags.isNotEmpty) ...[
             const SizedBox(height: 10),
@@ -225,9 +225,10 @@ class JournalEntryCard extends StatelessWidget {
                     '#$t',
                     style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                       fontSize: 11,
-                      color: isDark
-                          ? AppColors.blushPinkDeep
-                          : AppColors.burgundyRose,
+                      color:
+                          isDark
+                              ? AppColors.blushPinkDeep
+                              : AppColors.burgundyRose,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -248,7 +249,9 @@ class MemoryTimelineTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-    final list = context.select<AppStateProvider, List<MilestoneModel>>((p) => p.milestones);
+    final list = context.select<AppStateProvider, List<MilestoneModel>>(
+      (p) => p.milestones,
+    );
 
     return ListView.builder(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 80),
@@ -303,7 +306,10 @@ class MilestoneTimelineItem extends StatelessWidget {
                 ],
               ),
               child: Center(
-                child: Text(milestone.icon, style: const TextStyle(fontSize: 20)),
+                child: Text(
+                  milestone.icon,
+                  style: const TextStyle(fontSize: 20),
+                ),
               ),
             ),
             if (!isLast)
@@ -331,15 +337,18 @@ class MilestoneTimelineItem extends StatelessWidget {
                       DateFormat('MMM yyyy').format(milestone.milestoneDate),
                       style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                         fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? AppColors.blushPinkDeep
-                            : AppColors.deepBurgundy,
+                        color:
+                            isDark
+                                ? AppColors.blushPinkDeep
+                                : AppColors.deepBurgundy,
                       ),
                     ),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.champagneGold.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
@@ -358,10 +367,9 @@ class MilestoneTimelineItem extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   milestone.title(isTr),
-                  style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  ),
+                  style: AppTextStyles.titleMedium(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w700, fontSize: 16),
                 ),
                 const SizedBox(height: 6),
                 Text(

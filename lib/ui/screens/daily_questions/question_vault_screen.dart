@@ -22,8 +22,9 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-    final allQuestions =
-        context.select<AppStateProvider, List<QuestionModel>>((p) => p.questions);
+    final allQuestions = context.select<AppStateProvider, List<QuestionModel>>(
+      (p) => p.questions,
+    );
 
     var filtered = allQuestions;
     if (_selectedCategory != null) {
@@ -39,9 +40,9 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
       appBar: AppBar(
         title: Text(
           isTr ? 'Soru Hazinesi' : 'Question Vault',
-          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyles.titleMedium(
+            isDark: isDark,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
       ),
       body: Column(
@@ -89,8 +90,9 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
               children: [
                 Text(
                   isTr ? 'Yoğunluk:' : 'Intensity:',
-                  style: AppTextStyles.bodySmall(isDark: isDark)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: AppTextStyles.bodySmall(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(width: 10),
                 IntensityChoiceChip(
@@ -103,19 +105,27 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
                 const SizedBox(width: 6),
                 IntensityChoiceChip(
                   label: '🌱',
-                  isSelected: _selectedIntensity == QuestionIntensity.icebreaker,
+                  isSelected:
+                      _selectedIntensity == QuestionIntensity.icebreaker,
                   onSelected: (selected) {
-                    setState(() => _selectedIntensity =
-                        selected ? QuestionIntensity.icebreaker : null);
+                    setState(
+                      () =>
+                          _selectedIntensity =
+                              selected ? QuestionIntensity.icebreaker : null,
+                    );
                   },
                 ),
                 const SizedBox(width: 6),
                 IntensityChoiceChip(
                   label: '🌿',
-                  isSelected: _selectedIntensity == QuestionIntensity.meaningful,
+                  isSelected:
+                      _selectedIntensity == QuestionIntensity.meaningful,
                   onSelected: (selected) {
-                    setState(() => _selectedIntensity =
-                        selected ? QuestionIntensity.meaningful : null);
+                    setState(
+                      () =>
+                          _selectedIntensity =
+                              selected ? QuestionIntensity.meaningful : null,
+                    );
                   },
                 ),
                 const SizedBox(width: 6),
@@ -123,8 +133,11 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
                   label: '🌺',
                   isSelected: _selectedIntensity == QuestionIntensity.deepSoul,
                   onSelected: (selected) {
-                    setState(() => _selectedIntensity =
-                        selected ? QuestionIntensity.deepSoul : null);
+                    setState(
+                      () =>
+                          _selectedIntensity =
+                              selected ? QuestionIntensity.deepSoul : null,
+                    );
                   },
                 ),
               ],
@@ -135,49 +148,54 @@ class _QuestionVaultScreenState extends State<QuestionVaultScreen> {
 
           // Questions List
           Expanded(
-            child: filtered.isEmpty
-                ? Center(
-                    child: Text(
-                      isTr
-                          ? 'Seçilen filtrede soru bulunamadı.'
-                          : 'No questions match this filter.',
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
-                    itemCount: filtered.length,
-                    itemBuilder: (context, index) {
-                      final q = filtered[index];
-                      final isAnswered = context.select<AppStateProvider, bool>(
-                        (p) => p.getAnswersForQuestion(q.id).isNotEmpty,
-                      );
-                      final isBoth = context.select<AppStateProvider, bool>(
-                        (p) => p.isBothAnswered(q.id),
-                      );
+            child:
+                filtered.isEmpty
+                    ? Center(
+                      child: Text(
+                        isTr
+                            ? 'Seçilen filtrede soru bulunamadı.'
+                            : 'No questions match this filter.',
+                      ),
+                    )
+                    : ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      itemCount: filtered.length,
+                      itemBuilder: (context, index) {
+                        final q = filtered[index];
+                        final isAnswered = context
+                            .select<AppStateProvider, bool>(
+                              (p) => p.getAnswersForQuestion(q.id).isNotEmpty,
+                            );
+                        final isBoth = context.select<AppStateProvider, bool>(
+                          (p) => p.isBothAnswered(q.id),
+                        );
 
-                      return QuestionVaultItemCard(
-                        question: q,
-                        isAnswered: isAnswered,
-                        isBoth: isBoth,
-                        isDark: isDark,
-                        isTr: isTr,
-                        onTap: () {
-                          final provider = context.read<AppStateProvider>();
-                          final realIdx = provider.questions.indexOf(q);
-                          if (realIdx != -1) {
-                            provider.setQuestionIndex(realIdx);
-                          }
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  DailyQuestionScreen(initialQuestion: q),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                        return QuestionVaultItemCard(
+                          question: q,
+                          isAnswered: isAnswered,
+                          isBoth: isBoth,
+                          isDark: isDark,
+                          isTr: isTr,
+                          onTap: () {
+                            final provider = context.read<AppStateProvider>();
+                            final realIdx = provider.questions.indexOf(q);
+                            if (realIdx != -1) {
+                              provider.setQuestionIndex(realIdx);
+                            }
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        DailyQuestionScreen(initialQuestion: q),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
           ),
         ],
       ),
@@ -312,16 +330,19 @@ class QuestionVaultItemCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                         fontSize: 10,
                         letterSpacing: 1,
-                        color: isDark
-                            ? AppColors.blushPinkDeep
-                            : AppColors.burgundyRose,
+                        color:
+                            isDark
+                                ? AppColors.blushPinkDeep
+                                : AppColors.burgundyRose,
                       ),
                     ),
                     const Spacer(),
                     if (isBoth)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.successGreen.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
@@ -338,9 +359,13 @@ class QuestionVaultItemCard extends StatelessWidget {
                     else if (isAnswered)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
-                          color: AppColors.champagneGold.withValues(alpha: 0.15),
+                          color: AppColors.champagneGold.withValues(
+                            alpha: 0.15,
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -357,17 +382,19 @@ class QuestionVaultItemCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   question.text(isTr),
-                  style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                  ),
+                  style: AppTextStyles.titleMedium(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w600, fontSize: 15),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 8),
-          const Icon(Icons.arrow_forward_ios_rounded,
-              size: 14, color: AppColors.lightTextMuted),
+          const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 14,
+            color: AppColors.lightTextMuted,
+          ),
         ],
       ),
     );

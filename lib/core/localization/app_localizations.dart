@@ -26,7 +26,8 @@ class AppLocalizations {
   bool get isFrench => locale.languageCode == 'fr';
   bool get isItalian => locale.languageCode == 'it';
 
-  TextDirection get textDirection => isRtl ? TextDirection.rtl : TextDirection.ltr;
+  TextDirection get textDirection =>
+      isRtl ? TextDirection.rtl : TextDirection.ltr;
 
   static final Map<String, Map<String, String>> _localizedValues = {
     // ==========================================
@@ -72,11 +73,14 @@ class AppLocalizations {
 
       // Onboarding
       'onboarding1Title': 'A Sacred Space Just for the Two of You',
-      'onboarding1Desc': 'GHARAR is your private sanctuary to spark deep conversations, discover shared passions, and cherish every moment.',
+      'onboarding1Desc':
+          'GHARAR is your private sanctuary to spark deep conversations, discover shared passions, and cherish every moment.',
       'onboarding2Title': 'Daily Questions, Answered Privately',
-      'onboarding2Desc': 'Each day brings a thoughtful question. Your answers remain hidden until both of you have answered, preserving authentic surprise!',
+      'onboarding2Desc':
+          'Each day brings a thoughtful question. Your answers remain hidden until both of you have answered, preserving authentic surprise!',
       'onboarding3Title': 'Romantic Adventures & Lifelong Growth',
-      'onboarding3Desc': 'Curated date ideas, playful quizzes, shared future dreams, and emotional intimacy exercises tailored to your unique love story.',
+      'onboarding3Desc':
+          'Curated date ideas, playful quizzes, shared future dreams, and emotional intimacy exercises tailored to your unique love story.',
       'whatsYourName': 'What is your name?',
       'enterYourName': 'Enter your first name',
       'selectLanguage': 'Choose Your Preferred Language',
@@ -97,12 +101,14 @@ class AppLocalizations {
 
       // Partner Invite
       'invitePartnerTitle': 'Invite Your Special One',
-      'invitePartnerSubtitle': 'GHARAR is designed as a synchronized sanctuary for two. Share this invite code with your partner to link your hearts.',
+      'invitePartnerSubtitle':
+          'GHARAR is designed as a synchronized sanctuary for two. Share this invite code with your partner to link your hearts.',
       'yourInviteCode': 'Your Unique Couple Code',
       'enterPartnerCode': 'Or enter partner’s code to connect',
       'connectPartnerButton': 'Connect to Partner',
       'simulatedPartner': 'Simulate Partner (Demo Mode)',
-      'simulatedPartnerDesc': 'Toggle between partners or test mutual reveals instantly with 1-click!',
+      'simulatedPartnerDesc':
+          'Toggle between partners or test mutual reveals instantly with 1-click!',
 
       // Home Dashboard
       'dailyGreetingMorning': 'Good morning, my dears',
@@ -119,12 +125,17 @@ class AppLocalizations {
       'intensityIcebreaker': 'Light & Playful 🌱',
       'intensityMeaningful': 'Heartfelt & Meaningful 🌿',
       'intensityDeep': 'Deep Soul Exploration 🌺',
-      'yourAnswerHint': 'Speak honestly from your heart... Your partner will only see this once they also submit their answer.',
-      'privateAnswerNotice': '🔒 Strictly Private until mutual reveal. No peeking allowed!',
-      'partnerAnsweredNotice': 'has submitted their answer! Answer now to reveal together.',
-      'partnerPendingNotice': 'is taking their time to think. Answer yours now so you are ready!',
+      'yourAnswerHint':
+          'Speak honestly from your heart... Your partner will only see this once they also submit their answer.',
+      'privateAnswerNotice':
+          '🔒 Strictly Private until mutual reveal. No peeking allowed!',
+      'partnerAnsweredNotice':
+          'has submitted their answer! Answer now to reveal together.',
+      'partnerPendingNotice':
+          'is taking their time to think. Answer yours now so you are ready!',
       'revealCelebration': 'Your Souls Have Spoken! ✨',
-      'reflectTogetherPrompt': 'Take a gentle breath and read each other’s thoughts aloud.',
+      'reflectTogetherPrompt':
+          'Take a gentle breath and read each other’s thoughts aloud.',
 
       // Discover & Quizzes
       'discoverHubTitle': 'Discover & Align',
@@ -132,10 +143,12 @@ class AppLocalizations {
       'quizGameTab': 'How Well Do We Know Us?',
       'differencesTab': 'Beautiful Differences',
       'futureAlignmentTab': 'Where Are We Heading?',
-      'quizSubtitle': 'Predict your partner’s thoughts and unlock playful, romantic insights.',
+      'quizSubtitle':
+          'Predict your partner’s thoughts and unlock playful, romantic insights.',
       'compatibilityScore': 'Soul Harmony',
       'planThisActivity': 'Plan this Date Together',
-      'celebrateDifference': 'Difference is where curiosity blooms. Here is a sweet way to blend both preferences:',
+      'celebrateDifference':
+          'Difference is where curiosity blooms. Here is a sweet way to blend both preferences:',
 
       // Couple Activities
       'activitiesTitle': 'Couple Experiences & Dates',
@@ -162,8 +175,10 @@ class AppLocalizations {
 
       // AI Relationship Companion "Noor"
       'noorTitle': 'Noor • Relationship Companion',
-      'noorSubtitle': 'A gentle, empathetic guide to inspire meaningful conversations, nonjudgmental reflections, and loving gestures.',
-      'noorDisclaimer': 'Noor provides inspiration and gentle communication tips. Not a substitute for professional couples therapy.',
+      'noorSubtitle':
+          'A gentle, empathetic guide to inspire meaningful conversations, nonjudgmental reflections, and loving gestures.',
+      'noorDisclaimer':
+          'Noor provides inspiration and gentle communication tips. Not a substitute for professional couples therapy.',
       'noorPrompt1': 'Help me express my feelings gently',
       'noorPrompt2': 'Suggest a cozy at-home surprise for tonight',
       'noorPrompt3': 'Give us a thoughtful late-night conversation prompt',
@@ -179,7 +194,8 @@ class AppLocalizations {
       'darkRomantic': 'Velvet Burgundy (Dark Romantic)',
       'privacySecurity': 'Privacy & Security Controls',
       'exportData': 'Export Couple Memories',
-      'exportDataDesc': 'Download a beautiful backup of your shared answers and journal.',
+      'exportDataDesc':
+          'Download a beautiful backup of your shared answers and journal.',
       'unlinkPartner': 'Unlink Partner',
       'unlinkWarning': 'This will safely disconnect the couple session.',
       'aboutApp': 'About GHARAR',
@@ -187,7 +203,8 @@ class AppLocalizations {
 
       // Authentication & Apple ID
       'authTitle': 'Welcome to Your Sanctuary',
-      'authSubtitle': 'Sign in with your Apple ID or email to deepen your connection.',
+      'authSubtitle':
+          'Sign in with your Apple ID or email to deepen your connection.',
       'signInWithApple': 'Sign in with Apple',
       'orDivider': 'or continue with email',
       'nameHint': 'Your Name',
@@ -249,11 +266,14 @@ class AppLocalizations {
 
       // Onboarding
       'onboarding1Title': 'Sadece İkinize Özel Masalsı Bir Alan',
-      'onboarding1Desc': 'GHARAR; derin sohbetler başlatmak, ortak tutkuları keşfetmek ve her anı ölümsüzleştirmek için tasarlanmış özel sığınağınızdır.',
+      'onboarding1Desc':
+          'GHARAR; derin sohbetler başlatmak, ortak tutkuları keşfetmek ve her anı ölümsüzleştirmek için tasarlanmış özel sığınağınızdır.',
       'onboarding2Title': 'Günlük Sorular, Gizli Cevaplar',
-      'onboarding2Desc': 'Her gün ikinize özel düşünceli bir soru gelir. İkiniz de cevaplayana kadar yanıtlar gizli kalır, sürprizin büyüsü bozulmaz!',
+      'onboarding2Desc':
+          'Her gün ikinize özel düşünceli bir soru gelir. İkiniz de cevaplayana kadar yanıtlar gizli kalır, sürprizin büyüsü bozulmaz!',
       'onboarding3Title': 'Romantik Maceralar ve Derin Uyum',
-      'onboarding3Desc': 'Özenle seçilmiş randevu fikirleri, eğlenceli testler, ortak gelecek hayalleri ve ilişkinizi besleyen duygusal egzersizler.',
+      'onboarding3Desc':
+          'Özenle seçilmiş randevu fikirleri, eğlenceli testler, ortak gelecek hayalleri ve ilişkinizi besleyen duygusal egzersizler.',
       'whatsYourName': 'Adınız nedir?',
       'enterYourName': 'İsminizi girin',
       'selectLanguage': 'Tercih Ettiğiniz Dili Seçin',
@@ -274,12 +294,14 @@ class AppLocalizations {
 
       // Partner Invite
       'invitePartnerTitle': 'Ruh Eşini Davet Et',
-      'invitePartnerSubtitle': 'GHARAR, iki kalbin senkronize olması için tasarlandı. Bu özel kodu partnerinle paylaşarak alanınızı birleştirin.',
+      'invitePartnerSubtitle':
+          'GHARAR, iki kalbin senkronize olması için tasarlandı. Bu özel kodu partnerinle paylaşarak alanınızı birleştirin.',
       'yourInviteCode': 'Size Özel Çift Kodu',
       'enterPartnerCode': 'Veya partnerinizin kodunu girin',
       'connectPartnerButton': 'Partnere Bağlan',
       'simulatedPartner': 'Partner Simülasyonu (Demo Modu)',
-      'simulatedPartnerDesc': 'Karşılıklı cevap açılma deneyimini tek tıkla partner bakış açısıyla hemen deneyin!',
+      'simulatedPartnerDesc':
+          'Karşılıklı cevap açılma deneyimini tek tıkla partner bakış açısıyla hemen deneyin!',
 
       // Home Dashboard
       'dailyGreetingMorning': 'Günaydın sevgililer',
@@ -296,12 +318,17 @@ class AppLocalizations {
       'intensityIcebreaker': 'Hafif & Eğlenceli 🌱',
       'intensityMeaningful': 'Samimi & Anlamlı 🌿',
       'intensityDeep': 'Ruhani & Derin Keşif 🌺',
-      'yourAnswerHint': 'Tüm kalbinizle içtenlikle yazın... Partneriniz bu cevabı sadece kendisi de yazınca görebilecek.',
-      'privateAnswerNotice': '🔒 Karşılıklı açılana kadar tamamen gizli. Kimse bakamaz!',
-      'partnerAnsweredNotice': 'cevabını yazdı bile! Birlikte okumak için şimdi yanıtlayın.',
-      'partnerPendingNotice': 'düşüncelerini toparlıyor. Sizinkini hemen kaydedin, hazır olun!',
+      'yourAnswerHint':
+          'Tüm kalbinizle içtenlikle yazın... Partneriniz bu cevabı sadece kendisi de yazınca görebilecek.',
+      'privateAnswerNotice':
+          '🔒 Karşılıklı açılana kadar tamamen gizli. Kimse bakamaz!',
+      'partnerAnsweredNotice':
+          'cevabını yazdı bile! Birlikte okumak için şimdi yanıtlayın.',
+      'partnerPendingNotice':
+          'düşüncelerini toparlıyor. Sizinkini hemen kaydedin, hazır olun!',
       'revealCelebration': 'Cevaplarınız Aydınlandı! ✨',
-      'reflectTogetherPrompt': 'Derin bir nefes alın ve birbirinizin yazdıklarını sesli olarak okuyun.',
+      'reflectTogetherPrompt':
+          'Derin bir nefes alın ve birbirinizin yazdıklarını sesli olarak okuyun.',
 
       // Discover & Quizzes
       'discoverHubTitle': 'Keşfet & Uyum Sağla',
@@ -309,10 +336,12 @@ class AppLocalizations {
       'quizGameTab': 'Bizi Ne Kadar Tanıyoruz?',
       'differencesTab': 'Güzel Farklılıklarımız',
       'futureAlignmentTab': 'Nereye Doğru İlerliyoruz?',
-      'quizSubtitle': 'Partnerinizin ne seçeceğini tahmin edin, tatlı ve merak uyandıran sürprizler keşfedin.',
+      'quizSubtitle':
+          'Partnerinizin ne seçeceğini tahmin edin, tatlı ve merak uyandıran sürprizler keşfedin.',
       'compatibilityScore': 'Ruh Uyumu',
       'planThisActivity': 'Bu Randevuyu Birlikte Planla',
-      'celebrateDifference': 'Farklılıklar merakın doğduğu yerdir. İkinizin zevkini birleştiren tatlı bir öneri:',
+      'celebrateDifference':
+          'Farklılıklar merakın doğduğu yerdir. İkinizin zevkini birleştiren tatlı bir öneri:',
 
       // Couple Activities
       'activitiesTitle': 'Çift Deneyimleri & Randevular',
@@ -339,13 +368,16 @@ class AppLocalizations {
 
       // AI Relationship Companion "Noor"
       'noorTitle': 'Noor • İlişki Yoldaşı',
-      'noorSubtitle': 'Daha yapıcı konuşmalar, şefkatli yansımalar ve romantik fikirler için nazik bir yapay zeka rehberi.',
-      'noorDisclaimer': 'Noor sadece ilham ve nazik iletişim ipuçları sunar. Profesyonel çift terapisi yerine geçmez.',
+      'noorSubtitle':
+          'Daha yapıcı konuşmalar, şefkatli yansımalar ve romantik fikirler için nazik bir yapay zeka rehberi.',
+      'noorDisclaimer':
+          'Noor sadece ilham ve nazik iletişim ipuçları sunar. Profesyonel çift terapisi yerine geçmez.',
       'noorPrompt1': 'Duygularımı incitmeden nasıl ifade edebilirim?',
       'noorPrompt2': 'Bu akşam için evde tatlı bir sürpriz öner',
       'noorPrompt3': 'Bize bu gece için düşündürücü bir soru ver',
       'noorPrompt4': 'Farklı sosyal enerji seviyelerimizi nasıl dengeleriz?',
-      'askNoorHint': 'Noor’a bir soru sorun, tavsiye veya randevu fikri isteyin...',
+      'askNoorHint':
+          'Noor’a bir soru sorun, tavsiye veya randevu fikri isteyin...',
 
       // Profile & Settings
       'profileTitle': 'Çift Alanı & Ayarlar',
@@ -356,7 +388,8 @@ class AppLocalizations {
       'darkRomantic': 'Kadife Bordo (Koyu Romantik)',
       'privacySecurity': 'Gizlilik & Güvenlik Kontrolleri',
       'exportData': 'Çift Anılarını Dışa Aktar',
-      'exportDataDesc': 'Cevaplarınızın ve günlüğünüzün güzel bir yedeğini indirin.',
+      'exportDataDesc':
+          'Cevaplarınızın ve günlüğünüzün güzel bir yedeğini indirin.',
       'unlinkPartner': 'Partner Bağını Kopar',
       'unlinkWarning': 'Bu işlem mevcut çift eşleşmesini güvenle sonlandırır.',
       'aboutApp': 'GHARAR Hakkında',
@@ -364,7 +397,8 @@ class AppLocalizations {
 
       // Authentication & Apple ID
       'authTitle': 'Aşk Sığınağınıza Hoş Geldiniz',
-      'authSubtitle': 'İlişkinizi derinleştirmek ve güvenle bağlanmak için Apple ID veya e-postanızla giriş yapın.',
+      'authSubtitle':
+          'İlişkinizi derinleştirmek ve güvenle bağlanmak için Apple ID veya e-postanızla giriş yapın.',
       'signInWithApple': 'Apple ile Giriş Yap',
       'orDivider': 'veya e-posta ile devam edin',
       'nameHint': 'Adınız',
@@ -426,11 +460,14 @@ class AppLocalizations {
 
       // Onboarding
       'onboarding1Title': 'ملاذ مقدس خُصص لكما وحدكما',
-      'onboarding1Desc': 'قرار هو ملاذكما الهادئ لفتح أحاديث عميقة، واستكشاف المشاعر المشتركة، وتخليد أجمل اللحظات.',
+      'onboarding1Desc':
+          'قرار هو ملاذكما الهادئ لفتح أحاديث عميقة، واستكشاف المشاعر المشتركة، وتخليد أجمل اللحظات.',
       'onboarding2Title': 'أسئلة يومية بإجابات سرية',
-      'onboarding2Desc': 'في كل يوم سؤال مليء بالمشاعر. تظل الإجابات مخفية حتى يجيب كِلاكما لحفظ متعة المفاجأة الصادقة!',
+      'onboarding2Desc':
+          'في كل يوم سؤال مليء بالمشاعر. تظل الإجابات مخفية حتى يجيب كِلاكما لحفظ متعة المفاجأة الصادقة!',
       'onboarding3Title': 'مغامرات رومانسية وانسجام عميق',
-      'onboarding3Desc': 'أفكار مواعيد مختارة بعناية، اختبارات مرحة، أحلام مستقبلية مشتركة وتمارين لتعميق الألفة بينكما.',
+      'onboarding3Desc':
+          'أفكار مواعيد مختارة بعناية، اختبارات مرحة، أحلام مستقبلية مشتركة وتمارين لتعميق الألفة بينكما.',
       'whatsYourName': 'ما هو اسمك؟',
       'enterYourName': 'أدخل اسمك الأول',
       'selectLanguage': 'اختر لغتك المفضلة',
@@ -451,12 +488,14 @@ class AppLocalizations {
 
       // Partner Invite
       'invitePartnerTitle': 'دعوة توأم روحك',
-      'invitePartnerSubtitle': 'صُمم قرار ليكون مساحة متزامنة لقلبين. شارك هذا الرمز مع شريكك لربط قلبيكما معاً.',
+      'invitePartnerSubtitle':
+          'صُمم قرار ليكون مساحة متزامنة لقلبين. شارك هذا الرمز مع شريكك لربط قلبيكما معاً.',
       'yourInviteCode': 'رمزكما الثنائي الفريد',
       'enterPartnerCode': 'أو أدخل رمز شريكك للارتباط',
       'connectPartnerButton': 'ارتبط بالشريك',
       'simulatedPartner': 'محاكاة الشريك (وضع تجريبي)',
-      'simulatedPartnerDesc': 'بدّل العرض بين الشريكين لتجربة كشف الإجابات المتبادلة فوراً!',
+      'simulatedPartnerDesc':
+          'بدّل العرض بين الشريكين لتجربة كشف الإجابات المتبادلة فوراً!',
 
       // Home Dashboard
       'dailyGreetingMorning': 'صباح الخير يا أحبة',
@@ -473,10 +512,13 @@ class AppLocalizations {
       'intensityIcebreaker': 'خفيف ومرح 🌱',
       'intensityMeaningful': 'صادق وذو معنى 🌿',
       'intensityDeep': 'استكشاف عميق للأعماق 🌺',
-      'yourAnswerHint': 'اكتب بكل صدق من قلبك... لن يرى شريكك هذا إلا بعد أن يقدم إجابته أيضاً.',
+      'yourAnswerHint':
+          'اكتب بكل صدق من قلبك... لن يرى شريكك هذا إلا بعد أن يقدم إجابته أيضاً.',
       'privateAnswerNotice': '🔒 إجابة خاصة تماماً حتى الكشف المتبادل.',
-      'partnerAnsweredNotice': 'أرسل إجابته بالفعل! أجب الآن لتكتشفا الإجابات معاً.',
-      'partnerPendingNotice': 'يأخذ وقته في التفكير. اكتب إجابتك الآن لتكون جاهزاً!',
+      'partnerAnsweredNotice':
+          'أرسل إجابته بالفعل! أجب الآن لتكتشفا الإجابات معاً.',
+      'partnerPendingNotice':
+          'يأخذ وقته في التفكير. اكتب إجابتك الآن لتكون جاهزاً!',
       'revealCelebration': 'تلاقت قلوبكما بالإجابات! ✨',
       'reflectTogetherPrompt': 'تنفسا بعمق واقرآ مشاعر بعضكما البعض بصوت دافئ.',
 
@@ -489,7 +531,8 @@ class AppLocalizations {
       'quizSubtitle': 'توقع خيارات شريكك واكتشف رؤى لطيفة ورومانسية.',
       'compatibilityScore': 'انسجام الأرواح',
       'planThisActivity': 'خططا لهذا الموعد معاً',
-      'celebrateDifference': 'في الاختلاف يزهر الفضول. إليكما طريقة لطيفة لدمج ذوقيكما:',
+      'celebrateDifference':
+          'في الاختلاف يزهر الفضول. إليكما طريقة لطيفة لدمج ذوقيكما:',
 
       // Couple Activities
       'activitiesTitle': 'تجارب ومواعيد رومانسية',
@@ -516,8 +559,10 @@ class AppLocalizations {
 
       // AI Relationship Companion "Noor"
       'noorTitle': 'نور • رفيق العلاقات',
-      'noorSubtitle': 'مرشد لطيف وودود يلهمكما بأحاديث دافئة، تأملات دون أحكام، ولفتات محبة.',
-      'noorDisclaimer': 'يقدم نور إلهاماً وتوجيهات تواصل ودية. ليس بديلاً عن الاستشارة الزوجية المتخصصة.',
+      'noorSubtitle':
+          'مرشد لطيف وودود يلهمكما بأحاديث دافئة، تأملات دون أحكام، ولفتات محبة.',
+      'noorDisclaimer':
+          'يقدم نور إلهاماً وتوجيهات تواصل ودية. ليس بديلاً عن الاستشارة الزوجية المتخصصة.',
       'noorPrompt1': 'ساعدني في التعبير عن مشاعري بلطف',
       'noorPrompt2': 'اقترح مفاجأة منزلية دافئة لهذه الليلة',
       'noorPrompt3': 'أعطنا سؤالاً عميقاً لمحادثة مسائية',
@@ -541,7 +586,8 @@ class AppLocalizations {
 
       // Authentication & Apple ID
       'authTitle': 'مرحباً بك في ملاذكما الخاص',
-      'authSubtitle': 'سجل الدخول باستخدام Apple ID أو بريدك الإلكتروني لتعميق التواصل بينكما.',
+      'authSubtitle':
+          'سجل الدخول باستخدام Apple ID أو بريدك الإلكتروني لتعميق التواصل بينكما.',
       'signInWithApple': 'تسجيل الدخول باستخدام Apple',
       'orDivider': 'أو المتابعة عبر البريد الإلكتروني',
       'nameHint': 'اسمك',
@@ -603,11 +649,14 @@ class AppLocalizations {
 
       // Onboarding
       'onboarding1Title': 'پناهگاهی امن و شاعرانه فقط برای شما دو نفر',
-      'onboarding1Desc': '«قرار» گوشه دنج شماست تا گفت‌وگوهای عمیق را آغاز کنید، اشتیاق‌های مشترک را بشناسید و هر لحظه را ماندگار کنید.',
+      'onboarding1Desc':
+          '«قرار» گوشه دنج شماست تا گفت‌وگوهای عمیق را آغاز کنید، اشتیاق‌های مشترک را بشناسید و هر لحظه را ماندگار کنید.',
       'onboarding2Title': 'پرسش‌های روزانه، با پاسخ‌های رازآلود',
-      'onboarding2Desc': 'هر روز یک پرسش تامل‌برانگیز پیش روی شماست. پاسخ‌ها تا زمانی که هر دو پاسخ ندهید پنهان می‌ماند تا شگفتی عشق زنده بماند!',
+      'onboarding2Desc':
+          'هر روز یک پرسش تامل‌برانگیز پیش روی شماست. پاسخ‌ها تا زمانی که هر دو پاسخ ندهید پنهان می‌ماند تا شگفتی عشق زنده بماند!',
       'onboarding3Title': 'ماجراجویی‌های عاشقانه و پیوند همیشگی',
-      'onboarding3Desc': 'ایده‌های ناب قرار دونفره، آزمون‌های شیرین، رویاهای آینده مشترک و تمرین‌هایی برای صمیمیت عمیق‌تر.',
+      'onboarding3Desc':
+          'ایده‌های ناب قرار دونفره، آزمون‌های شیرین، رویاهای آینده مشترک و تمرین‌هایی برای صمیمیت عمیق‌تر.',
       'whatsYourName': 'نام زیبای شما چیست؟',
       'enterYourName': 'نام خود را وارد کنید',
       'selectLanguage': 'زبان دلخواه خود را برگزینید',
@@ -628,12 +677,14 @@ class AppLocalizations {
 
       // Partner Invite
       'invitePartnerTitle': 'دعوت از نیمه گمشده‌ات',
-      'invitePartnerSubtitle': 'قرار طراحی شده تا فضای مشترک دو دلداده باشد. این کد ویژه را با یارتان به اشتراک بگذارید تا دل‌هایتان پیوند بخورد.',
+      'invitePartnerSubtitle':
+          'قرار طراحی شده تا فضای مشترک دو دلداده باشد. این کد ویژه را با یارتان به اشتراک بگذارید تا دل‌هایتان پیوند بخورد.',
       'yourInviteCode': 'کد اختصاصی زوج شما',
       'enterPartnerCode': 'یا کد یارتان را برای اتصال وارد کنید',
       'connectPartnerButton': 'پیوند به یار',
       'simulatedPartner': 'شبیه‌سازی یار (حالت آزمایشی)',
-      'simulatedPartnerDesc': 'دیدگاه را به یار تغییر دهید تا لذت پرده‌برداری مشترک را بی‌درنگ تجربه کنید!',
+      'simulatedPartnerDesc':
+          'دیدگاه را به یار تغییر دهید تا لذت پرده‌برداری مشترک را بی‌درنگ تجربه کنید!',
 
       // Home Dashboard
       'dailyGreetingMorning': 'صبح بخیر جانِ دل',
@@ -650,12 +701,16 @@ class AppLocalizations {
       'intensityIcebreaker': 'سبک و بازیگوشانه 🌱',
       'intensityMeaningful': 'دلی و پرمعنا 🌿',
       'intensityDeep': 'کاوش عمیق در ژرفای روح 🌺',
-      'yourAnswerHint': 'از صمیم قلبت بنویس... یارت این پاسخ را تنها زمانی می‌بیند که خود نیز بنویسد.',
+      'yourAnswerHint':
+          'از صمیم قلبت بنویس... یارت این پاسخ را تنها زمانی می‌بیند که خود نیز بنویسد.',
       'privateAnswerNotice': '🔒 کاملاً محرمانه تا زمان گشودن دوطرفه.',
-      'partnerAnsweredNotice': 'پاسخش را نوشت! اکنون تو نیز پاسخ بده تا با هم بخوانید.',
-      'partnerPendingNotice': 'در حال چیدن واژه‌هاست. تو پاسخت را ثبت کن تا آماده باشی!',
+      'partnerAnsweredNotice':
+          'پاسخش را نوشت! اکنون تو نیز پاسخ بده تا با هم بخوانید.',
+      'partnerPendingNotice':
+          'در حال چیدن واژه‌هاست. تو پاسخت را ثبت کن تا آماده باشی!',
       'revealCelebration': 'راز دل‌هایتان آشکار شد! ✨',
-      'reflectTogetherPrompt': 'نفسی عمیق بکشید و نوشته‌های یکدیگر را آرام و با مهر بخوانید.',
+      'reflectTogetherPrompt':
+          'نفسی عمیق بکشید و نوشته‌های یکدیگر را آرام و با مهر بخوانید.',
 
       // Discover & Quizzes
       'discoverHubTitle': 'کاوش و هم‌دلی',
@@ -666,7 +721,8 @@ class AppLocalizations {
       'quizSubtitle': 'حدس بزن یارت چه پاسخی می‌دهد و شیرینی شگفتی‌ها را بچش.',
       'compatibilityScore': 'هماهنگی جان‌ها',
       'planThisActivity': 'این قرار عاشقانه را برنامه‌ریزی کنید',
-      'celebrateDifference': 'تفاوت‌ها سرآغاز کنجکاوی و شور است. راهی دلنشین برای آمیختن سلیقه‌هایتان:',
+      'celebrateDifference':
+          'تفاوت‌ها سرآغاز کنجکاوی و شور است. راهی دلنشین برای آمیختن سلیقه‌هایتان:',
 
       // Couple Activities
       'activitiesTitle': 'تجربه‌ها و قرارهای دونفره',
@@ -693,13 +749,16 @@ class AppLocalizations {
 
       // AI Relationship Companion "Noor"
       'noorTitle': 'نور • همدم روابط عاشقانه',
-      'noorSubtitle': 'راهنمایی مهربان و باهمدلی برای هدایت گفت‌وگوهای آرام، نگاه‌های دور از قضاوت و لفت‌های محبت‌آمیز.',
-      'noorDisclaimer': 'نور تنها الهام‌بخش کلمات مهرآمیز است و جایگزین درمان تخصصی زوجین نمی‌باشد.',
+      'noorSubtitle':
+          'راهنمایی مهربان و باهمدلی برای هدایت گفت‌وگوهای آرام، نگاه‌های دور از قضاوت و لفت‌های محبت‌آمیز.',
+      'noorDisclaimer':
+          'نور تنها الهام‌بخش کلمات مهرآمیز است و جایگزین درمان تخصصی زوجین نمی‌باشد.',
       'noorPrompt1': 'کمکم کن احساساتم را با ملایمت بیان کنم',
       'noorPrompt2': 'ایده‌ای گرم برای غافلگیری امشب در خانه پیشنهاد کن',
       'noorPrompt3': 'یک پرسش ژرف برای گفت‌وگوی شبانه به ما هدیه بده',
       'noorPrompt4': 'چگونه انرژی‌های اجتماعی متفاوت‌مان را متعادل کنیم؟',
-      'askNoorHint': 'از نور درباره ایده‌های قرار یا رازهای گفت‌وگوی مهرآمیز بپرسید...',
+      'askNoorHint':
+          'از نور درباره ایده‌های قرار یا رازهای گفت‌وگوی مهرآمیز بپرسید...',
 
       // Profile & Settings
       'profileTitle': 'حریم زوج و تنظیمات',
@@ -710,7 +769,8 @@ class AppLocalizations {
       'darkRomantic': 'زرشکی مخملی و رازآلود (تیره رمانتیک)',
       'privacySecurity': 'حریم خصوصی و امنیت',
       'exportData': 'خروجی گرفتن از خاطرات مشترک',
-      'exportDataDesc': 'دریافت نسخه زیبای پشتیبان از پاسخ‌ها و خاطرات دونفره‌تان.',
+      'exportDataDesc':
+          'دریافت نسخه زیبای پشتیبان از پاسخ‌ها و خاطرات دونفره‌تان.',
       'unlinkPartner': 'جداسازی پیوند یار',
       'unlinkWarning': 'این کار اتصال دو حساب را با امنیت قطع می‌کند.',
       'aboutApp': 'درباره قرار',
@@ -718,7 +778,8 @@ class AppLocalizations {
 
       // Authentication & Apple ID
       'authTitle': 'به پناهگاه عشق خود خوش آمدید',
-      'authSubtitle': 'برای تعمیق پیوند عاطفی و صمیمیت، با اپل آیدی یا ایمیل خود وارد شوید.',
+      'authSubtitle':
+          'برای تعمیق پیوند عاطفی و صمیمیت، با اپل آیدی یا ایمیل خود وارد شوید.',
       'signInWithApple': 'ورود با اپل آیدی',
       'orDivider': 'یا ادامه با آدرس ایمیل',
       'nameHint': 'نام شما',
@@ -780,11 +841,14 @@ class AppLocalizations {
 
       // Onboarding
       'onboarding1Title': 'Ein geschützter Raum nur für euch zwei',
-      'onboarding1Desc': 'GHARAR ist euer privater Rückzugsort, um tiefe Gespräche zu führen, gemeinsame Leidenschaften zu entdecken und jeden Moment zu schätzen.',
+      'onboarding1Desc':
+          'GHARAR ist euer privater Rückzugsort, um tiefe Gespräche zu führen, gemeinsame Leidenschaften zu entdecken und jeden Moment zu schätzen.',
       'onboarding2Title': 'Tägliche Fragen, privat beantwortet',
-      'onboarding2Desc': 'Jeder Tag bringt eine tiefgründige Frage. Antworten bleiben geheim, bis ihr beide geantwortet habt – für echte Überraschung!',
+      'onboarding2Desc':
+          'Jeder Tag bringt eine tiefgründige Frage. Antworten bleiben geheim, bis ihr beide geantwortet habt – für echte Überraschung!',
       'onboarding3Title': 'Romantische Abenteuer & tiefe Verbundenheit',
-      'onboarding3Desc': 'Kuratierte Date-Ideen, verspielte Quizze, gemeinsame Zukunftsträume und Übungen für emotionale Nähe.',
+      'onboarding3Desc':
+          'Kuratierte Date-Ideen, verspielte Quizze, gemeinsame Zukunftsträume und Übungen für emotionale Nähe.',
       'whatsYourName': 'Wie heißt du?',
       'enterYourName': 'Gib deinen Vornamen ein',
       'selectLanguage': 'Wähle deine bevorzugte Sprache',
@@ -805,12 +869,14 @@ class AppLocalizations {
 
       // Partner Invite
       'invitePartnerTitle': 'Lade deine bessere Hälfte ein',
-      'invitePartnerSubtitle': 'GHARAR ist als synchronisierter Zufluchtsort für zwei konzipiert. Teile diesen Code mit deinem Partner.',
+      'invitePartnerSubtitle':
+          'GHARAR ist als synchronisierter Zufluchtsort für zwei konzipiert. Teile diesen Code mit deinem Partner.',
       'yourInviteCode': 'Euer persönlicher Paar-Code',
       'enterPartnerCode': 'Oder gib den Code deines Partners ein',
       'connectPartnerButton': 'Mit Partner verbinden',
       'simulatedPartner': 'Partner simulieren (Demo-Modus)',
-      'simulatedPartnerDesc': 'Wechsle zwischen Partnern, um das gemeinsame Enthüllen sofort zu testen!',
+      'simulatedPartnerDesc':
+          'Wechsle zwischen Partnern, um das gemeinsame Enthüllen sofort zu testen!',
 
       // Home Dashboard
       'dailyGreetingMorning': 'Guten Morgen, ihr Lieben',
@@ -827,12 +893,17 @@ class AppLocalizations {
       'intensityIcebreaker': 'Leicht & Spielerisch 🌱',
       'intensityMeaningful': 'Herzensnah & Bedeutungsvoll 🌿',
       'intensityDeep': 'Tiefe Seelenreise 🌺',
-      'yourAnswerHint': 'Schreibe ganz ehrlich aus deinem Herzen... Dein Partner sieht dies erst, wenn er auch antwortet.',
-      'privateAnswerNotice': '🔒 Streng vertraulich bis zur beidseitigen Enthüllung.',
-      'partnerAnsweredNotice': 'hat bereits geantwortet! Antworte jetzt, um es gemeinsam zu lesen.',
-      'partnerPendingNotice': 'denkt noch nach. Gib deine Antwort jetzt ein, um bereit zu sein!',
+      'yourAnswerHint':
+          'Schreibe ganz ehrlich aus deinem Herzen... Dein Partner sieht dies erst, wenn er auch antwortet.',
+      'privateAnswerNotice':
+          '🔒 Streng vertraulich bis zur beidseitigen Enthüllung.',
+      'partnerAnsweredNotice':
+          'hat bereits geantwortet! Antworte jetzt, um es gemeinsam zu lesen.',
+      'partnerPendingNotice':
+          'denkt noch nach. Gib deine Antwort jetzt ein, um bereit zu sein!',
       'revealCelebration': 'Eure Seelen haben gesprochen! ✨',
-      'reflectTogetherPrompt': 'Atmet tief durch und lest euch die Gedanken gegenseitig laut vor.',
+      'reflectTogetherPrompt':
+          'Atmet tief durch und lest euch die Gedanken gegenseitig laut vor.',
 
       // Discover & Quizzes
       'discoverHubTitle': 'Entdecken & Harmonisieren',
@@ -840,10 +911,12 @@ class AppLocalizations {
       'quizGameTab': 'Wie gut kennen wir uns?',
       'differencesTab': 'Schöne Unterschiede',
       'futureAlignmentTab': 'Wohin führt unser Weg?',
-      'quizSubtitle': 'Errate, was dein Partner wählen würde, und entdecke liebevolle Einblicke.',
+      'quizSubtitle':
+          'Errate, was dein Partner wählen würde, und entdecke liebevolle Einblicke.',
       'compatibilityScore': 'Seelenharmonie',
       'planThisActivity': 'Dieses Date zusammen planen',
-      'celebrateDifference': 'In Unterschieden erblüht Neugier. Hier ist eine süße Idee, beides zu verbinden:',
+      'celebrateDifference':
+          'In Unterschieden erblüht Neugier. Hier ist eine süße Idee, beides zu verbinden:',
 
       // Couple Activities
       'activitiesTitle': 'Erlebnisse & Dates für Paare',
@@ -870,13 +943,16 @@ class AppLocalizations {
 
       // AI Relationship Companion "Noor"
       'noorTitle': 'Noor • Beziehungsbegleiter',
-      'noorSubtitle': 'Ein sanfter, einfühlsamer Begleiter für bedeutungsvolle Gespräche und liebevolle Gesten.',
-      'noorDisclaimer': 'Noor schenkt Inspiration und Kommunikationstipps. Kein Ersatz für professionelle Paartherapie.',
+      'noorSubtitle':
+          'Ein sanfter, einfühlsamer Begleiter für bedeutungsvolle Gespräche und liebevolle Gesten.',
+      'noorDisclaimer':
+          'Noor schenkt Inspiration und Kommunikationstipps. Kein Ersatz für professionelle Paartherapie.',
       'noorPrompt1': 'Hilf mir, Gefühle behutsam auszudrücken',
       'noorPrompt2': 'Schlage eine gemütliche Überraschung für heute Abend vor',
       'noorPrompt3': 'Gib uns eine tiefgründige Frage für die Nacht',
       'noorPrompt4': 'Wie gehen wir mit unterschiedlicher sozialer Energie um?',
-      'askNoorHint': 'Frag Noor um Rat, Date-Ideen oder Kommunikationsanstöße...',
+      'askNoorHint':
+          'Frag Noor um Rat, Date-Ideen oder Kommunikationsanstöße...',
 
       // Profile & Settings
       'profileTitle': 'Paar-Bereich & Einstellungen',
@@ -887,7 +963,8 @@ class AppLocalizations {
       'darkRomantic': 'Samt-Burgunder (Dunkel Romantisch)',
       'privacySecurity': 'Privatsphäre & Sicherheit',
       'exportData': 'Paar-Erinnerungen exportieren',
-      'exportDataDesc': 'Lade ein wunderschönes Backup eurer gemeinsamen Antworten herunter.',
+      'exportDataDesc':
+          'Lade ein wunderschönes Backup eurer gemeinsamen Antworten herunter.',
       'unlinkPartner': 'Partner-Verbindung trennen',
       'unlinkWarning': 'Trennt die Kopplung beider Konten sicher.',
       'aboutApp': 'Über GHARAR',
@@ -895,7 +972,8 @@ class AppLocalizations {
 
       // Authentication & Apple ID
       'authTitle': 'Willkommen in eurem Zufluchtsort',
-      'authSubtitle': 'Melde dich mit deiner Apple-ID oder E-Mail an, um eure Verbindung zu vertiefen.',
+      'authSubtitle':
+          'Melde dich mit deiner Apple-ID oder E-Mail an, um eure Verbindung zu vertiefen.',
       'signInWithApple': 'Mit Apple anmelden',
       'orDivider': 'oder mit E-Mail fortfahren',
       'nameHint': 'Dein Name',
@@ -957,11 +1035,14 @@ class AppLocalizations {
 
       // Onboarding
       'onboarding1Title': 'Un espacio sagrado sólo para ustedes dos',
-      'onboarding1Desc': 'GHARAR es su santuario privado para profundizar conversaciones, descubrir pasiones compartidas y atesorar cada instante.',
+      'onboarding1Desc':
+          'GHARAR es su santuario privado para profundizar conversaciones, descubrir pasiones compartidas y atesorar cada instante.',
       'onboarding2Title': 'Preguntas diarias, respondidas en privado',
-      'onboarding2Desc': 'Cada día trae una pregunta reflexiva. Las respuestas permanecen ocultas hasta que ambos respondan, ¡manteniendo viva la sorpresa!',
+      'onboarding2Desc':
+          'Cada día trae una pregunta reflexiva. Las respuestas permanecen ocultas hasta que ambos respondan, ¡manteniendo viva la sorpresa!',
       'onboarding3Title': 'Aventuras románticas e intimidad duradera',
-      'onboarding3Desc': 'Ideas de citas seleccionadas, cuestionarios divertidos, sueños compartidos y ejercicios emocionales diseñados para su amor.',
+      'onboarding3Desc':
+          'Ideas de citas seleccionadas, cuestionarios divertidos, sueños compartidos y ejercicios emocionales diseñados para su amor.',
       'whatsYourName': '¿Cómo te llamas?',
       'enterYourName': 'Ingresa tu nombre',
       'selectLanguage': 'Elige tu idioma preferido',
@@ -982,12 +1063,14 @@ class AppLocalizations {
 
       // Partner Invite
       'invitePartnerTitle': 'Invita a tu persona especial',
-      'invitePartnerSubtitle': 'GHARAR fue diseñado como un santuario sincronizado para dos. Comparte este código para entrelazar sus corazones.',
+      'invitePartnerSubtitle':
+          'GHARAR fue diseñado como un santuario sincronizado para dos. Comparte este código para entrelazar sus corazones.',
       'yourInviteCode': 'Su Código Único de Pareja',
       'enterPartnerCode': 'O ingresa el código de tu pareja para conectar',
       'connectPartnerButton': 'Conectar con Pareja',
       'simulatedPartner': 'Simular Pareja (Modo Demo)',
-      'simulatedPartnerDesc': '¡Alterna vistas entre ambos para probar la revelación mutua al instante!',
+      'simulatedPartnerDesc':
+          '¡Alterna vistas entre ambos para probar la revelación mutua al instante!',
 
       // Home Dashboard
       'dailyGreetingMorning': 'Buenos días, queridos',
@@ -1004,12 +1087,17 @@ class AppLocalizations {
       'intensityIcebreaker': 'Ligero y Divertido 🌱',
       'intensityMeaningful': 'Sentido y Significativo 🌿',
       'intensityDeep': 'Exploración Profunda del Alma 🌺',
-      'yourAnswerHint': 'Escribe con total sinceridad desde el corazón... Tu pareja solo verá esto cuando también envíe su respuesta.',
-      'privateAnswerNotice': '🔒 Estrictamente privado hasta la revelación mutua.',
-      'partnerAnsweredNotice': '¡ya ha respondido! Responde ahora para leerlo juntos.',
-      'partnerPendingNotice': 'se está tomando un momento para pensar. ¡Escribe la tuya para estar listos!',
+      'yourAnswerHint':
+          'Escribe con total sinceridad desde el corazón... Tu pareja solo verá esto cuando también envíe su respuesta.',
+      'privateAnswerNotice':
+          '🔒 Estrictamente privado hasta la revelación mutua.',
+      'partnerAnsweredNotice':
+          '¡ya ha respondido! Responde ahora para leerlo juntos.',
+      'partnerPendingNotice':
+          'se está tomando un momento para pensar. ¡Escribe la tuya para estar listos!',
       'revealCelebration': '¡Sus almas han hablado! ✨',
-      'reflectTogetherPrompt': 'Respiren hondo y lean en voz alta lo que escribió el otro.',
+      'reflectTogetherPrompt':
+          'Respiren hondo y lean en voz alta lo que escribió el otro.',
 
       // Discover & Quizzes
       'discoverHubTitle': 'Descubrir y Alinear',
@@ -1017,10 +1105,12 @@ class AppLocalizations {
       'quizGameTab': '¿Cuánto nos conocemos?',
       'differencesTab': 'Hermosas Diferencias',
       'futureAlignmentTab': '¿Hacia dónde vamos?',
-      'quizSubtitle': 'Adivina qué elegirá tu pareja y descubran detalles tiernos y románticos.',
+      'quizSubtitle':
+          'Adivina qué elegirá tu pareja y descubran detalles tiernos y románticos.',
       'compatibilityScore': 'Armonía de Almas',
       'planThisActivity': 'Planear esta Cita Juntos',
-      'celebrateDifference': 'En las diferencias florece la curiosidad. Una forma dulce de unir ambos gustos:',
+      'celebrateDifference':
+          'En las diferencias florece la curiosidad. Una forma dulce de unir ambos gustos:',
 
       // Couple Activities
       'activitiesTitle': 'Experiencias y Citas en Pareja',
@@ -1047,8 +1137,10 @@ class AppLocalizations {
 
       // AI Relationship Companion "Noor"
       'noorTitle': 'Noor • Acompañante de Pareja',
-      'noorSubtitle': 'Una guía cálida y empática para inspirar conversaciones significativas y gestos amorosos.',
-      'noorDisclaimer': 'Noor ofrece inspiración y consejos de comunicación. No reemplaza terapia de parejas profesional.',
+      'noorSubtitle':
+          'Una guía cálida y empática para inspirar conversaciones significativas y gestos amorosos.',
+      'noorDisclaimer':
+          'Noor ofrece inspiración y consejos de comunicación. No reemplaza terapia de parejas profesional.',
       'noorPrompt1': 'Ayúdame a expresar mis sentimientos con ternura',
       'noorPrompt2': 'Sugiere una sorpresa acogedora en casa para esta noche',
       'noorPrompt3': 'Danos una pregunta profunda para conversar esta noche',
@@ -1064,7 +1156,8 @@ class AppLocalizations {
       'darkRomantic': 'Borgoña Terciopelo (Oscuro Romántico)',
       'privacySecurity': 'Privacidad y Seguridad',
       'exportData': 'Exportar Recuerdos Compartidos',
-      'exportDataDesc': 'Descarga una copia hermosa de sus respuestas y diario.',
+      'exportDataDesc':
+          'Descarga una copia hermosa de sus respuestas y diario.',
       'unlinkPartner': 'Desvincular Pareja',
       'unlinkWarning': 'Esto finalizará de forma segura la sesión compartida.',
       'aboutApp': 'Acerca de GHARAR',
@@ -1072,7 +1165,8 @@ class AppLocalizations {
 
       // Authentication & Apple ID
       'authTitle': 'Bienvenidos a su Santuario',
-      'authSubtitle': 'Inicia sesión con tu Apple ID o correo para profundizar su conexión.',
+      'authSubtitle':
+          'Inicia sesión con tu Apple ID o correo para profundizar su conexión.',
       'signInWithApple': 'Iniciar sesión con Apple',
       'orDivider': 'o continuar con correo',
       'nameHint': 'Tu Nombre',
@@ -1134,11 +1228,14 @@ class AppLocalizations {
 
       // Onboarding
       'onboarding1Title': 'Un havre sacré rien que pour vous deux',
-      'onboarding1Desc': 'GHARAR est votre sanctuaire intime pour susciter des conversations profondes, explorer vos passions et chérir chaque instant.',
+      'onboarding1Desc':
+          'GHARAR est votre sanctuaire intime pour susciter des conversations profondes, explorer vos passions et chérir chaque instant.',
       'onboarding2Title': 'Des questions quotidiennes, des réponses secrètes',
-      'onboarding2Desc': 'Chaque jour apporte une question inspirante. Vos réponses restent voilées jusqu’à ce que chacun ait répondu, pour préserver la surprise !',
+      'onboarding2Desc':
+          'Chaque jour apporte une question inspirante. Vos réponses restent voilées jusqu’à ce que chacun ait répondu, pour préserver la surprise !',
       'onboarding3Title': 'Aventures romantiques & complicité durable',
-      'onboarding3Desc': 'Des idées de rendez-vous poétiques, des quiz complices, des rêves d’avenir partagés et des rituels d’intimité émotionnelle.',
+      'onboarding3Desc':
+          'Des idées de rendez-vous poétiques, des quiz complices, des rêves d’avenir partagés et des rituels d’intimité émotionnelle.',
       'whatsYourName': 'Quel est ton prénom ?',
       'enterYourName': 'Saisis ton prénom',
       'selectLanguage': 'Choisis ta langue préférée',
@@ -1159,12 +1256,14 @@ class AppLocalizations {
 
       // Partner Invite
       'invitePartnerTitle': 'Invite ton âme sœur',
-      'invitePartnerSubtitle': 'GHARAR a été pensé comme un cocon synchronisé pour deux. Partage ce code avec ton partenaire pour lier vos cœurs.',
+      'invitePartnerSubtitle':
+          'GHARAR a été pensé comme un cocon synchronisé pour deux. Partage ce code avec ton partenaire pour lier vos cœurs.',
       'yourInviteCode': 'Votre Code de Couple Unique',
       'enterPartnerCode': 'Ou entre le code de ton partenaire',
       'connectPartnerButton': 'Se Lier au Partenaire',
       'simulatedPartner': 'Simuler le Partenaire (Mode Démo)',
-      'simulatedPartnerDesc': 'Basculez d’un partenaire à l’autre pour tester la révélation instantanée en 1 clic !',
+      'simulatedPartnerDesc':
+          'Basculez d’un partenaire à l’autre pour tester la révélation instantanée en 1 clic !',
 
       // Home Dashboard
       'dailyGreetingMorning': 'Bonjour, chers amoureux',
@@ -1181,12 +1280,17 @@ class AppLocalizations {
       'intensityIcebreaker': 'Léger & Espiègle 🌱',
       'intensityMeaningful': 'Sincère & Plein de Sens 🌿',
       'intensityDeep': 'Exploration Profonde de l’Âme 🌺',
-      'yourAnswerHint': 'Écris en toute sincérité avec ton cœur... Ton partenaire ne lira ceci qu’après avoir partagé sa réponse.',
-      'privateAnswerNotice': '🔒 Strictement confidentiel jusqu’à la découverte mutuelle.',
-      'partnerAnsweredNotice': 'a répondu ! Écris ta réponse pour découvrir vos cœurs ensemble.',
-      'partnerPendingNotice': 'prend le temps de méditer. Écris la tienne dès maintenant pour être prêt !',
+      'yourAnswerHint':
+          'Écris en toute sincérité avec ton cœur... Ton partenaire ne lira ceci qu’après avoir partagé sa réponse.',
+      'privateAnswerNotice':
+          '🔒 Strictement confidentiel jusqu’à la découverte mutuelle.',
+      'partnerAnsweredNotice':
+          'a répondu ! Écris ta réponse pour découvrir vos cœurs ensemble.',
+      'partnerPendingNotice':
+          'prend le temps de méditer. Écris la tienne dès maintenant pour être prêt !',
       'revealCelebration': 'Vos âmes se sont exprimées ! ✨',
-      'reflectTogetherPrompt': 'Prenez une douce inspiration et lisez à haute voix ce que vous avez écrit.',
+      'reflectTogetherPrompt':
+          'Prenez une douce inspiration et lisez à haute voix ce que vous avez écrit.',
 
       // Discover & Quizzes
       'discoverHubTitle': 'Découvrir & S’accorder',
@@ -1194,10 +1298,12 @@ class AppLocalizations {
       'quizGameTab': 'À quel point nous connaissons-nous ?',
       'differencesTab': 'Nos Belles Différences',
       'futureAlignmentTab': 'Vers où nous avançons ?',
-      'quizSubtitle': 'Devine ce que choisirait ton partenaire et savoure de douces révélations romantiques.',
+      'quizSubtitle':
+          'Devine ce que choisirait ton partenaire et savoure de douces révélations romantiques.',
       'compatibilityScore': 'Harmonie des Âmes',
       'planThisActivity': 'Organiser ce Rendez-vous Ensemble',
-      'celebrateDifference': 'C’est dans la différence que fleurit la tendresse. Voici une idée pour marier vos envies :',
+      'celebrateDifference':
+          'C’est dans la différence que fleurit la tendresse. Voici une idée pour marier vos envies :',
 
       // Couple Activities
       'activitiesTitle': 'Rendez-vous & Moments Partagés',
@@ -1224,13 +1330,17 @@ class AppLocalizations {
 
       // AI Relationship Companion "Noor"
       'noorTitle': 'Noor • Compagnon de Relation',
-      'noorSubtitle': 'Un guide bienveillant et plein d’empathie pour inspirer des échanges sincères et des attentions douces.',
-      'noorDisclaimer': 'Noor offre de l’inspiration et des pistes d’écoute. Ne remplace pas une thérapie de couple professionnelle.',
+      'noorSubtitle':
+          'Un guide bienveillant et plein d’empathie pour inspirer des échanges sincères et des attentions douces.',
+      'noorDisclaimer':
+          'Noor offre de l’inspiration et des pistes d’écoute. Ne remplace pas une thérapie de couple professionnelle.',
       'noorPrompt1': 'Aide-moi à exprimer mes ressentis avec délicatesse',
       'noorPrompt2': 'Suggère une surprise intime à la maison pour ce soir',
       'noorPrompt3': 'Donne-nous une question émouvante pour ce soir',
-      'noorPrompt4': 'Comment concilier nos besoins différents d’énergie sociale ?',
-      'askNoorHint': 'Demande un conseil, une idée ou une inspiration à Noor...',
+      'noorPrompt4':
+          'Comment concilier nos besoins différents d’énergie sociale ?',
+      'askNoorHint':
+          'Demande un conseil, une idée ou une inspiration à Noor...',
 
       // Profile & Settings
       'profileTitle': 'Espace du Couple & Paramètres',
@@ -1241,15 +1351,18 @@ class AppLocalizations {
       'darkRomantic': 'Velours Bourgogne (Sombre Romantique)',
       'privacySecurity': 'Confidentialité & Sécurité',
       'exportData': 'Exporter Nos Souvenirs de Couple',
-      'exportDataDesc': 'Télécharge une belle sauvegarde de vos réponses et de votre journal.',
+      'exportDataDesc':
+          'Télécharge une belle sauvegarde de vos réponses et de votre journal.',
       'unlinkPartner': 'Dissocier le Partenaire',
-      'unlinkWarning': 'Cette action mettra fin à la session commune en toute sécurité.',
+      'unlinkWarning':
+          'Cette action mettra fin à la session commune en toute sécurité.',
       'aboutApp': 'À propos de GHARAR',
       'resetDemo': 'Actualiser l’espace couple',
 
       // Authentication & Apple ID
       'authTitle': 'Bienvenue dans votre Sanctuaire',
-      'authSubtitle': 'Connectez-vous avec Apple ID ou votre e-mail pour approfondir votre lien.',
+      'authSubtitle':
+          'Connectez-vous avec Apple ID ou votre e-mail pour approfondir votre lien.',
       'signInWithApple': 'Continuer avec Apple',
       'orDivider': 'ou continuer avec un e-mail',
       'nameHint': 'Votre Prénom',
@@ -1264,7 +1377,8 @@ class AppLocalizations {
       'signOutConfirm': 'Voulez-vous vraiment vous déconnecter ?',
       'emailRequired': 'Veuillez saisir votre adresse e-mail',
       'nameRequired': 'Veuillez saisir votre nom',
-      'passwordRequired': 'Le mot de passe doit comporter au moins 6 caractères',
+      'passwordRequired':
+          'Le mot de passe doit comporter au moins 6 caractères',
       'invalidEmail': 'Veuillez saisir une adresse e-mail valide',
     },
 
@@ -1311,11 +1425,14 @@ class AppLocalizations {
 
       // Onboarding
       'onboarding1Title': 'Un rifugio sacro solo per voi due',
-      'onboarding1Desc': 'GHARAR è il vostro nido privato per accendere dialoghi intimi, scoprire passioni condivise e custodire ogni istante.',
+      'onboarding1Desc':
+          'GHARAR è il vostro nido privato per accendere dialoghi intimi, scoprire passioni condivise e custodire ogni istante.',
       'onboarding2Title': 'Domande quotidiane, risposte segrete',
-      'onboarding2Desc': 'Ogni giorno una domanda colma di sentimento. Le risposte restano celate finché entrambi non rispondete, per donarvi la gioia della sorpresa!',
+      'onboarding2Desc':
+          'Ogni giorno una domanda colma di sentimento. Le risposte restano celate finché entrambi non rispondete, per donarvi la gioia della sorpresa!',
       'onboarding3Title': 'Avventure romantiche e profonda armonia',
-      'onboarding3Desc': 'Idee per appuntamenti poetici, quiz giocosi, sogni per il futuro ed esercizi per nutrire la vostra complicità emotiva.',
+      'onboarding3Desc':
+          'Idee per appuntamenti poetici, quiz giocosi, sogni per il futuro ed esercizi per nutrire la vostra complicità emotiva.',
       'whatsYourName': 'Come ti chiami?',
       'enterYourName': 'Inserisci il tuo nome',
       'selectLanguage': 'Scegli la lingua desiderata',
@@ -1336,12 +1453,14 @@ class AppLocalizations {
 
       // Partner Invite
       'invitePartnerTitle': 'Invita la tua dolce metà',
-      'invitePartnerSubtitle': 'GHARAR è stato creato come uno spazio sincronizzato per due cuori. Condividi questo codice con il partner.',
+      'invitePartnerSubtitle':
+          'GHARAR è stato creato come uno spazio sincronizzato per due cuori. Condividi questo codice con il partner.',
       'yourInviteCode': 'Il Vostro Codice di Coppia',
       'enterPartnerCode': 'O inserisci il codice del partner',
       'connectPartnerButton': 'Collegati al Partner',
       'simulatedPartner': 'Simula Partner (Modalità Demo)',
-      'simulatedPartnerDesc': 'Alterna tra i due partner per provare subito l’emozione dello svelamento reciproco!',
+      'simulatedPartnerDesc':
+          'Alterna tra i due partner per provare subito l’emozione dello svelamento reciproco!',
 
       // Home Dashboard
       'dailyGreetingMorning': 'Buongiorno, anime care',
@@ -1358,12 +1477,17 @@ class AppLocalizations {
       'intensityIcebreaker': 'Leggero & Giocoso 🌱',
       'intensityMeaningful': 'Sentito & Significativo 🌿',
       'intensityDeep': 'Esplorazione Profonda dell’Anima 🌺',
-      'yourAnswerHint': 'Scrivi sinceramente con tutto il cuore... Il tuo partner potrà leggere queste righe solo dopo aver risposto a sua volta.',
-      'privateAnswerNotice': '🔒 Rigorosamente privato fino allo svelamento congiunto.',
-      'partnerAnsweredNotice': 'ha già risposto! Invia la tua risposta per scoprirvi insieme.',
-      'partnerPendingNotice': 'sta raccogliendo i pensieri. Scrivi ora per farti trovare pronto!',
+      'yourAnswerHint':
+          'Scrivi sinceramente con tutto il cuore... Il tuo partner potrà leggere queste righe solo dopo aver risposto a sua volta.',
+      'privateAnswerNotice':
+          '🔒 Rigorosamente privato fino allo svelamento congiunto.',
+      'partnerAnsweredNotice':
+          'ha già risposto! Invia la tua risposta per scoprirvi insieme.',
+      'partnerPendingNotice':
+          'sta raccogliendo i pensieri. Scrivi ora per farti trovare pronto!',
       'revealCelebration': 'I vostri cuori si sono parlati! ✨',
-      'reflectTogetherPrompt': 'Fate un respiro profondo e leggete ad alta voce i pensieri dell’altro.',
+      'reflectTogetherPrompt':
+          'Fate un respiro profondo e leggete ad alta voce i pensieri dell’altro.',
 
       // Discover & Quizzes
       'discoverHubTitle': 'Scopri & Armonizza',
@@ -1371,10 +1495,12 @@ class AppLocalizations {
       'quizGameTab': 'Quanto ci conosciamo?',
       'differencesTab': 'Le Nostre Belle Differenze',
       'futureAlignmentTab': 'Dove stiamo andando?',
-      'quizSubtitle': 'Indovina cosa sceglierebbe il partner e scopri sguardi dolci e inaspettati.',
+      'quizSubtitle':
+          'Indovina cosa sceglierebbe il partner e scopri sguardi dolci e inaspettati.',
       'compatibilityScore': 'Armonia delle Anime',
       'planThisActivity': 'Organizza questa Uscita Insieme',
-      'celebrateDifference': 'Nella diversità fiorisce la curiosità. Ecco un modo soave per abbracciare entrambi i gusti:',
+      'celebrateDifference':
+          'Nella diversità fiorisce la curiosità. Ecco un modo soave per abbracciare entrambi i gusti:',
 
       // Couple Activities
       'activitiesTitle': 'Esperienze & Appuntamenti di Coppia',
@@ -1397,17 +1523,22 @@ class AppLocalizations {
       'addEntry': 'Aggiungi Nota d’Amore / Ricordo',
       'newMilestone': 'Nuova Tappa',
       'entryTitle': 'Titolo del Ricordo',
-      'entryReflection': 'Racconta cosa ha reso indimenticabile questo istante...',
+      'entryReflection':
+          'Racconta cosa ha reso indimenticabile questo istante...',
 
       // AI Relationship Companion "Noor"
       'noorTitle': 'Noor • Guida di Coppia',
-      'noorSubtitle': 'Una guida delicata ed empatica per ispirare dialoghi accoglienti e gesti pieni d’affetto.',
-      'noorDisclaimer': 'Noor offre ispirazione e suggerimenti di comunicazione. Non sostituisce una consulenza di coppia professionale.',
+      'noorSubtitle':
+          'Una guida delicata ed empatica per ispirare dialoghi accoglienti e gesti pieni d’affetto.',
+      'noorDisclaimer':
+          'Noor offre ispirazione e suggerimenti di comunicazione. Non sostituisce una consulenza di coppia professionale.',
       'noorPrompt1': 'Aiutami a esprimere i miei sentimenti con gentilezza',
       'noorPrompt2': 'Suggerisci una dolce sorpresa a casa per stasera',
       'noorPrompt3': 'Donaci una domanda suggestiva per chiacchierare stanotte',
-      'noorPrompt4': 'Come conciliare i nostri diversi livelli di energia sociale?',
-      'askNoorHint': 'Chiedi a Noor un consiglio, un’idea per un appuntamento o uno spunto...',
+      'noorPrompt4':
+          'Come conciliare i nostri diversi livelli di energia sociale?',
+      'askNoorHint':
+          'Chiedi a Noor un consiglio, un’idea per un appuntamento o uno spunto...',
 
       // Profile & Settings
       'profileTitle': 'Spazio di Coppia & Impostazioni',
@@ -1418,15 +1549,18 @@ class AppLocalizations {
       'darkRomantic': 'Velluto Borgogna (Scuro Romantico)',
       'privacySecurity': 'Privacy & Sicurezza',
       'exportData': 'Esporta i Ricordi di Coppia',
-      'exportDataDesc': 'Scarica un elegante archivio delle vostre risposte e del diario.',
+      'exportDataDesc':
+          'Scarica un elegante archivio delle vostre risposte e del diario.',
       'unlinkPartner': 'Scollega Partner',
-      'unlinkWarning': 'Questo interromperà la sessione condivisa in sicurezza.',
+      'unlinkWarning':
+          'Questo interromperà la sessione condivisa in sicurezza.',
       'aboutApp': 'Informazioni su GHARAR',
       'resetDemo': 'Aggiorna spazio di coppia',
 
       // Authentication & Apple ID
       'authTitle': 'Benvenuti nel vostro Santuario',
-      'authSubtitle': 'Accedi con Apple ID o la tua e-mail per approfondire il vostro legame.',
+      'authSubtitle':
+          'Accedi con Apple ID o la tua e-mail per approfondire il vostro legame.',
       'signInWithApple': 'Accedi con Apple',
       'orDivider': 'oppure continua con e-mail',
       'nameHint': 'Il tuo Nome',

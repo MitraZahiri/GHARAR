@@ -48,16 +48,16 @@ class UserModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'avatar': avatar,
-        'preferredLanguage': preferredLanguage,
-        'relationshipStage': relationshipStage,
-        'selectedGoals': selectedGoals,
-        'joinedAt': joinedAt.toIso8601String(),
-        'email': email,
-        'authProvider': authProvider,
-      };
+    'id': id,
+    'name': name,
+    'avatar': avatar,
+    'preferredLanguage': preferredLanguage,
+    'relationshipStage': relationshipStage,
+    'selectedGoals': selectedGoals,
+    'joinedAt': joinedAt.toIso8601String(),
+    'email': email,
+    'authProvider': authProvider,
+  };
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -66,11 +66,13 @@ class UserModel {
       avatar: json['avatar'] as String? ?? '🌸',
       preferredLanguage: json['preferredLanguage'] as String? ?? 'en',
       relationshipStage: json['relationshipStage'] as String? ?? 'stageDating',
-      selectedGoals: (json['selectedGoals'] as List<dynamic>?)
+      selectedGoals:
+          (json['selectedGoals'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
-      joinedAt: DateTime.tryParse(json['joinedAt'] as String? ?? '') ??
+      joinedAt:
+          DateTime.tryParse(json['joinedAt'] as String? ?? '') ??
           DateTime.now(),
       email: json['email'] as String?,
       authProvider: json['authProvider'] as String?,

@@ -54,17 +54,17 @@ class MilestoneModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'titleEn': titleEn,
-        'titleTr': titleTr,
-        'descriptionEn': descriptionEn,
-        'descriptionTr': descriptionTr,
-        'milestoneDate': milestoneDate.toIso8601String(),
-        'icon': icon,
-        'badgeTextEn': badgeTextEn,
-        'badgeTextTr': badgeTextTr,
-        'isCelebrated': isCelebrated,
-      };
+    'id': id,
+    'titleEn': titleEn,
+    'titleTr': titleTr,
+    'descriptionEn': descriptionEn,
+    'descriptionTr': descriptionTr,
+    'milestoneDate': milestoneDate.toIso8601String(),
+    'icon': icon,
+    'badgeTextEn': badgeTextEn,
+    'badgeTextTr': badgeTextTr,
+    'isCelebrated': isCelebrated,
+  };
 
   factory MilestoneModel.fromJson(Map<String, dynamic> json) {
     return MilestoneModel(
@@ -75,7 +75,7 @@ class MilestoneModel {
       descriptionTr: json['descriptionTr'] as String,
       milestoneDate:
           DateTime.tryParse(json['milestoneDate'] as String? ?? '') ??
-              DateTime.now(),
+          DateTime.now(),
       icon: json['icon'] as String? ?? '🌟',
       badgeTextEn: json['badgeTextEn'] as String? ?? 'Milestone',
       badgeTextTr: json['badgeTextTr'] as String? ?? 'Dönüm Noktası',

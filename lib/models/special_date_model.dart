@@ -3,7 +3,8 @@ class SpecialDateModel {
   final String titleEn;
   final String titleTr;
   final DateTime date;
-  final String category; // 'Anniversary', 'Birthday', 'Trip', 'Date Night', 'Milestone'
+  final String
+  category; // 'Anniversary', 'Birthday', 'Trip', 'Date Night', 'Milestone'
   final String icon;
   final String notes;
   final bool reminderEnabled;
@@ -55,15 +56,15 @@ class SpecialDateModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'titleEn': titleEn,
-        'titleTr': titleTr,
-        'date': date.toIso8601String(),
-        'category': category,
-        'icon': icon,
-        'notes': notes,
-        'reminderEnabled': reminderEnabled,
-      };
+    'id': id,
+    'titleEn': titleEn,
+    'titleTr': titleTr,
+    'date': date.toIso8601String(),
+    'category': category,
+    'icon': icon,
+    'notes': notes,
+    'reminderEnabled': reminderEnabled,
+  };
 
   factory SpecialDateModel.fromJson(Map<String, dynamic> json) {
     return SpecialDateModel(

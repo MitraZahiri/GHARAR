@@ -8,17 +8,15 @@ import 'package:gharar/services/storage_service.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('GHARAR app boots up and renders main shell',
-      (WidgetTester tester) async {
+  testWidgets('GHARAR app boots up and renders main shell', (
+    WidgetTester tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
     final storageService = await StorageService.init();
     final provider = AppStateProvider(storageService);
 
     await tester.pumpWidget(
-      ChangeNotifierProvider.value(
-        value: provider,
-        child: const GhararApp(),
-      ),
+      ChangeNotifierProvider.value(value: provider, child: const GhararApp()),
     );
 
     await tester.pump();

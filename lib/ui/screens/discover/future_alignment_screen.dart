@@ -27,12 +27,18 @@ class FutureAlignmentScreen extends StatelessWidget {
         'icon': '🏡',
         'statusEn': 'Aligned with Excitement ✨',
         'statusTr': 'Büyük Bir Heyecanla Uyumlu ✨',
-        'p1En': 'Sunlit loft or stone house with a big book library and green balcony.',
-        'p1Tr': 'Büyük bir kitaplığı ve bol çiçekli balkonu olan aydınlık, ferah bir yuva.',
-        'p2En': 'Warm wooden kitchen with acoustic music and serene mountain or sea breeze.',
-        'p2Tr': 'Akustik müzik dinlenebilen sıcak ahşap bir mutfak ve huzurlu bir deniz/doğa esintisi.',
-        'bridgeEn': 'You both crave natural light, quiet nooks, and a home that feels like a refuge from the world.',
-        'bridgeTr': 'İkiniz de doğal ışığı, sessiz köşeleri ve dünyaya karşı bir sığınak hissi veren huzurlu bir evi hayal ediyorsunuz.',
+        'p1En':
+            'Sunlit loft or stone house with a big book library and green balcony.',
+        'p1Tr':
+            'Büyük bir kitaplığı ve bol çiçekli balkonu olan aydınlık, ferah bir yuva.',
+        'p2En':
+            'Warm wooden kitchen with acoustic music and serene mountain or sea breeze.',
+        'p2Tr':
+            'Akustik müzik dinlenebilen sıcak ahşap bir mutfak ve huzurlu bir deniz/doğa esintisi.',
+        'bridgeEn':
+            'You both crave natural light, quiet nooks, and a home that feels like a refuge from the world.',
+        'bridgeTr':
+            'İkiniz de doğal ışığı, sessiz köşeleri ve dünyaya karşı bir sığınak hissi veren huzurlu bir evi hayal ediyorsunuz.',
       },
       {
         'titleEn': 'Travel & Bucket List Horizons',
@@ -40,12 +46,18 @@ class FutureAlignmentScreen extends StatelessWidget {
         'icon': '🌍',
         'statusEn': 'Shared Aspiration ✈️',
         'statusTr': 'Ortak Ufuklar ✈️',
-        'p1En': 'A month-long slow road trip exploring the Mediterranean and cooking classes.',
-        'p1Tr': 'Akdeniz boyunca yavaş bir yolculuk ve yerel yemek atölyelerine katılmak.',
-        'p2En': 'Renting a campervan or scenic train journey across historic villages.',
-        'p2Tr': 'Karavan kiralayarak tarihi dağ köylerini ve manzaralı tren rotalarını gezmek.',
-        'bridgeEn': 'Focus on unhurried, cultural immersion rather than crowded tourist checklists.',
-        'bridgeTr': 'Kalabalık turist listeleri yerine ikiniz de yerel kültürü sindirerek yavaş seyahat etmeyi seviyorsunuz.',
+        'p1En':
+            'A month-long slow road trip exploring the Mediterranean and cooking classes.',
+        'p1Tr':
+            'Akdeniz boyunca yavaş bir yolculuk ve yerel yemek atölyelerine katılmak.',
+        'p2En':
+            'Renting a campervan or scenic train journey across historic villages.',
+        'p2Tr':
+            'Karavan kiralayarak tarihi dağ köylerini ve manzaralı tren rotalarını gezmek.',
+        'bridgeEn':
+            'Focus on unhurried, cultural immersion rather than crowded tourist checklists.',
+        'bridgeTr':
+            'Kalabalık turist listeleri yerine ikiniz de yerel kültürü sindirerek yavaş seyahat etmeyi seviyorsunuz.',
       },
       {
         'titleEn': 'Financial Harmony & Growth',
@@ -53,12 +65,18 @@ class FutureAlignmentScreen extends StatelessWidget {
         'icon': '🌱',
         'statusEn': 'Open Discussion Invitation 💬',
         'statusTr': 'Tatlı Bir Sohbet Başlatıcı 💬',
-        'p1En': 'Balance healthy savings with generous budget for shared spontaneous travel & dates.',
-        'p1Tr': 'Gelecek birikimini korurken ortak seyahatler ve randevular için cömert bir bütçe ayırmak.',
-        'p2En': 'Prioritize investing in long-term peace of mind, family safety, and sustainable freedom.',
-        'p2Tr': 'Önceliği uzun vadeli huzur, aile güvencesi ve finansal özgürlüğe vermek.',
-        'bridgeEn': 'A wonderful opportunity to design a joint "Spontaneous Joy Fund" alongside your long-term security plan!',
-        'bridgeTr': 'Gelecek güvencenizin yanına tatlı bir "Spontane Neşe Fonu" eklemek için mükemmel bir sohbet fırsatı!',
+        'p1En':
+            'Balance healthy savings with generous budget for shared spontaneous travel & dates.',
+        'p1Tr':
+            'Gelecek birikimini korurken ortak seyahatler ve randevular için cömert bir bütçe ayırmak.',
+        'p2En':
+            'Prioritize investing in long-term peace of mind, family safety, and sustainable freedom.',
+        'p2Tr':
+            'Önceliği uzun vadeli huzur, aile güvencesi ve finansal özgürlüğe vermek.',
+        'bridgeEn':
+            'A wonderful opportunity to design a joint "Spontaneous Joy Fund" alongside your long-term security plan!',
+        'bridgeTr':
+            'Gelecek güvencenizin yanına tatlı bir "Spontane Neşe Fonu" eklemek için mükemmel bir sohbet fırsatı!',
       },
       {
         'titleEn': 'Family, Rituals & Traditions',
@@ -66,12 +84,18 @@ class FutureAlignmentScreen extends StatelessWidget {
         'icon': '🕯️',
         'statusEn': 'Deeply Harmonious 🕊️',
         'statusTr': 'Derinden Uyumlu 🕊️',
-        'p1En': 'Sunday family pancake mornings, holiday gratitude dinners, and unconditional love.',
-        'p1Tr': 'Pazar sabahı pankek ritüeli, şükran dolu bayram sofraları ve koşulsuz sevgi.',
-        'p2En': 'Cultivating open emotional communication and bedtime reflection routines.',
-        'p2Tr': 'Açık duygusal iletişim ve uyku öncesi sakin gün değerlendirme alışkanlıkları.',
-        'bridgeEn': 'Your values of warmth, emotional presence, and gentle traditions are beautifully linked.',
-        'bridgeTr': 'Sıcaklık, duygusal varlık ve nazik aile geleneklerine verdiğiniz değerler birbiriyle pürüzsüz örtüşüyor.',
+        'p1En':
+            'Sunday family pancake mornings, holiday gratitude dinners, and unconditional love.',
+        'p1Tr':
+            'Pazar sabahı pankek ritüeli, şükran dolu bayram sofraları ve koşulsuz sevgi.',
+        'p2En':
+            'Cultivating open emotional communication and bedtime reflection routines.',
+        'p2Tr':
+            'Açık duygusal iletişim ve uyku öncesi sakin gün değerlendirme alışkanlıkları.',
+        'bridgeEn':
+            'Your values of warmth, emotional presence, and gentle traditions are beautifully linked.',
+        'bridgeTr':
+            'Sıcaklık, duygusal varlık ve nazik aile geleneklerine verdiğiniz değerler birbiriyle pürüzsüz örtüşüyor.',
       },
     ];
 
@@ -79,9 +103,9 @@ class FutureAlignmentScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           isTr ? 'Nereye Doğru İlerliyoruz?' : 'Where Are We Heading?',
-          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyles.titleMedium(
+            isDark: isDark,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
       ),
       body: SingleChildScrollView(
@@ -93,9 +117,10 @@ class FutureAlignmentScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                gradient: isDark
-                    ? AppColors.darkCardGradient
-                    : AppColors.intimateCardGradient,
+                gradient:
+                    isDark
+                        ? AppColors.darkCardGradient
+                        : AppColors.intimateCardGradient,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -113,8 +138,9 @@ class FutureAlignmentScreen extends StatelessWidget {
                           isTr
                               ? 'Ortak Ufuklar & Şefkatli Sohbetler'
                               : 'Shared Horizons & Gentle Dialogue',
-                          style: AppTextStyles.titleMedium(isDark: isDark)
-                              .copyWith(fontWeight: FontWeight.w700),
+                          style: AppTextStyles.titleMedium(
+                            isDark: isDark,
+                          ).copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -184,14 +210,19 @@ class FuturePillarCard extends StatelessWidget {
           // Header
           Row(
             children: [
-              Text(pillar['icon'] as String,
-                  style: const TextStyle(fontSize: 22)),
+              Text(
+                pillar['icon'] as String,
+                style: const TextStyle(fontSize: 22),
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  isTr ? pillar['titleTr'] as String : pillar['titleEn'] as String,
-                  style: AppTextStyles.titleMedium(isDark: isDark)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  isTr
+                      ? pillar['titleTr'] as String
+                      : pillar['titleEn'] as String,
+                  style: AppTextStyles.titleMedium(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
             ],
@@ -225,17 +256,19 @@ class FuturePillarCard extends StatelessWidget {
               Expanded(
                 child: RichText(
                   text: TextSpan(
-                    style: AppTextStyles.bodySmall(isDark: isDark)
-                        .copyWith(fontSize: 13),
+                    style: AppTextStyles.bodySmall(
+                      isDark: isDark,
+                    ).copyWith(fontSize: 13),
                     children: [
                       TextSpan(
                         text: '${partner1.name}: ',
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextSpan(
-                        text: isTr
-                            ? pillar['p1Tr'] as String
-                            : pillar['p1En'] as String,
+                        text:
+                            isTr
+                                ? pillar['p1Tr'] as String
+                                : pillar['p1En'] as String,
                       ),
                     ],
                   ),
@@ -255,17 +288,19 @@ class FuturePillarCard extends StatelessWidget {
               Expanded(
                 child: RichText(
                   text: TextSpan(
-                    style: AppTextStyles.bodySmall(isDark: isDark)
-                        .copyWith(fontSize: 13),
+                    style: AppTextStyles.bodySmall(
+                      isDark: isDark,
+                    ).copyWith(fontSize: 13),
                     children: [
                       TextSpan(
                         text: '${partner2.name}: ',
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextSpan(
-                        text: isTr
-                            ? pillar['p2Tr'] as String
-                            : pillar['p2En'] as String,
+                        text:
+                            isTr
+                                ? pillar['p2Tr'] as String
+                                : pillar['p2En'] as String,
                       ),
                     ],
                   ),
@@ -293,9 +328,9 @@ class FuturePillarCard extends StatelessWidget {
                     isTr
                         ? pillar['bridgeTr'] as String
                         : pillar['bridgeEn'] as String,
-                    style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: AppTextStyles.bodySmall(
+                      isDark: isDark,
+                    ).copyWith(fontStyle: FontStyle.italic),
                   ),
                 ),
               ],

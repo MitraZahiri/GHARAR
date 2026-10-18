@@ -34,10 +34,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
 
     return ResponsiveWrapper(
       child: Scaffold(
-        body: IndexedStack(
-          index: _currentIndex,
-          children: _screens,
-        ),
+        body: IndexedStack(index: _currentIndex, children: _screens),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkCard : Colors.white,
@@ -65,8 +62,10 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                   isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
               unselectedItemColor:
                   isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-              selectedFontSize: MediaQuery.sizeOf(context).width <= 360 ? 11 : 12,
-              unselectedFontSize: MediaQuery.sizeOf(context).width <= 360 ? 10 : 11,
+              selectedFontSize:
+                  MediaQuery.sizeOf(context).width <= 360 ? 11 : 12,
+              unselectedFontSize:
+                  MediaQuery.sizeOf(context).width <= 360 ? 10 : 11,
               selectedLabelStyle: const TextStyle(
                 fontWeight: FontWeight.w700,
                 overflow: TextOverflow.ellipsis,

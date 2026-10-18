@@ -39,24 +39,24 @@ class AIMessageModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'sender': sender.name,
-        'contentEn': contentEn,
-        'contentTr': contentTr,
-        'timestamp': timestamp.toIso8601String(),
-        'suggestedActionPrompt': suggestedActionPrompt,
-      };
+    'id': id,
+    'sender': sender.name,
+    'contentEn': contentEn,
+    'contentTr': contentTr,
+    'timestamp': timestamp.toIso8601String(),
+    'suggestedActionPrompt': suggestedActionPrompt,
+  };
 
   factory AIMessageModel.fromJson(Map<String, dynamic> json) {
     return AIMessageModel(
       id: json['id'] as String,
-      sender: json['sender'] == 'user'
-          ? MessageSender.user
-          : MessageSender.noor,
+      sender:
+          json['sender'] == 'user' ? MessageSender.user : MessageSender.noor,
       contentEn: json['contentEn'] as String,
       contentTr: json['contentTr'] as String,
       timestamp:
-          DateTime.tryParse(json['timestamp'] as String? ?? '') ?? DateTime.now(),
+          DateTime.tryParse(json['timestamp'] as String? ?? '') ??
+          DateTime.now(),
       suggestedActionPrompt: json['suggestedActionPrompt'] as String?,
     );
   }

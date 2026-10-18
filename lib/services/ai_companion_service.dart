@@ -4,16 +4,16 @@ class AICompanionService {
   AICompanionService._();
 
   static List<AIMessageModel> getInitialMessages() => [
-        AIMessageModel(
-          id: 'welcome_noor',
-          sender: MessageSender.noor,
-          contentEn:
-              'Hello, lovely souls. I am Noor, your gentle relationship companion. I am here to help you articulate tender feelings respectfully, spark cozy date ideas, and cultivate emotional safety. How can I nurture your bond today?',
-          contentTr:
-              'Merhaba güzel kalpler. Ben Noor, şefkatli ilişki yoldaşınız. Duygularınızı incitmeden ifade etmenize, tatlı randevu fikirleri bulmanıza ve aranızdaki güveni derinleştirmenize yardımcı olmak için buradayım. Bugün sevginize nasıl bir ışık tutabilirim?',
-          timestamp: DateTime.now(),
-        ),
-      ];
+    AIMessageModel(
+      id: 'welcome_noor',
+      sender: MessageSender.noor,
+      contentEn:
+          'Hello, lovely souls. I am Noor, your gentle relationship companion. I am here to help you articulate tender feelings respectfully, spark cozy date ideas, and cultivate emotional safety. How can I nurture your bond today?',
+      contentTr:
+          'Merhaba güzel kalpler. Ben Noor, şefkatli ilişki yoldaşınız. Duygularınızı incitmeden ifade etmenize, tatlı randevu fikirleri bulmanıza ve aranızdaki güveni derinleştirmenize yardımcı olmak için buradayım. Bugün sevginize nasıl bir ışık tutabilirim?',
+      timestamp: DateTime.now(),
+    ),
+  ];
 
   static Future<AIMessageModel> generateResponse({
     required String userPrompt,

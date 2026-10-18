@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 enum ActivityBudget { free, low, medium, luxury }
+
 enum ActivitySetting { atHome, indoor, outdoor }
+
 enum ActivityVibe { romantic, adventurous, relaxing, playful }
 
 class ActivityModel {
@@ -148,24 +150,24 @@ class ActivityModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'titleEn': titleEn,
-        'titleTr': titleTr,
-        'descriptionEn': descriptionEn,
-        'descriptionTr': descriptionTr,
-        'categoryEn': categoryEn,
-        'categoryTr': categoryTr,
-        'budget': budget.name,
-        'setting': setting.name,
-        'vibe': vibe.name,
-        'duration': duration,
-        'icon': icon,
-        'tipsEn': tipsEn,
-        'tipsTr': tipsTr,
-        'isCompleted': isCompleted,
-        'isSaved': isSaved,
-        'completedAt': completedAt?.toIso8601String(),
-      };
+    'id': id,
+    'titleEn': titleEn,
+    'titleTr': titleTr,
+    'descriptionEn': descriptionEn,
+    'descriptionTr': descriptionTr,
+    'categoryEn': categoryEn,
+    'categoryTr': categoryTr,
+    'budget': budget.name,
+    'setting': setting.name,
+    'vibe': vibe.name,
+    'duration': duration,
+    'icon': icon,
+    'tipsEn': tipsEn,
+    'tipsTr': tipsTr,
+    'isCompleted': isCompleted,
+    'isSaved': isSaved,
+    'completedAt': completedAt?.toIso8601String(),
+  };
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) {
     return ActivityModel(
@@ -190,19 +192,22 @@ class ActivityModel {
       ),
       duration: json['duration'] as String? ?? '1-2 hrs',
       icon: json['icon'] as String? ?? '🕯️',
-      tipsEn: (json['tipsEn'] as List<dynamic>?)
+      tipsEn:
+          (json['tipsEn'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
-      tipsTr: (json['tipsTr'] as List<dynamic>?)
+      tipsTr:
+          (json['tipsTr'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
       isCompleted: json['isCompleted'] as bool? ?? false,
       isSaved: json['isSaved'] as bool? ?? false,
-      completedAt: json['completedAt'] != null
-          ? DateTime.tryParse(json['completedAt'] as String)
-          : null,
+      completedAt:
+          json['completedAt'] != null
+              ? DateTime.tryParse(json['completedAt'] as String)
+              : null,
     );
   }
 

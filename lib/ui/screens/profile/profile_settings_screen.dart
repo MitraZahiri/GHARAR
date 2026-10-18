@@ -22,23 +22,35 @@ class ProfileSettingsScreen extends StatelessWidget {
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
     final loc = AppLocalizations.of(context);
 
-    final couple = context.select<AppStateProvider, CoupleModel?>((p) => p.couple);
-    final active = context.select<AppStateProvider, UserModel>((p) => p.activePartner);
-    final other = context.select<AppStateProvider, UserModel>((p) => p.otherPartner);
+    final couple = context.select<AppStateProvider, CoupleModel?>(
+      (p) => p.couple,
+    );
+    final active = context.select<AppStateProvider, UserModel>(
+      (p) => p.activePartner,
+    );
+    final other = context.select<AppStateProvider, UserModel>(
+      (p) => p.otherPartner,
+    );
     final partner1 = couple?.partner1 ?? active;
     final partner2 = couple?.partner2 ?? other;
 
-    final currentLanguage = context.select<AppStateProvider, AppLanguage>((p) => p.currentLanguage);
-    final authProvider = context.select<AppStateProvider, String?>((p) => p.authProvider);
-    final userEmail = context.select<AppStateProvider, String?>((p) => p.userEmail);
+    final currentLanguage = context.select<AppStateProvider, AppLanguage>(
+      (p) => p.currentLanguage,
+    );
+    final authProvider = context.select<AppStateProvider, String?>(
+      (p) => p.authProvider,
+    );
+    final userEmail = context.select<AppStateProvider, String?>(
+      (p) => p.userEmail,
+    );
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           isTr ? 'Çift Alanı & Ayarlar' : 'Couple Profile & Settings',
-          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyles.titleMedium(
+            isDark: isDark,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
       ),
       body: SingleChildScrollView(
@@ -49,9 +61,10 @@ class ProfileSettingsScreen extends StatelessWidget {
             // Couple Profile Card
             GlassCard(
               padding: const EdgeInsets.all(22),
-              gradient: isDark
-                  ? AppColors.darkCardGradient
-                  : AppColors.intimateCardGradient,
+              gradient:
+                  isDark
+                      ? AppColors.darkCardGradient
+                      : AppColors.intimateCardGradient,
               child: Column(
                 children: [
                   const SoulConnectionArt(
@@ -64,7 +77,11 @@ class ProfileSettingsScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AvatarBubble(avatar: partner1.avatar, name: partner1.name, isDark: isDark),
+                      AvatarBubble(
+                        avatar: partner1.avatar,
+                        name: partner1.name,
+                        isDark: isDark,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
@@ -73,22 +90,28 @@ class ProfileSettingsScreen extends StatelessWidget {
                             fontSize: 24,
                             shadows: [
                               BoxShadow(
-                                color: AppColors.blushPinkDeep.withValues(alpha: 0.6),
+                                color: AppColors.blushPinkDeep.withValues(
+                                  alpha: 0.6,
+                                ),
                                 blurRadius: 10,
                               ),
                             ],
                           ),
                         ),
                       ),
-                      AvatarBubble(avatar: partner2.avatar, name: partner2.name, isDark: isDark),
+                      AvatarBubble(
+                        avatar: partner2.avatar,
+                        name: partner2.name,
+                        isDark: isDark,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Text(
                     '${partner1.name} & ${partner2.name}',
-                    style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTextStyles.displaySmall(
+                      isDark: isDark,
+                    ).copyWith(fontWeight: FontWeight.w800),
                   ),
                   const SizedBox(height: 4),
                   if (couple != null)
@@ -104,21 +127,27 @@ class ProfileSettingsScreen extends StatelessWidget {
                   // Couple Invite Code Pill
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 8),
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkCardElevated
-                          : Colors.white,
+                      color: isDark ? AppColors.darkCardElevated : Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                        color:
+                            isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
                       ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.key_rounded,
-                            size: 16, color: AppColors.champagneGold),
+                        const Icon(
+                          Icons.key_rounded,
+                          size: 16,
+                          color: AppColors.champagneGold,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           couple?.inviteCode ?? 'GHARAR-7842-LOVE',
@@ -130,18 +159,26 @@ class ProfileSettingsScreen extends StatelessWidget {
                         const SizedBox(width: 10),
                         GestureDetector(
                           onTap: () {
-                            Clipboard.setData(ClipboardData(
-                                text: couple?.inviteCode ?? 'GHARAR-7842-LOVE'));
+                            Clipboard.setData(
+                              ClipboardData(
+                                text: couple?.inviteCode ?? 'GHARAR-7842-LOVE',
+                              ),
+                            );
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(isTr
-                                    ? 'Davet kodu kopyalandı!'
-                                    : 'Invite code copied to clipboard!'),
+                                content: Text(
+                                  isTr
+                                      ? 'Davet kodu kopyalandı!'
+                                      : 'Invite code copied to clipboard!',
+                                ),
                               ),
                             );
                           },
-                          child: const Icon(Icons.copy_rounded,
-                              size: 16, color: AppColors.deepBurgundy),
+                          child: const Icon(
+                            Icons.copy_rounded,
+                            size: 16,
+                            color: AppColors.deepBurgundy,
+                          ),
                         ),
                       ],
                     ),
@@ -172,15 +209,17 @@ class ProfileSettingsScreen extends StatelessWidget {
                           isTr
                               ? 'Şu anda ${active.name} olarak bakıyorsunuz'
                               : 'Viewing as ${active.name}',
-                          style: AppTextStyles.titleMedium(isDark: isDark)
-                              .copyWith(fontSize: 14, fontWeight: FontWeight.w700),
+                          style: AppTextStyles.titleMedium(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 14, fontWeight: FontWeight.w700),
                         ),
                         Text(
                           isTr
                               ? 'Karşılıklı cevapları test etmek için partnerinizi değiştirin.'
                               : 'Switch partner to simulate answers & test mutual reveal.',
-                          style: AppTextStyles.bodySmall(isDark: isDark)
-                              .copyWith(fontSize: 11),
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 11),
                         ),
                       ],
                     ),
@@ -210,11 +249,12 @@ class ProfileSettingsScreen extends StatelessWidget {
 
             // Premium Banner
             GlassCard(
-              gradient: isDark
-                  ? const LinearGradient(
-                      colors: [Color(0xFF33202C), Color(0xFF241520)],
-                    )
-                  : AppColors.sunsetGold,
+              gradient:
+                  isDark
+                      ? const LinearGradient(
+                        colors: [Color(0xFF33202C), Color(0xFF241520)],
+                      )
+                      : AppColors.sunsetGold,
               padding: const EdgeInsets.all(18),
               onTap: () {
                 Navigator.of(context).push(
@@ -252,8 +292,11 @@ class ProfileSettingsScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios_rounded,
-                      color: Colors.white, size: 14),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: Colors.white,
+                    size: 14,
+                  ),
                 ],
               ),
             ),
@@ -270,7 +313,12 @@ class ProfileSettingsScreen extends StatelessWidget {
             // Multi-Language Localization Selector (8 Languages & RTL)
             GlassCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              onTap: () => _showLanguagePickerSheet(context, isDark, currentLanguage),
+              onTap:
+                  () => _showLanguagePickerSheet(
+                    context,
+                    isDark,
+                    currentLanguage,
+                  ),
               child: Row(
                 children: [
                   const Icon(Icons.language_rounded, size: 22),
@@ -280,30 +328,47 @@ class ProfileSettingsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isTr ? 'Uygulama Dili (8 Dil)' : 'App Language (8 Languages)',
-                          style: AppTextStyles.titleMedium(isDark: isDark)
-                              .copyWith(fontSize: 14, fontWeight: FontWeight.w700),
+                          isTr
+                              ? 'Uygulama Dili (8 Dil)'
+                              : 'App Language (8 Languages)',
+                          style: AppTextStyles.titleMedium(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 14, fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           currentLanguage.tagline,
-                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(
                             fontSize: 11,
-                            color: isDark ? AppColors.lavenderAccent : AppColors.burgundyRose,
+                            color:
+                                isDark
+                                    ? AppColors.lavenderAccent
+                                    : AppColors.burgundyRose,
                           ),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkCardElevated
-                          : AppColors.blushPinkLight,
+                      color:
+                          isDark
+                              ? AppColors.darkCardElevated
+                              : AppColors.blushPinkLight,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isDark ? AppColors.darkBorder : AppColors.blushPinkDeep.withValues(alpha: 0.4),
+                        color:
+                            isDark
+                                ? AppColors.darkBorder
+                                : AppColors.blushPinkDeep.withValues(
+                                  alpha: 0.4,
+                                ),
                       ),
                     ),
                     child: Row(
@@ -311,14 +376,22 @@ class ProfileSettingsScreen extends StatelessWidget {
                       children: [
                         Text(
                           '${currentLanguage.flag} ${currentLanguage.nativeName}',
-                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                          ),
                         ),
                         if (currentLanguage.isRtl) ...[
                           const SizedBox(width: 4),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 1,
+                            ),
                             decoration: BoxDecoration(
-                              color: AppColors.champagneGold.withValues(alpha: 0.2),
+                              color: AppColors.champagneGold.withValues(
+                                alpha: 0.2,
+                              ),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: const Text(
@@ -358,15 +431,21 @@ class ProfileSettingsScreen extends StatelessWidget {
                       children: [
                         Text(
                           isTr ? 'Romantik Tema Modu' : 'Romantic Theme',
-                          style: AppTextStyles.titleMedium(isDark: isDark)
-                              .copyWith(fontSize: 14),
+                          style: AppTextStyles.titleMedium(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 14),
                         ),
                         Text(
                           isDark
-                              ? (isTr ? 'Kadife Bordo (Karanlık)' : 'Velvet Burgundy (Dark)')
-                              : (isTr ? 'Krem & Pudra Pembe (Aydınlık)' : 'Cream & Blush Pink (Light)'),
-                          style: AppTextStyles.bodySmall(isDark: isDark)
-                              .copyWith(fontSize: 11),
+                              ? (isTr
+                                  ? 'Kadife Bordo (Karanlık)'
+                                  : 'Velvet Burgundy (Dark)')
+                              : (isTr
+                                  ? 'Krem & Pudra Pembe (Aydınlık)'
+                                  : 'Cream & Blush Pink (Light)'),
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 11),
                         ),
                       ],
                     ),
@@ -399,22 +478,29 @@ class ProfileSettingsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isTr ? 'Çift Anılarını Dışa Aktar' : 'Export Couple Memories',
-                          style: AppTextStyles.titleMedium(isDark: isDark)
-                              .copyWith(fontSize: 14),
+                          isTr
+                              ? 'Çift Anılarını Dışa Aktar'
+                              : 'Export Couple Memories',
+                          style: AppTextStyles.titleMedium(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 14),
                         ),
                         Text(
                           isTr
                               ? 'Paylaşılan cevapları ve günlüğü metin olarak kopyalayın'
                               : 'Copy shared reflections and journal to clipboard',
-                          style: AppTextStyles.bodySmall(isDark: isDark)
-                              .copyWith(fontSize: 11),
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 11),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.copy_all_rounded,
-                      size: 18, color: AppColors.lightTextMuted),
+                  const Icon(
+                    Icons.copy_all_rounded,
+                    size: 18,
+                    color: AppColors.lightTextMuted,
+                  ),
                 ],
               ),
             ),
@@ -423,12 +509,14 @@ class ProfileSettingsScreen extends StatelessWidget {
 
             // Account & Security / Connected Profile
             Text(
-              loc?.translate('authAccountInfo') ?? (isTr ? 'Giriş & Güvenlik' : 'Account & Security'),
+              loc?.translate('authAccountInfo') ??
+                  (isTr ? 'Giriş & Güvenlik' : 'Account & Security'),
               style: AppTextStyles.labelLarge(isDark: isDark).copyWith(
                 fontWeight: FontWeight.w700,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextMuted,
+                color:
+                    isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextMuted,
               ),
             ),
             const SizedBox(height: 8),
@@ -442,9 +530,10 @@ class ProfileSettingsScreen extends StatelessWidget {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkCardElevated
-                              : AppColors.blushPinkLight,
+                          color:
+                              isDark
+                                  ? AppColors.darkCardElevated
+                                  : AppColors.blushPinkLight,
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -463,11 +552,15 @@ class ProfileSettingsScreen extends StatelessWidget {
                           children: [
                             Text(
                               authProvider == 'apple'
-                                  ? (isTr ? 'Apple Kimliği ile Bağlı' : 'Apple ID Connected')
-                                  : (isTr ? 'E-posta ile Bağlı' : 'Email Connected'),
-                              style: AppTextStyles.labelLarge(isDark: isDark).copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
+                                  ? (isTr
+                                      ? 'Apple Kimliği ile Bağlı'
+                                      : 'Apple ID Connected')
+                                  : (isTr
+                                      ? 'E-posta ile Bağlı'
+                                      : 'Email Connected'),
+                              style: AppTextStyles.labelLarge(
+                                isDark: isDark,
+                              ).copyWith(fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(height: 2),
                             Text(
@@ -476,11 +569,14 @@ class ProfileSettingsScreen extends StatelessWidget {
                                   : (authProvider == 'apple'
                                       ? 'mitra@privaterelay.appleid.com'
                                       : 'mitra@gharar.love'),
-                              style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                              style: AppTextStyles.bodySmall(
+                                isDark: isDark,
+                              ).copyWith(
                                 fontSize: 12,
-                                color: isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextMuted,
+                                color:
+                                    isDark
+                                        ? AppColors.darkTextSecondary
+                                        : AppColors.lightTextMuted,
                               ),
                             ),
                           ],
@@ -488,27 +584,31 @@ class ProfileSettingsScreen extends StatelessWidget {
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: authProvider == 'apple'
-                              ? (isDark ? Colors.white : Colors.black)
-                              : AppColors.blushPinkDeep.withValues(alpha: 0.15),
+                          color:
+                              authProvider == 'apple'
+                                  ? (isDark ? Colors.white : Colors.black)
+                                  : AppColors.blushPinkDeep.withValues(
+                                    alpha: 0.15,
+                                  ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           authProvider == 'apple'
                               ? ' Apple'
-                              : (authProvider == 'email'
-                                  ? 'Email'
-                                  : 'Demo'),
+                              : (authProvider == 'email' ? 'Email' : 'Demo'),
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
-                            color: authProvider == 'apple'
-                                ? (isDark ? Colors.black : Colors.white)
-                                : (isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy),
+                            color:
+                                authProvider == 'apple'
+                                    ? (isDark ? Colors.black : Colors.white)
+                                    : (isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy),
                           ),
                         ),
                       ),
@@ -517,16 +617,19 @@ class ProfileSettingsScreen extends StatelessWidget {
                   const SizedBox(height: 14),
                   Divider(
                     height: 1,
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    color:
+                        isDark ? AppColors.darkBorder : AppColors.lightBorder,
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () => _showSignOutDialog(context, isDark, isTr),
+                      onPressed:
+                          () => _showSignOutDialog(context, isDark, isTr),
                       icon: const Icon(Icons.logout_rounded, size: 16),
                       label: Text(
-                        loc?.translate('signOutBtn') ?? (isTr ? 'Çıkış Yap' : 'Sign Out'),
+                        loc?.translate('signOutBtn') ??
+                            (isTr ? 'Çıkış Yap' : 'Sign Out'),
                       ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.burgundyRose,
@@ -556,12 +659,15 @@ class ProfileSettingsScreen extends StatelessWidget {
     final buffer = StringBuffer();
     buffer.writeln('=== GHARAR COUPLE JOURNAL & MEMORIES ===');
     buffer.writeln(
-        'Couple: ${provider.couple?.partnerNames ?? (isTr ? "Siz & Partneriniz" : "You & Partner")}');
+      'Couple: ${provider.couple?.partnerNames ?? (isTr ? "Siz & Partneriniz" : "You & Partner")}',
+    );
     buffer.writeln('Date: ${DateTime.now()}\n');
 
     buffer.writeln('--- JOURNAL ENTRIES ---');
     for (final j in provider.journalEntries) {
-      buffer.writeln('[${j.date.toIso8601String()}] ${j.title} (${j.moodEmoji})');
+      buffer.writeln(
+        '[${j.date.toIso8601String()}] ${j.title} (${j.moodEmoji})',
+      );
       buffer.writeln('Author: ${j.authorName}');
       buffer.writeln('${j.notes}\n');
     }
@@ -591,59 +697,72 @@ class ProfileSettingsScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: isDark ? AppColors.darkCardElevated : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            const Text('🔒', style: TextStyle(fontSize: 22)),
-            const SizedBox(width: 8),
-            Text(
-              loc?.translate('signOutBtn') ?? (isTr ? 'Çıkış Yap' : 'Sign Out'),
-              style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: isDark ? AppColors.darkCardElevated : Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-          ],
-        ),
-        content: Text(
-          loc?.translate('signOutConfirm') ??
-              (isTr
-                  ? 'Oturumunuzu kapatmak istediğinize emin misiniz? Çift alanınıza tekrar girmek için Apple ID veya e-postanızla giriş yapabilirsiniz.'
-                  : 'Are you sure you want to sign out? You can sign back in anytime with your Apple ID or email.'),
-          style: AppTextStyles.bodyMedium(isDark: isDark),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(
-              loc?.translate('cancel') ?? (isTr ? 'İptal' : 'Cancel'),
-              style: TextStyle(
-                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextMuted,
-              ),
+            title: Row(
+              children: [
+                const Text('🔒', style: TextStyle(fontSize: 22)),
+                const SizedBox(width: 8),
+                Text(
+                  loc?.translate('signOutBtn') ??
+                      (isTr ? 'Çıkış Yap' : 'Sign Out'),
+                  style: AppTextStyles.titleMedium(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w800),
+                ),
+              ],
             ),
+            content: Text(
+              loc?.translate('signOutConfirm') ??
+                  (isTr
+                      ? 'Oturumunuzu kapatmak istediğinize emin misiniz? Çift alanınıza tekrar girmek için Apple ID veya e-postanızla giriş yapabilirsiniz.'
+                      : 'Are you sure you want to sign out? You can sign back in anytime with your Apple ID or email.'),
+              style: AppTextStyles.bodyMedium(isDark: isDark),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text(
+                  loc?.translate('cancel') ?? (isTr ? 'İptal' : 'Cancel'),
+                  style: TextStyle(
+                    color:
+                        isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextMuted,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  context.read<AppStateProvider>().signOut();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.burgundyRose,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  loc?.translate('signOutBtn') ??
+                      (isTr ? 'Çıkış Yap' : 'Sign Out'),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              context.read<AppStateProvider>().signOut();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.burgundyRose,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Text(loc?.translate('signOutBtn') ?? (isTr ? 'Çıkış Yap' : 'Sign Out')),
-          ),
-        ],
-      ),
     );
   }
 
   void _showLanguagePickerSheet(
-      BuildContext context, bool isDark, AppLanguage currentLang) {
+    BuildContext context,
+    bool isDark,
+    AppLanguage currentLang,
+  ) {
     final isTr = currentLang.code == 'tr';
 
     showModalBottomSheet(
@@ -690,8 +809,12 @@ class ProfileSettingsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isTr ? 'Uygulama Dili Seçin' : 'Choose App Language',
-                            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                            isTr
+                                ? 'Uygulama Dili Seçin'
+                                : 'Choose App Language',
+                            style: AppTextStyles.titleMedium(
+                              isDark: isDark,
+                            ).copyWith(
                               fontWeight: FontWeight.w800,
                               fontSize: 18,
                             ),
@@ -716,8 +839,10 @@ class ProfileSettingsScreen extends StatelessWidget {
               Flexible(
                 child: ListView.separated(
                   shrinkWrap: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   itemCount: AppLanguage.supportedLanguages.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 8),
                   itemBuilder: (ctx, index) {
@@ -727,36 +852,46 @@ class ProfileSettingsScreen extends StatelessWidget {
                     return InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        context.read<AppStateProvider>().setLanguageCode(lang.code);
+                        context.read<AppStateProvider>().setLanguageCode(
+                          lang.code,
+                        );
                         Navigator.of(ctx).pop();
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected
-                              ? (isDark
-                                  ? AppColors.blushPinkDeep
-                                      .withValues(alpha: 0.22)
-                                  : AppColors.blushPinkLight)
-                              : Colors.transparent,
+                          color:
+                              isSelected
+                                  ? (isDark
+                                      ? AppColors.blushPinkDeep.withValues(
+                                        alpha: 0.22,
+                                      )
+                                      : AppColors.blushPinkLight)
+                                  : Colors.transparent,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isSelected
-                                ? (isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy)
-                                : (isDark
-                                    ? AppColors.darkBorder
-                                        .withValues(alpha: 0.5)
-                                    : AppColors.lightBorder),
+                            color:
+                                isSelected
+                                    ? (isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy)
+                                    : (isDark
+                                        ? AppColors.darkBorder.withValues(
+                                          alpha: 0.5,
+                                        )
+                                        : AppColors.lightBorder),
                             width: isSelected ? 1.8 : 1.0,
                           ),
                         ),
                         child: Row(
                           children: [
-                            Text(lang.flag,
-                                style: const TextStyle(fontSize: 28)),
+                            Text(
+                              lang.flag,
+                              style: const TextStyle(fontSize: 28),
+                            ),
                             const SizedBox(width: 14),
                             Expanded(
                               child: Column(
@@ -767,11 +902,12 @@ class ProfileSettingsScreen extends StatelessWidget {
                                       Text(
                                         lang.nativeName,
                                         style: AppTextStyles.titleMedium(
-                                                isDark: isDark)
-                                            .copyWith(
-                                          fontWeight: isSelected
-                                              ? FontWeight.w800
-                                              : FontWeight.w600,
+                                          isDark: isDark,
+                                        ).copyWith(
+                                          fontWeight:
+                                              isSelected
+                                                  ? FontWeight.w800
+                                                  : FontWeight.w600,
                                           fontSize: 15,
                                         ),
                                       ),
@@ -779,24 +915,28 @@ class ProfileSettingsScreen extends StatelessWidget {
                                       Text(
                                         '(${lang.name})',
                                         style: AppTextStyles.bodySmall(
-                                                isDark: isDark)
-                                            .copyWith(
+                                          isDark: isDark,
+                                        ).copyWith(
                                           fontSize: 12,
-                                          color: isDark
-                                              ? AppColors.darkTextSecondary
-                                              : AppColors.lightTextMuted,
+                                          color:
+                                              isDark
+                                                  ? AppColors.darkTextSecondary
+                                                  : AppColors.lightTextMuted,
                                         ),
                                       ),
                                       if (lang.isRtl) ...[
                                         const SizedBox(width: 6),
                                         Container(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 6, vertical: 2),
+                                            horizontal: 6,
+                                            vertical: 2,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: AppColors.champagneGold
                                                 .withValues(alpha: 0.2),
-                                            borderRadius:
-                                                BorderRadius.circular(6),
+                                            borderRadius: BorderRadius.circular(
+                                              6,
+                                            ),
                                           ),
                                           child: const Text(
                                             'RTL',
@@ -814,13 +954,14 @@ class ProfileSettingsScreen extends StatelessWidget {
                                   Text(
                                     lang.tagline,
                                     style: AppTextStyles.bodySmall(
-                                            isDark: isDark)
-                                        .copyWith(
+                                      isDark: isDark,
+                                    ).copyWith(
                                       fontSize: 11,
                                       fontStyle: FontStyle.italic,
-                                      color: isDark
-                                          ? AppColors.lavenderAccent
-                                          : AppColors.burgundyRose,
+                                      color:
+                                          isDark
+                                              ? AppColors.lavenderAccent
+                                              : AppColors.burgundyRose,
                                     ),
                                   ),
                                 ],
@@ -829,9 +970,10 @@ class ProfileSettingsScreen extends StatelessWidget {
                             if (isSelected)
                               Icon(
                                 Icons.check_circle_rounded,
-                                color: isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy,
+                                color:
+                                    isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy,
                                 size: 22,
                               ),
                           ],
@@ -892,9 +1034,9 @@ class AvatarBubble extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           name,
-          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyles.bodySmall(
+            isDark: isDark,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
       ],
     );

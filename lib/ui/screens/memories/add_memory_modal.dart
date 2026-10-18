@@ -59,16 +59,17 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
             const SizedBox(height: 16),
             Text(
               isTr ? 'Yeni Sevgi Notu / Anı Ekle' : 'Add Love Note / Memory',
-              style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-              ),
+              style: AppTextStyles.titleMedium(
+                isDark: isDark,
+              ).copyWith(fontWeight: FontWeight.w700, fontSize: 18),
             ),
             const SizedBox(height: 16),
 
             // Mood Selector
-            Text(isTr ? 'Anın Hissi & Emojisi:' : 'Mood & Feeling:',
-                style: AppTextStyles.labelLarge(isDark: isDark)),
+            Text(
+              isTr ? 'Anın Hissi & Emojisi:' : 'Mood & Feeling:',
+              style: AppTextStyles.labelLarge(isDark: isDark),
+            ),
             const SizedBox(height: 8),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -92,9 +93,10 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
               controller: _titleController,
               decoration: InputDecoration(
                 labelText: isTr ? 'Anı Başlığı' : 'Memory Title',
-                hintText: isTr
-                    ? 'Örn: Mum ışığında balkonda ilk kahvemiz...'
-                    : 'e.g. First quiet coffee on the balcony...',
+                hintText:
+                    isTr
+                        ? 'Örn: Mum ışığında balkonda ilk kahvemiz...'
+                        : 'e.g. First quiet coffee on the balcony...',
               ),
             ),
 
@@ -106,23 +108,29 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
               maxLines: 4,
               decoration: InputDecoration(
                 labelText: isTr ? 'Kalbinizden Geçenler' : 'Heartfelt Notes',
-                hintText: isTr
-                    ? 'Bu anı unutulmaz kılan duygularınızı ve sevginizi buraya fısıldayın...'
-                    : 'Write what made this moment feel unforgettable and tender...',
+                hintText:
+                    isTr
+                        ? 'Bu anı unutulmaz kılan duygularınızı ve sevginizi buraya fısıldayın...'
+                        : 'Write what made this moment feel unforgettable and tender...',
               ),
             ),
 
             const SizedBox(height: 24),
 
             GradientButton(
-              text: isTr ? 'Anıyı Çift Günlüğüne Kaydet 📖' : 'Save to Couple Journal 📖',
+              text:
+                  isTr
+                      ? 'Anıyı Çift Günlüğüne Kaydet 📖'
+                      : 'Save to Couple Journal 📖',
               onPressed: () {
                 if (_titleController.text.trim().isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(isTr
-                          ? 'Lütfen bir anı başlığı yazın.'
-                          : 'Please enter a title for this memory.'),
+                      content: Text(
+                        isTr
+                            ? 'Lütfen bir anı başlığı yazın.'
+                            : 'Please enter a title for this memory.',
+                      ),
                     ),
                   );
                   return;
@@ -141,7 +149,8 @@ class _AddMemoryModalState extends State<AddMemoryModal> {
                     backgroundColor: AppColors.deepBurgundy,
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     content: Text(
                       isTr
                           ? 'Yeni anınız sevgiyle günlüğe kaydedildi! 💖'
@@ -180,18 +189,20 @@ class MoodPickerItem extends StatelessWidget {
         margin: const EdgeInsets.only(right: 10),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? (isDark
-                  ? AppColors.blushPinkDeep.withValues(alpha: 0.25)
-                  : AppColors.blushPinkLight)
-              : Colors.transparent,
+          color:
+              isSelected
+                  ? (isDark
+                      ? AppColors.blushPinkDeep.withValues(alpha: 0.25)
+                      : AppColors.blushPinkLight)
+                  : Colors.transparent,
           shape: BoxShape.circle,
           border: Border.all(
-            color: isSelected
-                ? (isDark
-                    ? AppColors.blushPinkDeep
-                    : AppColors.deepBurgundy)
-                : Colors.transparent,
+            color:
+                isSelected
+                    ? (isDark
+                        ? AppColors.blushPinkDeep
+                        : AppColors.deepBurgundy)
+                    : Colors.transparent,
           ),
         ),
         child: Text(emoji, style: const TextStyle(fontSize: 22)),

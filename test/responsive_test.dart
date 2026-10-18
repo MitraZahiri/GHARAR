@@ -73,8 +73,9 @@ void main() {
       final deviceName = entry.key;
       final size = entry.value;
 
-      testWidgets('Renders MainNavigationShell cleanly on $deviceName',
-          (WidgetTester tester) async {
+      testWidgets('Renders MainNavigationShell cleanly on $deviceName', (
+        WidgetTester tester,
+      ) async {
         tester.view.physicalSize = size;
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
@@ -93,8 +94,9 @@ void main() {
         expect(tester.takeException(), isNull);
       });
 
-      testWidgets('Renders OnboardingScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
+      testWidgets('Renders OnboardingScreen without overflow on $deviceName', (
+        WidgetTester tester,
+      ) async {
         tester.view.physicalSize = size;
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
@@ -113,50 +115,55 @@ void main() {
         expect(tester.takeException(), isNull);
       });
 
-      testWidgets('Renders DailyQuestionScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
-        tester.view.physicalSize = size;
-        tester.view.devicePixelRatio = 1.0;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
+      testWidgets(
+        'Renders DailyQuestionScreen without overflow on $deviceName',
+        (WidgetTester tester) async {
+          tester.view.physicalSize = size;
+          tester.view.devicePixelRatio = 1.0;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
 
-        await tester.pumpWidget(
-          createTestableWidget(
-            child: const DailyQuestionScreen(),
-            provider: provider,
-          ),
-        );
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 200));
+          await tester.pumpWidget(
+            createTestableWidget(
+              child: const DailyQuestionScreen(),
+              provider: provider,
+            ),
+          );
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 200));
 
-        expect(find.byType(DailyQuestionScreen), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
+          expect(find.byType(DailyQuestionScreen), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        },
+      );
 
-      testWidgets('Renders AnswerRevealScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
-        tester.view.physicalSize = size;
-        tester.view.devicePixelRatio = 1.0;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
+      testWidgets(
+        'Renders AnswerRevealScreen without overflow on $deviceName',
+        (WidgetTester tester) async {
+          tester.view.physicalSize = size;
+          tester.view.devicePixelRatio = 1.0;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
 
-        final q = provider.currentQuestion ?? provider.questions.first;
-        await tester.pumpWidget(
-          createTestableWidget(
-            child: AnswerRevealScreen(question: q),
-            provider: provider,
-          ),
-        );
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 200));
+          final q = provider.currentQuestion ?? provider.questions.first;
+          await tester.pumpWidget(
+            createTestableWidget(
+              child: AnswerRevealScreen(question: q),
+              provider: provider,
+            ),
+          );
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 200));
 
-        expect(find.byType(AnswerRevealScreen), findsOneWidget);
-        expect(tester.takeException(), isNull);
-        await tester.pump(const Duration(seconds: 4));
-      });
+          expect(find.byType(AnswerRevealScreen), findsOneWidget);
+          expect(tester.takeException(), isNull);
+          await tester.pump(const Duration(seconds: 4));
+        },
+      );
 
-      testWidgets('Renders QuizGameScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
+      testWidgets('Renders QuizGameScreen without overflow on $deviceName', (
+        WidgetTester tester,
+      ) async {
         tester.view.physicalSize = size;
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
@@ -175,8 +182,9 @@ void main() {
         expect(tester.takeException(), isNull);
       });
 
-      testWidgets('Renders DiscoverHubScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
+      testWidgets('Renders DiscoverHubScreen without overflow on $deviceName', (
+        WidgetTester tester,
+      ) async {
         tester.view.physicalSize = size;
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
@@ -195,28 +203,31 @@ void main() {
         expect(tester.takeException(), isNull);
       });
 
-      testWidgets('Renders ActivitiesExplorerScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
-        tester.view.physicalSize = size;
-        tester.view.devicePixelRatio = 1.0;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
+      testWidgets(
+        'Renders ActivitiesExplorerScreen without overflow on $deviceName',
+        (WidgetTester tester) async {
+          tester.view.physicalSize = size;
+          tester.view.devicePixelRatio = 1.0;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
 
-        await tester.pumpWidget(
-          createTestableWidget(
-            child: const ActivitiesExplorerScreen(),
-            provider: provider,
-          ),
-        );
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 200));
+          await tester.pumpWidget(
+            createTestableWidget(
+              child: const ActivitiesExplorerScreen(),
+              provider: provider,
+            ),
+          );
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 200));
 
-        expect(find.byType(ActivitiesExplorerScreen), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
+          expect(find.byType(ActivitiesExplorerScreen), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        },
+      );
 
-      testWidgets('Renders MemoriesHubScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
+      testWidgets('Renders MemoriesHubScreen without overflow on $deviceName', (
+        WidgetTester tester,
+      ) async {
         tester.view.physicalSize = size;
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
@@ -235,65 +246,71 @@ void main() {
         expect(tester.takeException(), isNull);
       });
 
-      testWidgets('Renders SubscriptionScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
-        tester.view.physicalSize = size;
-        tester.view.devicePixelRatio = 1.0;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
+      testWidgets(
+        'Renders SubscriptionScreen without overflow on $deviceName',
+        (WidgetTester tester) async {
+          tester.view.physicalSize = size;
+          tester.view.devicePixelRatio = 1.0;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
 
-        await tester.pumpWidget(
-          createTestableWidget(
-            child: const SubscriptionScreen(),
-            provider: provider,
-          ),
-        );
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 200));
+          await tester.pumpWidget(
+            createTestableWidget(
+              child: const SubscriptionScreen(),
+              provider: provider,
+            ),
+          );
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 200));
 
-        expect(find.byType(SubscriptionScreen), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
+          expect(find.byType(SubscriptionScreen), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        },
+      );
 
-      testWidgets('Renders PartnerInviteScreen without overflow on $deviceName',
-          (WidgetTester tester) async {
-        tester.view.physicalSize = size;
-        tester.view.devicePixelRatio = 1.0;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
+      testWidgets(
+        'Renders PartnerInviteScreen without overflow on $deviceName',
+        (WidgetTester tester) async {
+          tester.view.physicalSize = size;
+          tester.view.devicePixelRatio = 1.0;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
 
-        await tester.pumpWidget(
-          createTestableWidget(
-            child: const PartnerInviteScreen(),
-            provider: provider,
-          ),
-        );
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 200));
+          await tester.pumpWidget(
+            createTestableWidget(
+              child: const PartnerInviteScreen(),
+              provider: provider,
+            ),
+          );
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 200));
 
-        expect(find.byType(PartnerInviteScreen), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
+          expect(find.byType(PartnerInviteScreen), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        },
+      );
     }
 
-    testWidgets('Renders HomeDashboardScreen with 1.3x accessibility text scaling',
-        (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(375, 667);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+    testWidgets(
+      'Renders HomeDashboardScreen with 1.3x accessibility text scaling',
+      (WidgetTester tester) async {
+        tester.view.physicalSize = const Size(375, 667);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
 
-      await tester.pumpWidget(
-        createTestableWidget(
-          child: const HomeDashboardScreen(),
-          provider: provider,
-          textScaler: const TextScaler.linear(1.3),
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
+        await tester.pumpWidget(
+          createTestableWidget(
+            child: const HomeDashboardScreen(),
+            provider: provider,
+            textScaler: const TextScaler.linear(1.3),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200));
 
-      expect(tester.takeException(), isNull);
-    });
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

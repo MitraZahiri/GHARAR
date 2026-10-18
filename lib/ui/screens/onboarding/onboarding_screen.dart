@@ -53,7 +53,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-    final currentLanguage = context.select<AppStateProvider, AppLanguage>((p) => p.currentLanguage);
+    final currentLanguage = context.select<AppStateProvider, AppLanguage>(
+      (p) => p.currentLanguage,
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -70,38 +72,55 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.5,
                       fontSize: 18,
-                      color: isDark
-                          ? AppColors.blushPinkDeep
-                          : AppColors.deepBurgundy,
+                      color:
+                          isDark
+                              ? AppColors.blushPinkDeep
+                              : AppColors.deepBurgundy,
                     ),
                   ),
                   const Spacer(),
                   // Multilingual Language Switcher Chip (8 Languages & RTL)
                   InkWell(
                     borderRadius: BorderRadius.circular(20),
-                    onTap: () => _showLanguagePickerSheet(context, isDark, currentLanguage),
+                    onTap:
+                        () => _showLanguagePickerSheet(
+                          context,
+                          isDark,
+                          currentLanguage,
+                        ),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkCardElevated
-                            : AppColors.blushPinkLight,
+                        color:
+                            isDark
+                                ? AppColors.darkCardElevated
+                                : AppColors.blushPinkLight,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: isDark
-                              ? AppColors.darkBorder
-                              : AppColors.blushPinkDeep.withValues(alpha: 0.35),
+                          color:
+                              isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.blushPinkDeep.withValues(
+                                    alpha: 0.35,
+                                  ),
                         ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(currentLanguage.flag,
-                              style: const TextStyle(fontSize: 15)),
+                          Text(
+                            currentLanguage.flag,
+                            style: const TextStyle(fontSize: 15),
+                          ),
                           const SizedBox(width: 5),
                           Text(
                             currentLanguage.nativeName,
-                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(
                               fontWeight: FontWeight.w700,
                               fontSize: 12,
                             ),
@@ -110,7 +129,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           Icon(
                             Icons.arrow_drop_down_rounded,
                             size: 16,
-                            color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+                            color:
+                                isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy,
                           ),
                         ],
                       ),
@@ -131,13 +153,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     width: _currentPage == i ? 24 : 8,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: _currentPage == i
-                          ? (isDark
-                              ? AppColors.blushPinkDeep
-                              : AppColors.deepBurgundy)
-                          : (isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder),
+                      color:
+                          _currentPage == i
+                              ? (isDark
+                                  ? AppColors.blushPinkDeep
+                                  : AppColors.deepBurgundy)
+                              : (isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -165,8 +188,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     selectedAvatar: _selectedAvatar,
                     isDark: isDark,
                     isTr: isTr,
-                    onAvatarSelected: (av) =>
-                        setState(() => _selectedAvatar = av),
+                    onAvatarSelected:
+                        (av) => setState(() => _selectedAvatar = av),
                   ),
 
                   // 3. Relationship Stage
@@ -174,8 +197,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     selectedStage: _selectedStage,
                     isDark: isDark,
                     isTr: isTr,
-                    onStageSelected: (stage) =>
-                        setState(() => _selectedStage = stage),
+                    onStageSelected:
+                        (stage) => setState(() => _selectedStage = stage),
                   ),
 
                   // 4. Goals & Intentions
@@ -201,11 +224,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: GradientButton(
-                text: _currentPage == 3
-                    ? (isTr
-                        ? 'Partnerimi Davet Et 💌'
-                        : 'Invite My Partner 💌')
-                    : (isTr ? 'Devam Et ➔' : 'Continue ➔'),
+                text:
+                    _currentPage == 3
+                        ? (isTr
+                            ? 'Partnerimi Davet Et 💌'
+                            : 'Invite My Partner 💌')
+                        : (isTr ? 'Devam Et ➔' : 'Continue ➔'),
                 onPressed: () {
                   if (_currentPage < 3) {
                     _pageController.nextPage(
@@ -215,9 +239,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   } else {
                     final appState = context.read<AppStateProvider>();
                     appState.completeOnboarding(
-                      name: _nameController.text.trim().isEmpty
-                          ? (isTr ? 'Ben' : 'You')
-                          : _nameController.text.trim(),
+                      name:
+                          _nameController.text.trim().isEmpty
+                              ? (isTr ? 'Ben' : 'You')
+                              : _nameController.text.trim(),
                       avatar: _selectedAvatar,
                       relationshipStage: _selectedStage,
                       goals: _selectedGoals,
@@ -240,7 +265,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _showLanguagePickerSheet(
-      BuildContext context, bool isDark, AppLanguage currentLang) {
+    BuildContext context,
+    bool isDark,
+    AppLanguage currentLang,
+  ) {
     final isTr = currentLang.code == 'tr';
 
     showModalBottomSheet(
@@ -287,8 +315,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isTr ? 'Uygulama Dili Seçin' : 'Choose App Language',
-                            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                            isTr
+                                ? 'Uygulama Dili Seçin'
+                                : 'Choose App Language',
+                            style: AppTextStyles.titleMedium(
+                              isDark: isDark,
+                            ).copyWith(
                               fontWeight: FontWeight.w800,
                               fontSize: 18,
                             ),
@@ -313,8 +345,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Flexible(
                 child: ListView.separated(
                   shrinkWrap: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   itemCount: AppLanguage.supportedLanguages.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 8),
                   itemBuilder: (ctx, index) {
@@ -324,36 +358,46 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     return InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        context.read<AppStateProvider>().setLanguageCode(lang.code);
+                        context.read<AppStateProvider>().setLanguageCode(
+                          lang.code,
+                        );
                         Navigator.of(ctx).pop();
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected
-                              ? (isDark
-                                  ? AppColors.blushPinkDeep
-                                      .withValues(alpha: 0.22)
-                                  : AppColors.blushPinkLight)
-                              : Colors.transparent,
+                          color:
+                              isSelected
+                                  ? (isDark
+                                      ? AppColors.blushPinkDeep.withValues(
+                                        alpha: 0.22,
+                                      )
+                                      : AppColors.blushPinkLight)
+                                  : Colors.transparent,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isSelected
-                                ? (isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy)
-                                : (isDark
-                                    ? AppColors.darkBorder
-                                        .withValues(alpha: 0.5)
-                                    : AppColors.lightBorder),
+                            color:
+                                isSelected
+                                    ? (isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy)
+                                    : (isDark
+                                        ? AppColors.darkBorder.withValues(
+                                          alpha: 0.5,
+                                        )
+                                        : AppColors.lightBorder),
                             width: isSelected ? 1.8 : 1.0,
                           ),
                         ),
                         child: Row(
                           children: [
-                            Text(lang.flag,
-                                style: const TextStyle(fontSize: 28)),
+                            Text(
+                              lang.flag,
+                              style: const TextStyle(fontSize: 28),
+                            ),
                             const SizedBox(width: 14),
                             Expanded(
                               child: Column(
@@ -364,11 +408,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Text(
                                         lang.nativeName,
                                         style: AppTextStyles.titleMedium(
-                                                isDark: isDark)
-                                            .copyWith(
-                                          fontWeight: isSelected
-                                              ? FontWeight.w800
-                                              : FontWeight.w600,
+                                          isDark: isDark,
+                                        ).copyWith(
+                                          fontWeight:
+                                              isSelected
+                                                  ? FontWeight.w800
+                                                  : FontWeight.w600,
                                           fontSize: 15,
                                         ),
                                       ),
@@ -376,24 +421,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Text(
                                         '(${lang.name})',
                                         style: AppTextStyles.bodySmall(
-                                                isDark: isDark)
-                                            .copyWith(
+                                          isDark: isDark,
+                                        ).copyWith(
                                           fontSize: 12,
-                                          color: isDark
-                                              ? AppColors.darkTextSecondary
-                                              : AppColors.lightTextMuted,
+                                          color:
+                                              isDark
+                                                  ? AppColors.darkTextSecondary
+                                                  : AppColors.lightTextMuted,
                                         ),
                                       ),
                                       if (lang.isRtl) ...[
                                         const SizedBox(width: 6),
                                         Container(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 6, vertical: 2),
+                                            horizontal: 6,
+                                            vertical: 2,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: AppColors.champagneGold
                                                 .withValues(alpha: 0.2),
-                                            borderRadius:
-                                                BorderRadius.circular(6),
+                                            borderRadius: BorderRadius.circular(
+                                              6,
+                                            ),
                                           ),
                                           child: const Text(
                                             'RTL',
@@ -411,13 +460,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   Text(
                                     lang.tagline,
                                     style: AppTextStyles.bodySmall(
-                                            isDark: isDark)
-                                        .copyWith(
+                                      isDark: isDark,
+                                    ).copyWith(
                                       fontSize: 11,
                                       fontStyle: FontStyle.italic,
-                                      color: isDark
-                                          ? AppColors.lavenderAccent
-                                          : AppColors.burgundyRose,
+                                      color:
+                                          isDark
+                                              ? AppColors.lavenderAccent
+                                              : AppColors.burgundyRose,
                                     ),
                                   ),
                                 ],
@@ -426,9 +476,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             if (isSelected)
                               Icon(
                                 Icons.check_circle_rounded,
-                                color: isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy,
+                                color:
+                                    isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy,
                                 size: 22,
                               ),
                           ],
@@ -466,21 +517,16 @@ class OnboardingWelcomeSlide extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SoulConnectionArt(
-              width: 240,
-              height: 190,
-              animateGlow: true,
-            ),
+            const SoulConnectionArt(width: 240, height: 190, animateGlow: true),
             const SizedBox(height: 20),
             Text(
               isTr
                   ? 'İkinize Özel Masalsı Bir Alan'
                   : 'A Sacred Sanctuary Just for the Two of You',
               textAlign: TextAlign.center,
-              style: AppTextStyles.displayMedium(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w800,
-                fontSize: 24,
-              ),
+              style: AppTextStyles.displayMedium(
+                isDark: isDark,
+              ).copyWith(fontWeight: FontWeight.w800, fontSize: 24),
             ),
             const SizedBox(height: 14),
             Text(
@@ -488,9 +534,9 @@ class OnboardingWelcomeSlide extends StatelessWidget {
                   ? 'GHARAR; ilişkinizi derinleştirmek, birbirinizi yargılamadan anlamak, gizli sorularla heyecanı canlı tutmak ve ömürlük anılar biriktirmek için tasarlandı.'
                   : 'GHARAR is exclusively designed to deepen your bond, understand each other without judgment, spark romance with private questions, and cherish every moment.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyLarge(isDark: isDark).copyWith(
-                fontSize: 15,
-              ),
+              style: AppTextStyles.bodyLarge(
+                isDark: isDark,
+              ).copyWith(fontSize: 15),
             ),
           ],
         ),
@@ -521,22 +567,20 @@ class AvatarOptionBubble extends StatelessWidget {
         width: 58,
         height: 58,
         decoration: BoxDecoration(
-          color: isSelected
-              ? (isDark
-                  ? AppColors.blushPinkDeep.withValues(alpha: 0.3)
-                  : AppColors.blushPinkLight)
-              : (isDark
-                  ? AppColors.darkCard
-                  : Colors.white),
+          color:
+              isSelected
+                  ? (isDark
+                      ? AppColors.blushPinkDeep.withValues(alpha: 0.3)
+                      : AppColors.blushPinkLight)
+                  : (isDark ? AppColors.darkCard : Colors.white),
           shape: BoxShape.circle,
           border: Border.all(
-            color: isSelected
-                ? (isDark
-                    ? AppColors.blushPinkDeep
-                    : AppColors.deepBurgundy)
-                : (isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightBorder),
+            color:
+                isSelected
+                    ? (isDark
+                        ? AppColors.blushPinkDeep
+                        : AppColors.deepBurgundy)
+                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
             width: isSelected ? 2.5 : 1.0,
           ),
         ),
@@ -573,20 +617,20 @@ class RelationshipStageCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: isSelected
-              ? (isDark
-                  ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
-                  : AppColors.blushPinkLight)
-              : (isDark ? AppColors.darkCard : Colors.white),
+          color:
+              isSelected
+                  ? (isDark
+                      ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
+                      : AppColors.blushPinkLight)
+                  : (isDark ? AppColors.darkCard : Colors.white),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: isSelected
-                ? (isDark
-                    ? AppColors.blushPinkDeep
-                    : AppColors.deepBurgundy)
-                : (isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightBorder),
+            color:
+                isSelected
+                    ? (isDark
+                        ? AppColors.blushPinkDeep
+                        : AppColors.deepBurgundy)
+                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
             width: isSelected ? 2.0 : 1.0,
           ),
         ),
@@ -605,9 +649,8 @@ class RelationshipStageCard extends StatelessWidget {
             if (isSelected)
               Icon(
                 Icons.check_circle_rounded,
-                color: isDark
-                    ? AppColors.blushPinkDeep
-                    : AppColors.deepBurgundy,
+                color:
+                    isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
               ),
           ],
         ),
@@ -643,20 +686,20 @@ class GoalSelectionCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: isSelected
-              ? (isDark
-                  ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
-                  : AppColors.blushPinkLight)
-              : (isDark ? AppColors.darkCard : Colors.white),
+          color:
+              isSelected
+                  ? (isDark
+                      ? AppColors.blushPinkDeep.withValues(alpha: 0.18)
+                      : AppColors.blushPinkLight)
+                  : (isDark ? AppColors.darkCard : Colors.white),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: isSelected
-                ? (isDark
-                    ? AppColors.blushPinkDeep
-                    : AppColors.deepBurgundy)
-                : (isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightBorder),
+            color:
+                isSelected
+                    ? (isDark
+                        ? AppColors.blushPinkDeep
+                        : AppColors.deepBurgundy)
+                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
             width: isSelected ? 2.0 : 1.0,
           ),
         ),
@@ -674,11 +717,11 @@ class GoalSelectionCard extends StatelessWidget {
             ),
             Checkbox(
               value: isSelected,
-              activeColor: isDark
-                  ? AppColors.blushPinkDeep
-                  : AppColors.deepBurgundy,
+              activeColor:
+                  isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6)),
+                borderRadius: BorderRadius.circular(6),
+              ),
               onChanged: onChanged,
             ),
           ],
@@ -715,9 +758,9 @@ class OnboardingProfileSlide extends StatelessWidget {
         children: [
           Text(
             isTr ? 'Kendinizi Tanıtın' : 'Create Your Profile',
-            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: AppTextStyles.displaySmall(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 6),
           Text(
@@ -729,8 +772,10 @@ class OnboardingProfileSlide extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Name Input
-          Text(isTr ? 'Adınız:' : 'What should your partner call you?',
-              style: AppTextStyles.labelLarge(isDark: isDark)),
+          Text(
+            isTr ? 'Adınız:' : 'What should your partner call you?',
+            style: AppTextStyles.labelLarge(isDark: isDark),
+          ),
           const SizedBox(height: 8),
           TextField(
             controller: nameController,
@@ -743,8 +788,10 @@ class OnboardingProfileSlide extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Avatar Picker
-          Text(isTr ? 'Avatarınızı Seçin:' : 'Pick Your Romantic Avatar:',
-              style: AppTextStyles.labelLarge(isDark: isDark)),
+          Text(
+            isTr ? 'Avatarınızı Seçin:' : 'Pick Your Romantic Avatar:',
+            style: AppTextStyles.labelLarge(isDark: isDark),
+          ),
           const SizedBox(height: 12),
           Wrap(
             spacing: 12,
@@ -782,12 +829,42 @@ class OnboardingStageSlide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stages = [
-      {'key': 'stageDating', 'labelEn': 'Dating & Exploring', 'labelTr': 'Flört & Tanıma', 'icon': '🌱'},
-      {'key': 'stageEngaged', 'labelEn': 'Engaged & Planning', 'labelTr': 'Nişanlı & Evlilik Hazırlığı', 'icon': '💍'},
-      {'key': 'stageNewlywed', 'labelEn': 'Newlyweds (1st Years)', 'labelTr': 'Yeni Evli (İlk Yıllar)', 'icon': '🥂'},
-      {'key': 'stageLongTerm', 'labelEn': 'Long-term Companions', 'labelTr': 'Uzun Süreli Birliktelik', 'icon': '🌿'},
-      {'key': 'stageMarriedWithKids', 'labelEn': 'Married with Children', 'labelTr': 'Çocuklu Evli Çift', 'icon': '🏡'},
-      {'key': 'stageLongDistance', 'labelEn': 'Long Distance Love', 'labelTr': 'Uzak Mesafe Aşkı', 'icon': '✈️'},
+      {
+        'key': 'stageDating',
+        'labelEn': 'Dating & Exploring',
+        'labelTr': 'Flört & Tanıma',
+        'icon': '🌱',
+      },
+      {
+        'key': 'stageEngaged',
+        'labelEn': 'Engaged & Planning',
+        'labelTr': 'Nişanlı & Evlilik Hazırlığı',
+        'icon': '💍',
+      },
+      {
+        'key': 'stageNewlywed',
+        'labelEn': 'Newlyweds (1st Years)',
+        'labelTr': 'Yeni Evli (İlk Yıllar)',
+        'icon': '🥂',
+      },
+      {
+        'key': 'stageLongTerm',
+        'labelEn': 'Long-term Companions',
+        'labelTr': 'Uzun Süreli Birliktelik',
+        'icon': '🌿',
+      },
+      {
+        'key': 'stageMarriedWithKids',
+        'labelEn': 'Married with Children',
+        'labelTr': 'Çocuklu Evli Çift',
+        'icon': '🏡',
+      },
+      {
+        'key': 'stageLongDistance',
+        'labelEn': 'Long Distance Love',
+        'labelTr': 'Uzak Mesafe Aşkı',
+        'icon': '✈️',
+      },
     ];
 
     return SingleChildScrollView(
@@ -797,9 +874,9 @@ class OnboardingStageSlide extends StatelessWidget {
         children: [
           Text(
             isTr ? 'İlişkiniz Hangi Evrede?' : 'Where Are You in Love?',
-            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: AppTextStyles.displaySmall(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 6),
           Text(
@@ -842,12 +919,42 @@ class OnboardingGoalsSlide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final goals = [
-      {'key': 'goalDeeperConversations', 'labelEn': 'Deeper Conversations', 'labelTr': 'Daha Derin Sohbetler', 'icon': '💬'},
-      {'key': 'goalSpontaneousRomance', 'labelEn': 'Spontaneous Romance', 'labelTr': 'Spontane Romantizm', 'icon': '🌹'},
-      {'key': 'goalUnderstandingNeeds', 'labelEn': 'Understanding Emotional Needs', 'labelTr': 'Duygusal İhtiyaçları Anlamak', 'icon': '🕊️'},
-      {'key': 'goalFuturePlanning', 'labelEn': 'Aligning on Future Dreams', 'labelTr': 'Gelecek Hayallerinde Uyum', 'icon': '✨'},
-      {'key': 'goalFunAdventures', 'labelEn': 'Playful Fun & Date Adventures', 'labelTr': 'Eğlenceli Randevular & Macera', 'icon': '🎉'},
-      {'key': 'goalConflictResolution', 'labelEn': 'Gentle Conflict Resolution', 'labelTr': 'Şefkatli İletişim & Çözüm', 'icon': '🕯️'},
+      {
+        'key': 'goalDeeperConversations',
+        'labelEn': 'Deeper Conversations',
+        'labelTr': 'Daha Derin Sohbetler',
+        'icon': '💬',
+      },
+      {
+        'key': 'goalSpontaneousRomance',
+        'labelEn': 'Spontaneous Romance',
+        'labelTr': 'Spontane Romantizm',
+        'icon': '🌹',
+      },
+      {
+        'key': 'goalUnderstandingNeeds',
+        'labelEn': 'Understanding Emotional Needs',
+        'labelTr': 'Duygusal İhtiyaçları Anlamak',
+        'icon': '🕊️',
+      },
+      {
+        'key': 'goalFuturePlanning',
+        'labelEn': 'Aligning on Future Dreams',
+        'labelTr': 'Gelecek Hayallerinde Uyum',
+        'icon': '✨',
+      },
+      {
+        'key': 'goalFunAdventures',
+        'labelEn': 'Playful Fun & Date Adventures',
+        'labelTr': 'Eğlenceli Randevular & Macera',
+        'icon': '🎉',
+      },
+      {
+        'key': 'goalConflictResolution',
+        'labelEn': 'Gentle Conflict Resolution',
+        'labelTr': 'Şefkatli İletişim & Çözüm',
+        'icon': '🕯️',
+      },
     ];
 
     return SingleChildScrollView(
@@ -856,10 +963,12 @@ class OnboardingGoalsSlide extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            isTr ? 'Birlikte Neyi Büyütmek İstersiniz?' : 'What Would You Like to Nurture?',
-            style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            isTr
+                ? 'Birlikte Neyi Büyütmek İstersiniz?'
+                : 'What Would You Like to Nurture?',
+            style: AppTextStyles.displaySmall(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 6),
           Text(

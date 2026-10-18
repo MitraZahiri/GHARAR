@@ -28,8 +28,9 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
   void _rollNewSurprise() {
     final rand = Random();
     setState(() {
-      _currentSurpriseIndex =
-          rand.nextInt(SeedDataService.romanticSurpriseIdeasEn.length);
+      _currentSurpriseIndex = rand.nextInt(
+        SeedDataService.romanticSurpriseIdeasEn.length,
+      );
       _playConfetti = true;
     });
     Future.delayed(const Duration(milliseconds: 2200), () {
@@ -46,9 +47,10 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
 
-    final idea = isTr
-        ? SeedDataService.romanticSurpriseIdeasTr[_currentSurpriseIndex]
-        : SeedDataService.romanticSurpriseIdeasEn[_currentSurpriseIndex];
+    final idea =
+        isTr
+            ? SeedDataService.romanticSurpriseIdeasTr[_currentSurpriseIndex]
+            : SeedDataService.romanticSurpriseIdeasEn[_currentSurpriseIndex];
 
     return ConfettiOverlay(
       isPlaying: _playConfetti,
@@ -80,11 +82,12 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
                   const Text('🎲', style: TextStyle(fontSize: 26)),
                   const SizedBox(width: 10),
                   Text(
-                    isTr ? 'Romantik Sürpriz Çarkı' : 'Romantic Surprise Generator',
-                    style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
-                    ),
+                    isTr
+                        ? 'Romantik Sürpriz Çarkı'
+                        : 'Romantic Surprise Generator',
+                    style: AppTextStyles.titleMedium(
+                      isDark: isDark,
+                    ).copyWith(fontWeight: FontWeight.w700, fontSize: 18),
                   ),
                 ],
               ),
@@ -103,14 +106,16 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
               Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
-                  gradient: isDark
-                      ? AppColors.darkCardGradient
-                      : AppColors.intimateCardGradient,
+                  gradient:
+                      isDark
+                          ? AppColors.darkCardGradient
+                          : AppColors.intimateCardGradient,
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: isDark
-                        ? AppColors.blushPinkDeep.withValues(alpha: 0.5)
-                        : AppColors.deepBurgundy.withValues(alpha: 0.3),
+                    color:
+                        isDark
+                            ? AppColors.blushPinkDeep.withValues(alpha: 0.5)
+                            : AppColors.deepBurgundy.withValues(alpha: 0.3),
                     width: 1.5,
                   ),
                   boxShadow: [
@@ -128,7 +133,9 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
                     Text(
                       idea,
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+                      style: AppTextStyles.displaySmall(
+                        isDark: isDark,
+                      ).copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         height: 1.45,
@@ -142,7 +149,10 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
 
               // Roll Another Button
               GradientButton(
-                text: isTr ? 'Yeni Bir Sürpriz Çek 🎲' : 'Roll Another Surprise 🎲',
+                text:
+                    isTr
+                        ? 'Yeni Bir Sürpriz Çek 🎲'
+                        : 'Roll Another Surprise 🎲',
                 onPressed: _rollNewSurprise,
               ),
 
@@ -153,9 +163,10 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
                 child: Text(
                   isTr ? 'Bu Fikri Beğendim, Kapat' : 'I Love This Idea, Close',
                   style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
-                    color: isDark
-                        ? AppColors.lavenderAccent
-                        : AppColors.burgundyRose,
+                    color:
+                        isDark
+                            ? AppColors.lavenderAccent
+                            : AppColors.burgundyRose,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

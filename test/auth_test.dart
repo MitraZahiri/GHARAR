@@ -29,58 +29,70 @@ void main() {
       expect(provider.userEmail, isNull);
     });
 
-    test('Sign in with Apple authenticates user with Apple ID provider', () async {
-      await provider.signInWithApple();
+    test(
+      'Sign in with Apple authenticates user with Apple ID provider',
+      () async {
+        await provider.signInWithApple();
 
-      expect(provider.isAuthenticated, isTrue);
-      expect(provider.authProvider, equals('apple'));
-      expect(provider.userEmail, contains('appleid.com'));
-      expect(provider.currentUser?.authProvider, equals('apple'));
-    });
+        expect(provider.isAuthenticated, isTrue);
+        expect(provider.authProvider, equals('apple'));
+        expect(provider.userEmail, contains('appleid.com'));
+        expect(provider.currentUser?.authProvider, equals('apple'));
+      },
+    );
 
-    test('Authenticate with Email sets user credentials and authenticates', () async {
-      await provider.authenticateWithEmail(
-        name: 'Leyla',
-        email: 'leyla@example.com',
-        password: 'securePassword123',
-        isRegister: true,
-      );
+    test(
+      'Authenticate with Email sets user credentials and authenticates',
+      () async {
+        await provider.authenticateWithEmail(
+          name: 'Leyla',
+          email: 'leyla@example.com',
+          password: 'securePassword123',
+          isRegister: true,
+        );
 
-      expect(provider.isAuthenticated, isTrue);
-      expect(provider.authProvider, equals('email'));
-      expect(provider.userEmail, equals('leyla@example.com'));
-      expect(provider.currentUser?.name, equals('Leyla'));
-      expect(provider.currentUser?.email, equals('leyla@example.com'));
-    });
+        expect(provider.isAuthenticated, isTrue);
+        expect(provider.authProvider, equals('email'));
+        expect(provider.userEmail, equals('leyla@example.com'));
+        expect(provider.currentUser?.name, equals('Leyla'));
+        expect(provider.currentUser?.email, equals('leyla@example.com'));
+      },
+    );
 
-    test('Completing onboarding and linking partner creates real couple without demo data', () async {
-      provider.completeOnboarding(
-        name: 'Leyla',
-        avatar: '🌸',
-        relationshipStage: 'stageDating',
-        goals: ['goalDeeperConversations'],
-        languageCode: 'en',
-        email: 'leyla@example.com',
-      );
+    test(
+      'Completing onboarding and linking partner creates real couple without demo data',
+      () async {
+        provider.completeOnboarding(
+          name: 'Leyla',
+          avatar: '🌸',
+          relationshipStage: 'stageDating',
+          goals: ['goalDeeperConversations'],
+          languageCode: 'en',
+          email: 'leyla@example.com',
+        );
 
-      expect(provider.hasOnboarded, isTrue);
-      expect(provider.currentUser?.name, equals('Leyla'));
-      expect(provider.currentUser?.email, equals('leyla@example.com'));
-      expect(provider.isPartnerLinked, isFalse);
+        expect(provider.hasOnboarded, isTrue);
+        expect(provider.currentUser?.name, equals('Leyla'));
+        expect(provider.currentUser?.email, equals('leyla@example.com'));
+        expect(provider.isPartnerLinked, isFalse);
 
-      provider.linkPartner(partnerName: 'Mert');
-      expect(provider.isPartnerLinked, isTrue);
-      expect(provider.couple?.partner1.name, equals('Leyla'));
-      expect(provider.couple?.partner2?.name, equals('Mert'));
-    });
+        provider.linkPartner(partnerName: 'Mert');
+        expect(provider.isPartnerLinked, isTrue);
+        expect(provider.couple?.partner1.name, equals('Leyla'));
+        expect(provider.couple?.partner2?.name, equals('Mert'));
+      },
+    );
 
-    test('Sign out clears authenticated state while retaining preferences', () async {
-      await provider.signInWithApple();
-      expect(provider.isAuthenticated, isTrue);
+    test(
+      'Sign out clears authenticated state while retaining preferences',
+      () async {
+        await provider.signInWithApple();
+        expect(provider.isAuthenticated, isTrue);
 
-      await provider.signOut();
-      expect(provider.isAuthenticated, isFalse);
-    });
+        await provider.signOut();
+        expect(provider.isAuthenticated, isFalse);
+      },
+    );
   });
 
   group('AuthScreen Responsive & Localization Widget Tests', () {
@@ -98,9 +110,10 @@ void main() {
         value: provider,
         child: MaterialApp(
           locale: locale,
-          supportedLocales: AppLanguage.supportedLanguages
-              .map((lang) => Locale(lang.code))
-              .toList(),
+          supportedLocales:
+              AppLanguage.supportedLanguages
+                  .map((lang) => Locale(lang.code))
+                  .toList(),
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -112,23 +125,29 @@ void main() {
       );
     }
 
-    testWidgets('Renders Apple ID and Email entry on standard screen (390x844)',
-        (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(390 * 3, 844 * 3);
-      tester.view.devicePixelRatio = 3.0;
-      addTearDown(() => tester.view.resetPhysicalSize());
+    testWidgets(
+      'Renders Apple ID and Email entry on standard screen (390x844)',
+      (WidgetTester tester) async {
+        tester.view.physicalSize = const Size(390 * 3, 844 * 3);
+        tester.view.devicePixelRatio = 3.0;
+        addTearDown(() => tester.view.resetPhysicalSize());
 
-      await tester.pumpWidget(createAuthApp());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createAuthApp());
+        await tester.pumpAndSettle();
 
-      // Verify Brand, Apple button and form fields are present
-      expect(find.text('GHARAR'), findsWidgets);
-      expect(find.byType(TextFormField), findsNWidgets(3)); // Name, Email, Password
-      expect(find.text('Sign in with Apple'), findsOneWidget);
-    });
+        // Verify Brand, Apple button and form fields are present
+        expect(find.text('GHARAR'), findsWidgets);
+        expect(
+          find.byType(TextFormField),
+          findsNWidgets(3),
+        ); // Name, Email, Password
+        expect(find.text('Sign in with Apple'), findsOneWidget);
+      },
+    );
 
-    testWidgets('Renders with zero overflow on smallest iPhone SE (320x568)',
-        (WidgetTester tester) async {
+    testWidgets('Renders with zero overflow on smallest iPhone SE (320x568)', (
+      WidgetTester tester,
+    ) async {
       tester.view.physicalSize = const Size(320 * 2, 568 * 2);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -142,8 +161,9 @@ void main() {
       expect(find.text('Sign in with Apple'), findsOneWidget);
     });
 
-    testWidgets('Renders Turkish localized text correctly',
-        (WidgetTester tester) async {
+    testWidgets('Renders Turkish localized text correctly', (
+      WidgetTester tester,
+    ) async {
       provider.setLanguageCode('tr');
 
       await tester.pumpWidget(createAuthApp(locale: const Locale('tr')));
@@ -155,8 +175,9 @@ void main() {
       expect(find.text('Yeni Hesap'), findsOneWidget);
     });
 
-    testWidgets('Renders Arabic RTL layout correctly',
-        (WidgetTester tester) async {
+    testWidgets('Renders Arabic RTL layout correctly', (
+      WidgetTester tester,
+    ) async {
       provider.setLanguageCode('ar');
 
       await tester.pumpWidget(createAuthApp(locale: const Locale('ar')));
@@ -167,8 +188,9 @@ void main() {
       expect(find.text('تسجيل الدخول'), findsOneWidget);
     });
 
-    testWidgets('Tapping Apple ID button calls provider.signInWithApple()',
-        (WidgetTester tester) async {
+    testWidgets('Tapping Apple ID button calls provider.signInWithApple()', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createAuthApp());
       await tester.pumpAndSettle();
 

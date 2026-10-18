@@ -1,10 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-enum QuestionIntensity {
-  icebreaker,
-  meaningful,
-  deepSoul,
-}
+enum QuestionIntensity { icebreaker, meaningful, deepSoul }
 
 enum QuestionCategory {
   love,
@@ -161,16 +157,16 @@ class QuestionModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'textEn': textEn,
-        'textTr': textTr,
-        'category': category.name,
-        'intensity': intensity.name,
-        'optionsEn': optionsEn,
-        'optionsTr': optionsTr,
-        'inspirationTipEn': inspirationTipEn,
-        'inspirationTipTr': inspirationTipTr,
-      };
+    'id': id,
+    'textEn': textEn,
+    'textTr': textTr,
+    'category': category.name,
+    'intensity': intensity.name,
+    'optionsEn': optionsEn,
+    'optionsTr': optionsTr,
+    'inspirationTipEn': inspirationTipEn,
+    'inspirationTipTr': inspirationTipTr,
+  };
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
@@ -185,12 +181,14 @@ class QuestionModel {
         (i) => i.name == json['intensity'],
         orElse: () => QuestionIntensity.meaningful,
       ),
-      optionsEn: (json['optionsEn'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList(),
-      optionsTr: (json['optionsTr'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList(),
+      optionsEn:
+          (json['optionsEn'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList(),
+      optionsTr:
+          (json['optionsTr'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList(),
       inspirationTipEn: json['inspirationTipEn'] as String?,
       inspirationTipTr: json['inspirationTipTr'] as String?,
     );
@@ -268,15 +266,15 @@ class AnswerModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'questionId': questionId,
-        'authorId': authorId,
-        'authorName': authorName,
-        'answerText': answerText,
-        'selectedOptionIndex': selectedOptionIndex,
-        'answeredAt': answeredAt.toIso8601String(),
-        'reactionEmoji': reactionEmoji,
-      };
+    'id': id,
+    'questionId': questionId,
+    'authorId': authorId,
+    'authorName': authorName,
+    'answerText': answerText,
+    'selectedOptionIndex': selectedOptionIndex,
+    'answeredAt': answeredAt.toIso8601String(),
+    'reactionEmoji': reactionEmoji,
+  };
 
   factory AnswerModel.fromJson(Map<String, dynamic> json) {
     return AnswerModel(
@@ -286,7 +284,8 @@ class AnswerModel {
       authorName: json['authorName'] as String? ?? 'Partner',
       answerText: json['answerText'] as String,
       selectedOptionIndex: json['selectedOptionIndex'] as int?,
-      answeredAt: DateTime.tryParse(json['answeredAt'] as String? ?? '') ??
+      answeredAt:
+          DateTime.tryParse(json['answeredAt'] as String? ?? '') ??
           DateTime.now(),
       reactionEmoji: json['reactionEmoji'] as String?,
     );

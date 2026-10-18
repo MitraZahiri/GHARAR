@@ -15,14 +15,17 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
-  int _selectedPlanIndex = 1; // 0 = Monthly, 1 = Annual (Best Value), 2 = Lifetime
+  int _selectedPlanIndex =
+      1; // 0 = Monthly, 1 = Annual (Best Value), 2 = Lifetime
   bool _playConfetti = false;
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-    final isPremium = context.select<AppStateProvider, bool>((p) => p.couple?.isPremium ?? false);
+    final isPremium = context.select<AppStateProvider, bool>(
+      (p) => p.couple?.isPremium ?? false,
+    );
 
     return ConfettiOverlay(
       isPlaying: _playConfetti,
@@ -30,9 +33,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         appBar: AppBar(
           title: Text(
             'GHARAR Premium',
-            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTextStyles.titleMedium(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         body: SingleChildScrollView(
@@ -67,9 +70,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ? 'Aşkınızı Birlikte Taçlandırın'
                     : 'A Lifetime of Deep Intimacy',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.displayMedium(isDark: isDark).copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+                style: AppTextStyles.displayMedium(
+                  isDark: isDark,
+                ).copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 6),
               Text(
@@ -89,33 +92,37 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   children: [
                     PremiumBenefitRow(
                       icon: '✨',
-                      title: isTr
-                          ? '100+ Soru & Tüm 12 Kategori'
-                          : '100+ Deep Questions across 12 Categories',
+                      title:
+                          isTr
+                              ? '100+ Soru & Tüm 12 Kategori'
+                              : '100+ Deep Questions across 12 Categories',
                       isDark: isDark,
                     ),
                     const Divider(height: 18),
                     PremiumBenefitRow(
                       icon: '🤖',
-                      title: isTr
-                          ? 'Noor AI ile Sınırsız İletişim Rehberliği'
-                          : 'Full Access to Noor AI Relationship Companion',
+                      title:
+                          isTr
+                              ? 'Noor AI ile Sınırsız İletişim Rehberliği'
+                              : 'Full Access to Noor AI Relationship Companion',
                       isDark: isDark,
                     ),
                     const Divider(height: 18),
                     PremiumBenefitRow(
                       icon: '📖',
-                      title: isTr
-                          ? 'Sınırsız Çift Günlüğü & Fotoğraf Hatıraları'
-                          : 'Unlimited Couple Journal Entries & Memories',
+                      title:
+                          isTr
+                              ? 'Sınırsız Çift Günlüğü & Fotoğraf Hatıraları'
+                              : 'Unlimited Couple Journal Entries & Memories',
                       isDark: isDark,
                     ),
                     const Divider(height: 18),
                     PremiumBenefitRow(
                       icon: '🌟',
-                      title: isTr
-                          ? 'Gelişmiş Uyum & Ortak Gelecek Analizi'
-                          : 'Advanced Harmony & Future Alignment Mapping',
+                      title:
+                          isTr
+                              ? 'Gelişmiş Uyum & Ortak Gelecek Analizi'
+                              : 'Advanced Harmony & Future Alignment Mapping',
                       isDark: isDark,
                     ),
                   ],
@@ -129,7 +136,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 index: 0,
                 title: isTr ? 'Aylık Plan' : 'Monthly Sanctuary',
                 price: isTr ? '₺99.99 / ay' : '\$4.99 / month',
-                subtitle: isTr ? 'İstediğiniz zaman iptal edin' : 'Cancel anytime',
+                subtitle:
+                    isTr ? 'İstediğiniz zaman iptal edin' : 'Cancel anytime',
                 isSelected: _selectedPlanIndex == 0,
                 isDark: isDark,
                 onTap: () => setState(() => _selectedPlanIndex = 0),
@@ -137,9 +145,18 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               const SizedBox(height: 12),
               PlanOptionTile(
                 index: 1,
-                title: isTr ? 'Yıllık Plan (En Popüler)' : 'Annual Plan (Best Value)',
-                price: isTr ? '₺599.99 / yıl (₺49.99/ay)' : '\$29.99 / year (\$2.49/mo)',
-                subtitle: isTr ? '%50 Tasarruf + 7 Gün Ücretsiz Deneme' : 'Save 50% + 7-Day Free Trial',
+                title:
+                    isTr
+                        ? 'Yıllık Plan (En Popüler)'
+                        : 'Annual Plan (Best Value)',
+                price:
+                    isTr
+                        ? '₺599.99 / yıl (₺49.99/ay)'
+                        : '\$29.99 / year (\$2.49/mo)',
+                subtitle:
+                    isTr
+                        ? '%50 Tasarruf + 7 Gün Ücretsiz Deneme'
+                        : 'Save 50% + 7-Day Free Trial',
                 badgeText: isTr ? 'EN POPÜLER' : 'BEST VALUE',
                 isSelected: _selectedPlanIndex == 1,
                 isDark: isDark,
@@ -150,7 +167,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 index: 2,
                 title: isTr ? 'Ömür Boyu Aşk' : 'Lifetime Devotion',
                 price: isTr ? '₺1,499 Tek Seferlik' : '\$79.99 One-time',
-                subtitle: isTr ? 'Sonsuza kadar ikiniz için' : 'Forever yours, no subscriptions',
+                subtitle:
+                    isTr
+                        ? 'Sonsuza kadar ikiniz için'
+                        : 'Forever yours, no subscriptions',
                 isSelected: _selectedPlanIndex == 2,
                 isDark: isDark,
                 onTap: () => setState(() => _selectedPlanIndex = 2),
@@ -160,13 +180,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
               // CTA Button
               GradientButton(
-                text: isPremium
-                    ? (isTr
-                        ? 'Premium Zaten Aktif ✨'
-                        : 'Premium is Active ✨')
-                    : (isTr
-                        ? '7 Gün Ücretsiz Denemeyi Başlat'
-                        : 'Start 7-Day Free Trial'),
+                text:
+                    isPremium
+                        ? (isTr
+                            ? 'Premium Zaten Aktif ✨'
+                            : 'Premium is Active ✨')
+                        : (isTr
+                            ? '7 Gün Ücretsiz Denemeyi Başlat'
+                            : 'Start 7-Day Free Trial'),
                 gradient: AppColors.sunsetGold,
                 onPressed: () {
                   context.read<AppStateProvider>().togglePremium();
@@ -178,7 +199,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       backgroundColor: AppColors.successGreen,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       content: Text(
                         isTr
                             ? 'Tebrikler! GHARAR Premium ayrıcalıkları aktif edildi. 👑'
@@ -197,7 +219,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ? 'Otomatik yenilenir, uygulama mağazası ayarlarınızdan dilediğiniz an iptal edilebilir.'
                     : 'Auto-renews, cancel anytime in store settings. Transparent and non-manipulative.',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodySmall(isDark: isDark).copyWith(fontSize: 11),
+                style: AppTextStyles.bodySmall(
+                  isDark: isDark,
+                ).copyWith(fontSize: 11),
               ),
 
               const SizedBox(height: 20),
@@ -231,9 +255,9 @@ class PremiumBenefitRow extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.bodyMedium(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ),
       ],
@@ -272,16 +296,20 @@ class PlanOptionTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
-          color: isSelected
-              ? (isDark
-                  ? AppColors.blushPinkDeep.withValues(alpha: 0.16)
-                  : AppColors.blushPinkLight)
-              : (isDark ? AppColors.darkCard : Colors.white),
+          color:
+              isSelected
+                  ? (isDark
+                      ? AppColors.blushPinkDeep.withValues(alpha: 0.16)
+                      : AppColors.blushPinkLight)
+                  : (isDark ? AppColors.darkCard : Colors.white),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected
-                ? (isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy)
-                : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            color:
+                isSelected
+                    ? (isDark
+                        ? AppColors.blushPinkDeep
+                        : AppColors.deepBurgundy)
+                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
             width: isSelected ? 2.0 : 1.0,
           ),
         ),
@@ -291,9 +319,12 @@ class PlanOptionTile extends StatelessWidget {
               isSelected
                   ? Icons.radio_button_checked_rounded
                   : Icons.radio_button_off_rounded,
-              color: isSelected
-                  ? (isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy)
-                  : AppColors.lightTextMuted,
+              color:
+                  isSelected
+                      ? (isDark
+                          ? AppColors.blushPinkDeep
+                          : AppColors.deepBurgundy)
+                      : AppColors.lightTextMuted,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -307,17 +338,18 @@ class PlanOptionTile extends StatelessWidget {
                           title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                          ),
+                          style: AppTextStyles.titleMedium(
+                            isDark: isDark,
+                          ).copyWith(fontWeight: FontWeight.w700, fontSize: 14),
                         ),
                       ),
                       if (badgeText != null) ...[
                         const SizedBox(width: 6),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.streakFlame,
                             borderRadius: BorderRadius.circular(8),
@@ -340,13 +372,16 @@ class PlanOptionTile extends StatelessWidget {
                     style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
                       fontWeight: FontWeight.w800,
                       fontSize: 13,
-                      color: isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
+                      color:
+                          isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: AppTextStyles.bodySmall(isDark: isDark).copyWith(fontSize: 11),
+                    style: AppTextStyles.bodySmall(
+                      isDark: isDark,
+                    ).copyWith(fontSize: 11),
                   ),
                 ],
               ),

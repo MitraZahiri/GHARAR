@@ -56,18 +56,18 @@ class JournalEntryModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'notes': notes,
-        'authorId': authorId,
-        'authorName': authorName,
-        'date': date.toIso8601String(),
-        'moodEmoji': moodEmoji,
-        'questionId': questionId,
-        'questionSnippet': questionSnippet,
-        'imagePlaceholder': imagePlaceholder,
-        'tags': tags,
-      };
+    'id': id,
+    'title': title,
+    'notes': notes,
+    'authorId': authorId,
+    'authorName': authorName,
+    'date': date.toIso8601String(),
+    'moodEmoji': moodEmoji,
+    'questionId': questionId,
+    'questionSnippet': questionSnippet,
+    'imagePlaceholder': imagePlaceholder,
+    'tags': tags,
+  };
 
   factory JournalEntryModel.fromJson(Map<String, dynamic> json) {
     return JournalEntryModel(
@@ -81,7 +81,8 @@ class JournalEntryModel {
       questionId: json['questionId'] as String?,
       questionSnippet: json['questionSnippet'] as String?,
       imagePlaceholder: json['imagePlaceholder'] as String?,
-      tags: (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ??
+      tags:
+          (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ??
           const [],
     );
   }

@@ -29,8 +29,8 @@ class _ConfettiOverlayState extends State<ConfettiOverlay>
       vsync: this,
       duration: const Duration(milliseconds: 2500),
     )..addListener(() {
-        setState(() {});
-      });
+      setState(() {});
+    });
 
     if (widget.isPlaying) {
       _startBurst();
@@ -139,17 +139,20 @@ class _ConfettiPainter extends CustomPainter {
     final opacity = (1.0 - progress).clamp(0.0, 1.0);
 
     for (final p in particles) {
-      final currentX = (p.x * size.width) + (p.vx * progress * size.width * 0.4);
+      final currentX =
+          (p.x * size.width) + (p.vx * progress * size.width * 0.4);
       // Gravity effect
-      final currentY = (p.y * size.height) +
+      final currentY =
+          (p.y * size.height) +
           (p.vy * progress * size.height * 0.4) +
           (0.5 * 9.8 * pow(progress, 2) * size.height * 0.4);
 
       final currentRotation = p.rotation + (p.rotationSpeed * progress);
 
-      final paint = Paint()
-        ..color = p.color.withValues(alpha: opacity)
-        ..style = PaintingStyle.fill;
+      final paint =
+          Paint()
+            ..color = p.color.withValues(alpha: opacity)
+            ..style = PaintingStyle.fill;
 
       canvas.save();
       canvas.translate(currentX, currentY);
@@ -160,7 +163,11 @@ class _ConfettiPainter extends CustomPainter {
       } else {
         canvas.drawRRect(
           RRect.fromRectAndRadius(
-            Rect.fromCenter(center: Offset.zero, width: p.size, height: p.size * 0.6),
+            Rect.fromCenter(
+              center: Offset.zero,
+              width: p.size,
+              height: p.size * 0.6,
+            ),
             const Radius.circular(3),
           ),
           paint,

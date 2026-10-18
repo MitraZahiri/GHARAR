@@ -13,10 +13,7 @@ import 'question_vault_screen.dart';
 class DailyQuestionScreen extends StatefulWidget {
   final QuestionModel? initialQuestion;
 
-  const DailyQuestionScreen({
-    super.key,
-    this.initialQuestion,
-  });
+  const DailyQuestionScreen({super.key, this.initialQuestion});
 
   @override
   State<DailyQuestionScreen> createState() => _DailyQuestionScreenState();
@@ -58,7 +55,9 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
 
-    final currentQ = context.select<AppStateProvider, QuestionModel?>((p) => p.currentQuestion);
+    final currentQ = context.select<AppStateProvider, QuestionModel?>(
+      (p) => p.currentQuestion,
+    );
     final question = widget.initialQuestion ?? currentQ;
 
     if (question == null) {
@@ -90,9 +89,9 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
       appBar: AppBar(
         title: Text(
           isTr ? 'Günün Sorusu' : 'Daily Question',
-          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyles.titleMedium(
+            isDark: isDark,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
@@ -116,9 +115,10 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
             // Question Card with Intensity & Category
             GlassCard(
               padding: const EdgeInsets.all(22),
-              gradient: isDark
-                  ? AppColors.darkCardGradient
-                  : AppColors.intimateCardGradient,
+              gradient:
+                  isDark
+                      ? AppColors.darkCardGradient
+                      : AppColors.intimateCardGradient,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -127,35 +127,43 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                       Flexible(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? AppColors.darkCardElevated
-                                : Colors.white,
+                            color:
+                                isDark
+                                    ? AppColors.darkCardElevated
+                                    : Colors.white,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder,
+                              color:
+                                  isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder,
                             ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(question.categoryIcon,
-                                  style: const TextStyle(fontSize: 16)),
+                              Text(
+                                question.categoryIcon,
+                                style: const TextStyle(fontSize: 16),
+                              ),
                               const SizedBox(width: 6),
                               Flexible(
                                 child: Text(
                                   question.categoryName(isTr),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
-                                  style: AppTextStyles.bodySmall(isDark: isDark)
-                                      .copyWith(
+                                  style: AppTextStyles.bodySmall(
+                                    isDark: isDark,
+                                  ).copyWith(
                                     fontWeight: FontWeight.w700,
-                                    color: isDark
-                                        ? AppColors.blushPinkDeep
-                                        : AppColors.deepBurgundy,
+                                    color:
+                                        isDark
+                                            ? AppColors.blushPinkDeep
+                                            : AppColors.deepBurgundy,
                                   ),
                                 ),
                               ),
@@ -174,10 +182,9 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                   const SizedBox(height: 16),
                   Text(
                     question.text(isTr),
-                    style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                       fontWeight: FontWeight.w700,
-                       height: 1.3,
-                    ),
+                    style: AppTextStyles.displaySmall(
+                      isDark: isDark,
+                    ).copyWith(fontWeight: FontWeight.w700, height: 1.3),
                   ),
                   if (question.inspirationTip(isTr) != null) ...[
                     const SizedBox(height: 14),
@@ -204,16 +211,17 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                                       ? 'İpucunu Gizle'
                                       : 'İlham İpucu İster misiniz?')
                                   : (_showInspiration
-                                    ? 'Hide Inspiration Tip'
-                                    : 'Need an Inspiration Spark?'),
-                            style: AppTextStyles.bodySmall(isDark: isDark)
-                                .copyWith(
-                              color: AppColors.champagneGold,
-                              fontWeight: FontWeight.w600,
+                                      ? 'Hide Inspiration Tip'
+                                      : 'Need an Inspiration Spark?'),
+                              style: AppTextStyles.bodySmall(
+                                isDark: isDark,
+                              ).copyWith(
+                                color: AppColors.champagneGold,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
                       ),
                     ),
                     if (_showInspiration) ...[
@@ -221,17 +229,21 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.champagneGold.withValues(alpha: 0.12),
+                          color: AppColors.champagneGold.withValues(
+                            alpha: 0.12,
+                          ),
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: AppColors.champagneGold.withValues(alpha: 0.3),
+                            color: AppColors.champagneGold.withValues(
+                              alpha: 0.3,
+                            ),
                           ),
                         ),
                         child: Text(
                           question.inspirationTip(isTr)!,
-                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                            fontStyle: FontStyle.italic,
-                          ),
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(fontStyle: FontStyle.italic),
                         ),
                       ),
                     ],
@@ -275,24 +287,28 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
-                        color: _selectedOptionIndex == i
-                            ? (isDark
-                                ? AppColors.blushPinkDeep.withValues(alpha: 0.2)
-                                : AppColors.blushPinkLight)
-                            : (isDark
-                                ? AppColors.darkCard
-                                : Colors.white),
+                        color:
+                            _selectedOptionIndex == i
+                                ? (isDark
+                                    ? AppColors.blushPinkDeep.withValues(
+                                      alpha: 0.2,
+                                    )
+                                    : AppColors.blushPinkLight)
+                                : (isDark ? AppColors.darkCard : Colors.white),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: _selectedOptionIndex == i
-                              ? (isDark
-                                  ? AppColors.blushPinkDeep
-                                  : AppColors.deepBurgundy)
-                              : (isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder),
+                          color:
+                              _selectedOptionIndex == i
+                                  ? (isDark
+                                      ? AppColors.blushPinkDeep
+                                      : AppColors.deepBurgundy)
+                                  : (isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder),
                           width: _selectedOptionIndex == i ? 1.8 : 1.0,
                         ),
                       ),
@@ -302,24 +318,27 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                             _selectedOptionIndex == i
                                 ? Icons.radio_button_checked_rounded
                                 : Icons.radio_button_off_rounded,
-                            color: _selectedOptionIndex == i
-                                ? (isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy)
-                                : (isDark
-                                    ? AppColors.darkTextMuted
-                                    : AppColors.lightTextMuted),
+                            color:
+                                _selectedOptionIndex == i
+                                    ? (isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy)
+                                    : (isDark
+                                        ? AppColors.darkTextMuted
+                                        : AppColors.lightTextMuted),
                             size: 20,
                           ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               question.options(isTr)![i],
-                              style: AppTextStyles.bodyMedium(isDark: isDark)
-                                  .copyWith(
-                                fontWeight: _selectedOptionIndex == i
-                                    ? FontWeight.w700
-                                    : FontWeight.w400,
+                              style: AppTextStyles.bodyMedium(
+                                isDark: isDark,
+                              ).copyWith(
+                                fontWeight:
+                                    _selectedOptionIndex == i
+                                        ? FontWeight.w700
+                                        : FontWeight.w400,
                               ),
                             ),
                           ),
@@ -343,9 +362,10 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
               controller: _answerController,
               maxLines: 4,
               decoration: InputDecoration(
-                hintText: isTr
-                    ? 'İçinizden geldiği gibi tüm samimiyetinizle yazın... Partneriniz bunu ancak kendisi de cevap yazınca görebilecek.'
-                    : 'Speak from your heart... Your partner will only see this once both of you submit your answers.',
+                hintText:
+                    isTr
+                        ? 'İçinizden geldiği gibi tüm samimiyetinizle yazın... Partneriniz bunu ancak kendisi de cevap yazınca görebilecek.'
+                        : 'Speak from your heart... Your partner will only see this once both of you submit your answers.',
               ),
             ),
 
@@ -354,18 +374,20 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
             // Privacy Assurance Note
             Row(
               children: [
-                const Icon(Icons.lock_rounded,
-                    size: 14, color: AppColors.champagneGold),
+                const Icon(
+                  Icons.lock_rounded,
+                  size: 14,
+                  color: AppColors.champagneGold,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     isTr
                         ? 'Karşılıklı cevap verilene kadar gizlilik korunur. Önceden bakma yok!'
                         : 'Answers remain strictly confidential until mutual reveal. No peeking!',
-                    style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                      color: AppColors.champagneGold,
-                      fontSize: 11,
-                    ),
+                    style: AppTextStyles.bodySmall(
+                      isDark: isDark,
+                    ).copyWith(color: AppColors.champagneGold, fontSize: 11),
                   ),
                 ),
               ],
@@ -376,15 +398,16 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
             // Submit / Reveal Buttons
             if (isBothDone) ...[
               GradientButton(
-                text: isTr
-                    ? 'Cevapları Birlikte Aç ✨ (İkiniz de Hazırsınız!)'
-                    : 'Reveal Answers Together ✨ (Both Ready!)',
+                text:
+                    isTr
+                        ? 'Cevapları Birlikte Aç ✨ (İkiniz de Hazırsınız!)'
+                        : 'Reveal Answers Together ✨ (Both Ready!)',
                 gradient: AppColors.sunsetGold,
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) =>
-                          AnswerRevealScreen(question: question),
+                      builder:
+                          (context) => AnswerRevealScreen(question: question),
                     ),
                   );
                 },
@@ -393,16 +416,19 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
             ],
 
             GradientButton(
-              text: activeAnswer != null
-                  ? (isTr ? 'Cevabımı Güncelle' : 'Update My Answer')
-                  : (isTr ? 'Cevabımı Kaydet 💌' : 'Submit My Answer 💌'),
+              text:
+                  activeAnswer != null
+                      ? (isTr ? 'Cevabımı Güncelle' : 'Update My Answer')
+                      : (isTr ? 'Cevabımı Kaydet 💌' : 'Submit My Answer 💌'),
               onPressed: () {
                 if (_answerController.text.trim().isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(isTr
-                          ? 'Lütfen önce cevabınızı yazın veya bir seçenek seçin.'
-                          : 'Please enter your thoughts or choose an option.'),
+                      content: Text(
+                        isTr
+                            ? 'Lütfen önce cevabınızı yazın veya bir seçenek seçin.'
+                            : 'Please enter your thoughts or choose an option.',
+                      ),
                     ),
                   );
                   return;
@@ -414,12 +440,14 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                   selectedOptionIndex: _selectedOptionIndex,
                 );
 
-                if (context.read<AppStateProvider>().isBothAnswered(question.id)) {
+                if (context.read<AppStateProvider>().isBothAnswered(
+                  question.id,
+                )) {
                   // Direct to reveal!
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) =>
-                          AnswerRevealScreen(question: question),
+                      builder:
+                          (context) => AnswerRevealScreen(question: question),
                     ),
                   );
                 } else {
@@ -428,7 +456,8 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                       backgroundColor: AppColors.deepBurgundy,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       content: Text(
                         isTr
                             ? 'Cevabınız kaydedildi! ${otherPartner.name} da cevaplayınca birlikte açılacak.'
@@ -456,13 +485,16 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                   minimumSize: const Size.fromHeight(48),
                 ),
                 onPressed: () {
-                  context.read<AppStateProvider>().simulatePartnerAnswer(question.id);
+                  context.read<AppStateProvider>().simulatePartnerAnswer(
+                    question.id,
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       backgroundColor: AppColors.successGreen,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       content: Text(
                         isTr
                             ? '${otherPartner.name} cevabını verdi! Artık açabilirsiniz.'
@@ -588,9 +620,8 @@ class PartnerStatusNoticeBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = hasOtherAnswered
-        ? AppColors.successGreen
-        : AppColors.champagneGold;
+    final statusColor =
+        hasOtherAnswered ? AppColors.successGreen : AppColors.champagneGold;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -614,15 +645,19 @@ class PartnerStatusNoticeBox extends StatelessWidget {
                       : '${otherPartner.name} is reflecting. Answer yours now so you are ready!'),
               style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                 fontWeight: FontWeight.w600,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color:
+                    isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
               ),
             ),
           ),
           if (hasOtherAnswered)
-            const Icon(Icons.check_circle_rounded,
-                color: AppColors.successGreen, size: 20),
+            const Icon(
+              Icons.check_circle_rounded,
+              color: AppColors.successGreen,
+              size: 20,
+            ),
         ],
       ),
     );

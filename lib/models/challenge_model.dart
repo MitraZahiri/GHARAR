@@ -67,20 +67,20 @@ class ChallengeModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'weekNumber': weekNumber,
-        'titleEn': titleEn,
-        'titleTr': titleTr,
-        'descriptionEn': descriptionEn,
-        'descriptionTr': descriptionTr,
-        'rewardBadge': rewardBadge,
-        'badgeNameEn': badgeNameEn,
-        'badgeNameTr': badgeNameTr,
-        'encouragementEn': encouragementEn,
-        'encouragementTr': encouragementTr,
-        'isCompleted': isCompleted,
-        'completedAt': completedAt?.toIso8601String(),
-      };
+    'id': id,
+    'weekNumber': weekNumber,
+    'titleEn': titleEn,
+    'titleTr': titleTr,
+    'descriptionEn': descriptionEn,
+    'descriptionTr': descriptionTr,
+    'rewardBadge': rewardBadge,
+    'badgeNameEn': badgeNameEn,
+    'badgeNameTr': badgeNameTr,
+    'encouragementEn': encouragementEn,
+    'encouragementTr': encouragementTr,
+    'isCompleted': isCompleted,
+    'completedAt': completedAt?.toIso8601String(),
+  };
 
   factory ChallengeModel.fromJson(Map<String, dynamic> json) {
     return ChallengeModel(
@@ -96,9 +96,10 @@ class ChallengeModel {
       encouragementEn: json['encouragementEn'] as String? ?? '',
       encouragementTr: json['encouragementTr'] as String? ?? '',
       isCompleted: json['isCompleted'] as bool? ?? false,
-      completedAt: json['completedAt'] != null
-          ? DateTime.tryParse(json['completedAt'] as String)
-          : null,
+      completedAt:
+          json['completedAt'] != null
+              ? DateTime.tryParse(json['completedAt'] as String)
+              : null,
     );
   }
 

@@ -188,130 +188,133 @@ void main() {
       expect(m1.hashCode, equals(m2.hashCode));
     });
 
-    test('ActivityModel, ChallengeModel, SpecialDateModel, SharedInterestModel, AIMessageModel equality', () {
-      final now = DateTime(2026, 1, 1);
-      const act1 = ActivityModel(
-        id: 'act1',
-        titleEn: 'Stargazing',
-        titleTr: 'Yıldızları İzleme',
-        descriptionEn: 'Warm blanket night',
-        descriptionTr: 'Battaniye altında gece',
-        categoryEn: 'Cozy',
-        categoryTr: 'Sıcak',
-        budget: ActivityBudget.free,
-        setting: ActivitySetting.outdoor,
-        vibe: ActivityVibe.romantic,
-        duration: '1 hr',
-        icon: '✨',
-        tipsEn: ['Bring tea'],
-        tipsTr: ['Çay al'],
-      );
-      const act2 = ActivityModel(
-        id: 'act1',
-        titleEn: 'Stargazing',
-        titleTr: 'Yıldızları İzleme',
-        descriptionEn: 'Warm blanket night',
-        descriptionTr: 'Battaniye altında gece',
-        categoryEn: 'Cozy',
-        categoryTr: 'Sıcak',
-        budget: ActivityBudget.free,
-        setting: ActivitySetting.outdoor,
-        vibe: ActivityVibe.romantic,
-        duration: '1 hr',
-        icon: '✨',
-        tipsEn: ['Bring tea'],
-        tipsTr: ['Çay al'],
-      );
-      expect(act1, equals(act2));
+    test(
+      'ActivityModel, ChallengeModel, SpecialDateModel, SharedInterestModel, AIMessageModel equality',
+      () {
+        final now = DateTime(2026, 1, 1);
+        const act1 = ActivityModel(
+          id: 'act1',
+          titleEn: 'Stargazing',
+          titleTr: 'Yıldızları İzleme',
+          descriptionEn: 'Warm blanket night',
+          descriptionTr: 'Battaniye altında gece',
+          categoryEn: 'Cozy',
+          categoryTr: 'Sıcak',
+          budget: ActivityBudget.free,
+          setting: ActivitySetting.outdoor,
+          vibe: ActivityVibe.romantic,
+          duration: '1 hr',
+          icon: '✨',
+          tipsEn: ['Bring tea'],
+          tipsTr: ['Çay al'],
+        );
+        const act2 = ActivityModel(
+          id: 'act1',
+          titleEn: 'Stargazing',
+          titleTr: 'Yıldızları İzleme',
+          descriptionEn: 'Warm blanket night',
+          descriptionTr: 'Battaniye altında gece',
+          categoryEn: 'Cozy',
+          categoryTr: 'Sıcak',
+          budget: ActivityBudget.free,
+          setting: ActivitySetting.outdoor,
+          vibe: ActivityVibe.romantic,
+          duration: '1 hr',
+          icon: '✨',
+          tipsEn: ['Bring tea'],
+          tipsTr: ['Çay al'],
+        );
+        expect(act1, equals(act2));
 
-      final ai1 = AIMessageModel(
-        id: 'msg1',
-        sender: MessageSender.noor,
-        contentEn: 'Hello darling',
-        contentTr: 'Merhaba canım',
-        timestamp: now,
-      );
-      final ai2 = AIMessageModel(
-        id: 'msg1',
-        sender: MessageSender.noor,
-        contentEn: 'Hello darling',
-        contentTr: 'Merhaba canım',
-        timestamp: now,
-      );
-      expect(ai1, equals(ai2));
+        final ai1 = AIMessageModel(
+          id: 'msg1',
+          sender: MessageSender.noor,
+          contentEn: 'Hello darling',
+          contentTr: 'Merhaba canım',
+          timestamp: now,
+        );
+        final ai2 = AIMessageModel(
+          id: 'msg1',
+          sender: MessageSender.noor,
+          contentEn: 'Hello darling',
+          contentTr: 'Merhaba canım',
+          timestamp: now,
+        );
+        expect(ai1, equals(ai2));
 
-      final date1 = SpecialDateModel(
-        id: 'sd1',
-        titleEn: 'First Date',
-        titleTr: 'İlk Buluşma',
-        date: now,
-        category: 'Anniversary',
-        icon: '🎉',
-      );
-      final date2 = SpecialDateModel(
-        id: 'sd1',
-        titleEn: 'First Date',
-        titleTr: 'İlk Buluşma',
-        date: now,
-        category: 'Anniversary',
-        icon: '🎉',
-      );
-      expect(date1, equals(date2));
-      expect(date1.hashCode, equals(date2.hashCode));
+        final date1 = SpecialDateModel(
+          id: 'sd1',
+          titleEn: 'First Date',
+          titleTr: 'İlk Buluşma',
+          date: now,
+          category: 'Anniversary',
+          icon: '🎉',
+        );
+        final date2 = SpecialDateModel(
+          id: 'sd1',
+          titleEn: 'First Date',
+          titleTr: 'İlk Buluşma',
+          date: now,
+          category: 'Anniversary',
+          icon: '🎉',
+        );
+        expect(date1, equals(date2));
+        expect(date1.hashCode, equals(date2.hashCode));
 
-      const ch1 = ChallengeModel(
-        id: 'ch1',
-        weekNumber: 1,
-        titleEn: 'Eye Contact',
-        titleTr: 'Göz Teması',
-        descriptionEn: 'Look for 5 mins',
-        descriptionTr: '5 dk bakışın',
-        rewardBadge: '🏆',
-        badgeNameEn: 'Spark',
-        badgeNameTr: 'Kıvılcım',
-        encouragementEn: 'Great job',
-        encouragementTr: 'Harika',
-      );
-      const ch2 = ChallengeModel(
-        id: 'ch1',
-        weekNumber: 1,
-        titleEn: 'Eye Contact',
-        titleTr: 'Göz Teması',
-        descriptionEn: 'Look for 5 mins',
-        descriptionTr: '5 dk bakışın',
-        rewardBadge: '🏆',
-        badgeNameEn: 'Spark',
-        badgeNameTr: 'Kıvılcım',
-        encouragementEn: 'Great job',
-        encouragementTr: 'Harika',
-      );
-      expect(ch1, equals(ch2));
-      expect(ch1.hashCode, equals(ch2.hashCode));
+        const ch1 = ChallengeModel(
+          id: 'ch1',
+          weekNumber: 1,
+          titleEn: 'Eye Contact',
+          titleTr: 'Göz Teması',
+          descriptionEn: 'Look for 5 mins',
+          descriptionTr: '5 dk bakışın',
+          rewardBadge: '🏆',
+          badgeNameEn: 'Spark',
+          badgeNameTr: 'Kıvılcım',
+          encouragementEn: 'Great job',
+          encouragementTr: 'Harika',
+        );
+        const ch2 = ChallengeModel(
+          id: 'ch1',
+          weekNumber: 1,
+          titleEn: 'Eye Contact',
+          titleTr: 'Göz Teması',
+          descriptionEn: 'Look for 5 mins',
+          descriptionTr: '5 dk bakışın',
+          rewardBadge: '🏆',
+          badgeNameEn: 'Spark',
+          badgeNameTr: 'Kıvılcım',
+          encouragementEn: 'Great job',
+          encouragementTr: 'Harika',
+        );
+        expect(ch1, equals(ch2));
+        expect(ch1.hashCode, equals(ch2.hashCode));
 
-      const si1 = SharedInterestModel(
-        id: 'si1',
-        titleEn: 'Coffee Crawl',
-        titleTr: 'Kahve Turu',
-        category: 'Cozy',
-        descriptionEn: 'Find new spots',
-        descriptionTr: 'Yeni yerler keşfedin',
-        suggestedDateEn: 'Sunday Morning',
-        suggestedDateTr: 'Pazar Sabahı',
-        icon: '☕',
-      );
-      const si2 = SharedInterestModel(
-        id: 'si1',
-        titleEn: 'Coffee Crawl',
-        titleTr: 'Kahve Turu',
-        category: 'Cozy',
-        descriptionEn: 'Find new spots',
-        descriptionTr: 'Yeni yerler keşfedin',
-        suggestedDateEn: 'Sunday Morning',
-        suggestedDateTr: 'Pazar Sabahı',
-        icon: '☕',
-      );
-      expect(si1, equals(si2));
-      expect(si1.hashCode, equals(si2.hashCode));
-    });
+        const si1 = SharedInterestModel(
+          id: 'si1',
+          titleEn: 'Coffee Crawl',
+          titleTr: 'Kahve Turu',
+          category: 'Cozy',
+          descriptionEn: 'Find new spots',
+          descriptionTr: 'Yeni yerler keşfedin',
+          suggestedDateEn: 'Sunday Morning',
+          suggestedDateTr: 'Pazar Sabahı',
+          icon: '☕',
+        );
+        const si2 = SharedInterestModel(
+          id: 'si1',
+          titleEn: 'Coffee Crawl',
+          titleTr: 'Kahve Turu',
+          category: 'Cozy',
+          descriptionEn: 'Find new spots',
+          descriptionTr: 'Yeni yerler keşfedin',
+          suggestedDateEn: 'Sunday Morning',
+          suggestedDateTr: 'Pazar Sabahı',
+          icon: '☕',
+        );
+        expect(si1, equals(si2));
+        expect(si1.hashCode, equals(si2.hashCode));
+      },
+    );
   });
 }

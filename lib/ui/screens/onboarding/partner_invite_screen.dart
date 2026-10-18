@@ -37,9 +37,9 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
       appBar: AppBar(
         title: Text(
           isTr ? 'Partnerinizi Bağlayın' : 'Link Your Partner',
-          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyles.titleMedium(
+            isDark: isDark,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
       ),
       body: SingleChildScrollView(
@@ -47,20 +47,18 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SoulConnectionArt(
-              width: 220,
-              height: 170,
-              animateGlow: true,
-            ),
+            const SoulConnectionArt(width: 220, height: 170, animateGlow: true),
 
             const SizedBox(height: 20),
 
             Text(
-              isTr ? 'İki Kalp, Tek Ortak Alan' : 'Two Hearts, One Shared Space',
+              isTr
+                  ? 'İki Kalp, Tek Ortak Alan'
+                  : 'Two Hearts, One Shared Space',
               textAlign: TextAlign.center,
-              style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: AppTextStyles.displaySmall(
+                isDark: isDark,
+              ).copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 8),
             Text(
@@ -84,7 +82,9 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
 
             // Or Enter Partner's Code
             Text(
-              isTr ? 'Veya Partnerinizin Kodunu Girin' : 'Or Enter Partner’s Code',
+              isTr
+                  ? 'Veya Partnerinizin Kodunu Girin'
+                  : 'Or Enter Partner’s Code',
               style: AppTextStyles.labelLarge(isDark: isDark),
             ),
             const SizedBox(height: 8),
@@ -112,9 +112,10 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
 
             // Proceed to Couple Space Button
             GradientButton(
-              text: isTr
-                  ? 'Çift Alanımıza Başla ✨'
-                  : 'Enter Our Couple Sanctuary ✨',
+              text:
+                  isTr
+                      ? 'Çift Alanımıza Başla ✨'
+                      : 'Enter Our Couple Sanctuary ✨',
               onPressed: () {
                 _navigateToMain();
               },
@@ -151,9 +152,8 @@ class InviteCodeDisplayCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       padding: const EdgeInsets.all(22),
-      gradient: isDark
-          ? AppColors.darkCardGradient
-          : AppColors.intimateCardGradient,
+      gradient:
+          isDark ? AppColors.darkCardGradient : AppColors.intimateCardGradient,
       child: Column(
         children: [
           Text(
@@ -161,24 +161,17 @@ class InviteCodeDisplayCard extends StatelessWidget {
             style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
               letterSpacing: 1.5,
               fontWeight: FontWeight.w700,
-              color: isDark
-                  ? AppColors.blushPinkDeep
-                  : AppColors.burgundyRose,
+              color: isDark ? AppColors.blushPinkDeep : AppColors.burgundyRose,
             ),
           ),
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 20, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.darkCardElevated
-                  : Colors.white,
+              color: isDark ? AppColors.darkCardElevated : Colors.white,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(
-                color: isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightBorder,
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
               ),
             ),
             child: FittedBox(
@@ -188,9 +181,7 @@ class InviteCodeDisplayCard extends StatelessWidget {
                 style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1.5,
-                  color: isDark
-                      ? AppColors.warmPeach
-                      : AppColors.deepBurgundy,
+                  color: isDark ? AppColors.warmPeach : AppColors.deepBurgundy,
                 ),
               ),
             ),
@@ -203,9 +194,11 @@ class InviteCodeDisplayCard extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: inviteCode));
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(isTr
-                      ? 'Davet kodu kopyalandı! Partnerinize WhatsApp veya SMS ile gönderin.'
-                      : 'Invite code copied! Send to your partner via WhatsApp or SMS.'),
+                  content: Text(
+                    isTr
+                        ? 'Davet kodu kopyalandı! Partnerinize WhatsApp veya SMS ile gönderin.'
+                        : 'Invite code copied! Send to your partner via WhatsApp or SMS.',
+                  ),
                 ),
               );
             },

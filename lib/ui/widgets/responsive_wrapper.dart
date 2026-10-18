@@ -25,9 +25,8 @@ class ResponsiveWrapper extends StatelessWidget {
         final isDark = Theme.of(context).brightness == Brightness.dark;
 
         return Scaffold(
-          backgroundColor: isDark
-              ? const Color(0xFF0F0A0E)
-              : const Color(0xFFEDE3DC),
+          backgroundColor:
+              isDark ? const Color(0xFF0F0A0E) : const Color(0xFFEDE3DC),
           body: Center(
             child: Container(
               constraints: BoxConstraints(maxWidth: maxWidth),

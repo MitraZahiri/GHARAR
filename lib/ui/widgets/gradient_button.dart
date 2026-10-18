@@ -32,13 +32,14 @@ class GradientButton extends StatelessWidget {
       width: width ?? double.infinity,
       constraints: BoxConstraints(minHeight: height),
       decoration: BoxDecoration(
-        gradient: gradient ??
+        gradient:
+            gradient ??
             (isDark
                 ? const LinearGradient(
-                    colors: [AppColors.blushPinkDeep, AppColors.burgundyRose],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
+                  colors: [AppColors.blushPinkDeep, AppColors.burgundyRose],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
                 : AppColors.romanticLove),
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: [
@@ -58,39 +59,44 @@ class GradientButton extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             child: Center(
-              child: isLoading
-                  ? const SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (icon != null) ...[
-                          icon!,
-                          const SizedBox(width: 8),
-                        ],
-                        Flexible(
-                          child: Text(
-                            text,
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.labelLarge(isDark: false).copyWith(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.3,
-                            ),
+              child:
+                  isLoading
+                      ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
                           ),
                         ),
-                      ],
-                    ),
+                      )
+                      : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (icon != null) ...[
+                            icon!,
+                            const SizedBox(width: 8),
+                          ],
+                          Flexible(
+                            child: Text(
+                              text,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.labelLarge(
+                                isDark: false,
+                              ).copyWith(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
             ),
           ),
         ),

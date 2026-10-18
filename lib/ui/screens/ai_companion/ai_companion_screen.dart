@@ -53,10 +53,12 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-    final messages =
-        context.select<AppStateProvider, List<AIMessageModel>>((p) => p.aiMessages);
-    final isGeneratingAI =
-        context.select<AppStateProvider, bool>((p) => p.isGeneratingAI);
+    final messages = context.select<AppStateProvider, List<AIMessageModel>>(
+      (p) => p.aiMessages,
+    );
+    final isGeneratingAI = context.select<AppStateProvider, bool>(
+      (p) => p.isGeneratingAI,
+    );
 
     final quickPrompts = isTr ? _quickPromptsTr : _quickPromptsEn;
 
@@ -76,9 +78,9 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
             const SizedBox(width: 8),
             Text(
               'Noor • Companion',
-              style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTextStyles.titleMedium(
+                isDark: isDark,
+              ).copyWith(fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -91,18 +93,20 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
             color: isDark ? AppColors.darkCardElevated : AppColors.warmIvory,
             child: Row(
               children: [
-                const Icon(Icons.shield_outlined,
-                    size: 16, color: AppColors.champagneGold),
+                const Icon(
+                  Icons.shield_outlined,
+                  size: 16,
+                  color: AppColors.champagneGold,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     isTr
                         ? 'Noor; sevgi dolu iletişim ve randevu fikirleri sunar. Tıbbi terapi yerine geçmez.'
                         : 'Noor provides inspiration & communication tips. Not professional couples therapy.',
-                    style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                      fontSize: 11,
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: AppTextStyles.bodySmall(
+                      isDark: isDark,
+                    ).copyWith(fontSize: 11, fontStyle: FontStyle.italic),
                   ),
                 ),
               ],
@@ -176,7 +180,8 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
                 color: isDark ? AppColors.darkCard : Colors.white,
                 border: Border(
                   top: BorderSide(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    color:
+                        isDark ? AppColors.darkBorder : AppColors.lightBorder,
                   ),
                 ),
               ),
@@ -186,11 +191,14 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
                     child: TextField(
                       controller: _textController,
                       decoration: InputDecoration(
-                        hintText: isTr
-                            ? 'Noor’a bir soru sorun...'
-                            : 'Ask Noor for advice or prompts...',
+                        hintText:
+                            isTr
+                                ? 'Noor’a bir soru sorun...'
+                                : 'Ask Noor for advice or prompts...',
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                       ),
                       onSubmitted: (val) {
                         if (val.trim().isNotEmpty) {
@@ -209,8 +217,11 @@ class _AICompanionScreenState extends State<AICompanionScreen> {
                         gradient: AppColors.romanticLove,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.arrow_upward_rounded,
-                          color: Colors.white, size: 20),
+                      child: const Icon(
+                        Icons.arrow_upward_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                     onPressed: () {
                       final text = _textController.text.trim();
@@ -256,21 +267,26 @@ class AIMessageBubble extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: isUser
-              ? (isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy)
-              : (isDark ? AppColors.darkCard : Colors.white),
+          color:
+              isUser
+                  ? (isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy)
+                  : (isDark ? AppColors.darkCard : Colors.white),
           gradient: !isUser && !isDark ? AppColors.intimateCardGradient : null,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(20),
             topRight: const Radius.circular(20),
-            bottomLeft: isUser ? const Radius.circular(20) : const Radius.circular(4),
-            bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(20),
+            bottomLeft:
+                isUser ? const Radius.circular(20) : const Radius.circular(4),
+            bottomRight:
+                isUser ? const Radius.circular(4) : const Radius.circular(20),
           ),
-          border: !isUser
-              ? Border.all(
-                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                )
-              : null,
+          border:
+              !isUser
+                  ? Border.all(
+                    color:
+                        isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                  )
+                  : null,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -292,9 +308,10 @@ class AIMessageBubble extends StatelessWidget {
                     'Noor',
                     style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                       fontWeight: FontWeight.w700,
-                      color: isDark
-                          ? AppColors.blushPinkDeep
-                          : AppColors.deepBurgundy,
+                      color:
+                          isDark
+                              ? AppColors.blushPinkDeep
+                              : AppColors.deepBurgundy,
                     ),
                   ),
                 ],
@@ -304,11 +321,12 @@ class AIMessageBubble extends StatelessWidget {
             Text(
               message.content(isTr),
               style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
-                color: isUser
-                    ? (isDark ? AppColors.burgundyWine : Colors.white)
-                    : (isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary),
+                color:
+                    isUser
+                        ? (isDark ? AppColors.burgundyWine : Colors.white)
+                        : (isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary),
                 height: 1.45,
               ),
             ),
@@ -341,10 +359,9 @@ class QuickPromptChip extends StatelessWidget {
       ),
       label: Text(
         prompt,
-        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
+        style: AppTextStyles.bodySmall(
+          isDark: isDark,
+        ).copyWith(fontSize: 12, fontWeight: FontWeight.w600),
       ),
       onPressed: onPressed,
     );

@@ -5,24 +5,18 @@ import 'package:gharar/ui/widgets/custom_primary_button.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(child: child),
-      ),
-    );
+    return MaterialApp(home: Scaffold(body: Center(child: child)));
   }
 
   group('CustomPrimaryButton Widget Tests', () {
-    testWidgets('butonu doğru render etmeli ve verilen metni göstermelidir',
-        (WidgetTester tester) async {
+    testWidgets('butonu doğru render etmeli ve verilen metni göstermelidir', (
+      WidgetTester tester,
+    ) async {
       const buttonText = 'Devam Et';
 
       await tester.pumpWidget(
         buildTestableWidget(
-          CustomPrimaryButton(
-            text: buttonText,
-            onPressed: () {},
-          ),
+          CustomPrimaryButton(text: buttonText, onPressed: () {}),
         ),
       );
 
@@ -41,8 +35,9 @@ void main() {
       expect(decoration?.color, equals(AppColors.terracotta));
     });
 
-    testWidgets('tıklandığında onPressed fonksiyonunu tetiklemelidir',
-        (WidgetTester tester) async {
+    testWidgets('tıklandığında onPressed fonksiyonunu tetiklemelidir', (
+      WidgetTester tester,
+    ) async {
       var wasPressed = false;
 
       await tester.pumpWidget(
@@ -64,31 +59,33 @@ void main() {
       expect(wasPressed, isTrue);
     });
 
-    testWidgets('isLoading true olduğunda yüklenme göstergesi render etmeli ve tıklamayı engellemelidir',
-        (WidgetTester tester) async {
-      var wasPressed = false;
+    testWidgets(
+      'isLoading true olduğunda yüklenme göstergesi render etmeli ve tıklamayı engellemelidir',
+      (WidgetTester tester) async {
+        var wasPressed = false;
 
-      await tester.pumpWidget(
-        buildTestableWidget(
-          CustomPrimaryButton(
-            text: 'Kaydet',
-            isLoading: true,
-            onPressed: () {
-              wasPressed = true;
-            },
+        await tester.pumpWidget(
+          buildTestableWidget(
+            CustomPrimaryButton(
+              text: 'Kaydet',
+              isLoading: true,
+              onPressed: () {
+                wasPressed = true;
+              },
+            ),
           ),
-        ),
-      );
+        );
 
-      // Yükleme animasyonu gösterilmeli, metin gizlenmeli
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.text('Kaydet'), findsNothing);
+        // Yükleme animasyonu gösterilmeli, metin gizlenmeli
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        expect(find.text('Kaydet'), findsNothing);
 
-      // Tıklanmaya çalışıldığında fonksiyon tetiklenmemeli
-      await tester.tap(find.byType(CustomPrimaryButton));
-      await tester.pump();
+        // Tıklanmaya çalışıldığında fonksiyon tetiklenmemeli
+        await tester.tap(find.byType(CustomPrimaryButton));
+        await tester.pump();
 
-      expect(wasPressed, isFalse);
-    });
+        expect(wasPressed, isFalse);
+      },
+    );
   });
 }

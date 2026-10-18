@@ -55,32 +55,34 @@ class CoupleModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'partner1': partner1.toJson(),
-        'partner2': partner2?.toJson(),
-        'inviteCode': inviteCode,
-        'anniversaryDate': anniversaryDate.toIso8601String(),
-        'connectionStreak': connectionStreak,
-        'streakLastMaintained': streakLastMaintained?.toIso8601String(),
-        'isLinked': isLinked,
-        'isPremium': isPremium,
-      };
+    'id': id,
+    'partner1': partner1.toJson(),
+    'partner2': partner2?.toJson(),
+    'inviteCode': inviteCode,
+    'anniversaryDate': anniversaryDate.toIso8601String(),
+    'connectionStreak': connectionStreak,
+    'streakLastMaintained': streakLastMaintained?.toIso8601String(),
+    'isLinked': isLinked,
+    'isPremium': isPremium,
+  };
 
   factory CoupleModel.fromJson(Map<String, dynamic> json) {
     return CoupleModel(
       id: json['id'] as String,
       partner1: UserModel.fromJson(json['partner1'] as Map<String, dynamic>),
-      partner2: json['partner2'] != null
-          ? UserModel.fromJson(json['partner2'] as Map<String, dynamic>)
-          : null,
+      partner2:
+          json['partner2'] != null
+              ? UserModel.fromJson(json['partner2'] as Map<String, dynamic>)
+              : null,
       inviteCode: json['inviteCode'] as String? ?? 'GHARAR-7842-LOVE',
       anniversaryDate:
           DateTime.tryParse(json['anniversaryDate'] as String? ?? '') ??
-              DateTime.now().subtract(const Duration(days: 365)),
+          DateTime.now().subtract(const Duration(days: 365)),
       connectionStreak: (json['connectionStreak'] as num?)?.toInt() ?? 1,
-      streakLastMaintained: json['streakLastMaintained'] != null
-          ? DateTime.tryParse(json['streakLastMaintained'] as String)
-          : null,
+      streakLastMaintained:
+          json['streakLastMaintained'] != null
+              ? DateTime.tryParse(json['streakLastMaintained'] as String)
+              : null,
       isLinked: json['isLinked'] as bool? ?? true,
       isPremium: json['isPremium'] as bool? ?? false,
     );

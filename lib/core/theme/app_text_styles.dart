@@ -8,7 +8,8 @@ import 'app_colors.dart';
 class AppTextStyles {
   AppTextStyles._();
 
-  static TextStyle displayLarge({required bool isDark}) => GoogleFonts.playfairDisplay(
+  static TextStyle displayLarge({required bool isDark}) =>
+      GoogleFonts.playfairDisplay(
         fontSize: 32,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.5,
@@ -16,7 +17,8 @@ class AppTextStyles {
         height: 1.2,
       );
 
-  static TextStyle displayMedium({required bool isDark}) => GoogleFonts.playfairDisplay(
+  static TextStyle displayMedium({required bool isDark}) =>
+      GoogleFonts.playfairDisplay(
         fontSize: 26,
         fontWeight: FontWeight.w600,
         letterSpacing: -0.3,
@@ -24,46 +26,55 @@ class AppTextStyles {
         height: 1.25,
       );
 
-  static TextStyle displaySmall({required bool isDark}) => GoogleFonts.playfairDisplay(
+  static TextStyle displaySmall({required bool isDark}) =>
+      GoogleFonts.playfairDisplay(
         fontSize: 22,
         fontWeight: FontWeight.w600,
         color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
         height: 1.3,
       );
 
-  static TextStyle headline({required bool isDark}) => GoogleFonts.plusJakartaSans(
+  static TextStyle headline({required bool isDark}) =>
+      GoogleFonts.plusJakartaSans(
         fontSize: 18,
         fontWeight: FontWeight.w700,
         color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
       );
 
-  static TextStyle titleMedium({required bool isDark}) => GoogleFonts.plusJakartaSans(
+  static TextStyle titleMedium({required bool isDark}) =>
+      GoogleFonts.plusJakartaSans(
         fontSize: 16,
         fontWeight: FontWeight.w600,
         color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
       );
 
-  static TextStyle bodyLarge({required bool isDark}) => GoogleFonts.plusJakartaSans(
+  static TextStyle bodyLarge({required bool isDark}) =>
+      GoogleFonts.plusJakartaSans(
         fontSize: 15,
         fontWeight: FontWeight.w400,
-        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+        color:
+            isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
         height: 1.5,
       );
 
-  static TextStyle bodyMedium({required bool isDark}) => GoogleFonts.plusJakartaSans(
+  static TextStyle bodyMedium({required bool isDark}) =>
+      GoogleFonts.plusJakartaSans(
         fontSize: 14,
         fontWeight: FontWeight.w400,
-        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+        color:
+            isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
         height: 1.45,
       );
 
-  static TextStyle bodySmall({required bool isDark}) => GoogleFonts.plusJakartaSans(
+  static TextStyle bodySmall({required bool isDark}) =>
+      GoogleFonts.plusJakartaSans(
         fontSize: 12,
         fontWeight: FontWeight.w400,
         color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
       );
 
-  static TextStyle labelLarge({required bool isDark}) => GoogleFonts.plusJakartaSans(
+  static TextStyle labelLarge({required bool isDark}) =>
+      GoogleFonts.plusJakartaSans(
         fontSize: 14,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.2,
@@ -71,10 +82,10 @@ class AppTextStyles {
       );
 
   static TextStyle quote({required bool isDark}) => GoogleFonts.playfairDisplay(
-        fontSize: 16,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-        color: isDark ? AppColors.darkTextSecondary : AppColors.burgundyRose,
-        height: 1.4,
-      );
+    fontSize: 16,
+    fontStyle: FontStyle.italic,
+    fontWeight: FontWeight.w400,
+    color: isDark ? AppColors.darkTextSecondary : AppColors.burgundyRose,
+    height: 1.4,
+  );
 }

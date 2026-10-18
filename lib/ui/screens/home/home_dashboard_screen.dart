@@ -28,23 +28,40 @@ class HomeDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-    final isPartnerLinked = context.select<AppStateProvider, bool>((p) => p.isPartnerLinked);
+    final isPartnerLinked = context.select<AppStateProvider, bool>(
+      (p) => p.isPartnerLinked,
+    );
 
-    final couple = context.select<AppStateProvider, CoupleModel?>((p) => p.couple);
-    final activePartner = context.select<AppStateProvider, UserModel>((p) => p.activePartner);
-    final otherPartner = context.select<AppStateProvider, UserModel>((p) => p.otherPartner);
-    final currentQ = context.select<AppStateProvider, QuestionModel?>((p) => p.currentQuestion);
+    final couple = context.select<AppStateProvider, CoupleModel?>(
+      (p) => p.couple,
+    );
+    final activePartner = context.select<AppStateProvider, UserModel>(
+      (p) => p.activePartner,
+    );
+    final otherPartner = context.select<AppStateProvider, UserModel>(
+      (p) => p.otherPartner,
+    );
+    final currentQ = context.select<AppStateProvider, QuestionModel?>(
+      (p) => p.currentQuestion,
+    );
 
-    final isBothAnswered = currentQ != null &&
-        context.select<AppStateProvider, bool>((p) => p.isBothAnswered(currentQ.id));
-    final activeAnswer = currentQ != null
-        ? context.select<AppStateProvider, AnswerModel?>(
-            (p) => p.getAnswerForActivePartner(currentQ.id))
-        : null;
-    final otherAnswer = currentQ != null
-        ? context.select<AppStateProvider, AnswerModel?>(
-            (p) => p.getAnswerForOtherPartner(currentQ.id))
-        : null;
+    final isBothAnswered =
+        currentQ != null &&
+        context.select<AppStateProvider, bool>(
+          (p) => p.isBothAnswered(currentQ.id),
+        );
+    final activeAnswer =
+        currentQ != null
+            ? context.select<AppStateProvider, AnswerModel?>(
+              (p) => p.getAnswerForActivePartner(currentQ.id),
+            )
+            : null;
+    final otherAnswer =
+        currentQ != null
+            ? context.select<AppStateProvider, AnswerModel?>(
+              (p) => p.getAnswerForOtherPartner(currentQ.id),
+            )
+            : null;
 
     final activeChallenge = context.select<AppStateProvider, ChallengeModel?>(
       (p) => p.challenges.firstOrNull,
@@ -52,9 +69,10 @@ class HomeDashboardScreen extends StatelessWidget {
     final upcomingDate = context.select<AppStateProvider, SpecialDateModel?>(
       (p) => p.specialDates.firstOrNull,
     );
-    final featuredInterest = context.select<AppStateProvider, SharedInterestModel?>(
-      (p) => p.sharedInterests.firstOrNull,
-    );
+    final featuredInterest = context
+        .select<AppStateProvider, SharedInterestModel?>(
+          (p) => p.sharedInterests.firstOrNull,
+        );
 
     return Scaffold(
       appBar: const RomanticAppBar(),
@@ -85,11 +103,13 @@ class HomeDashboardScreen extends StatelessWidget {
                           _getGreeting(isTr),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodyMedium(isDark: isDark)
-                              .copyWith(
-                            color: isDark
-                                ? AppColors.lavenderAccent
-                                : AppColors.burgundyRose,
+                          style: AppTextStyles.bodyMedium(
+                            isDark: isDark,
+                          ).copyWith(
+                            color:
+                                isDark
+                                    ? AppColors.lavenderAccent
+                                    : AppColors.burgundyRose,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -102,11 +122,15 @@ class HomeDashboardScreen extends StatelessWidget {
                                   : activePartner.name),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.displaySmall(isDark: isDark)
-                              .copyWith(
+                          style: AppTextStyles.displaySmall(
+                            isDark: isDark,
+                          ).copyWith(
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.3,
-                            fontSize: MediaQuery.sizeOf(context).width <= 360 ? 22 : 26,
+                            fontSize:
+                                MediaQuery.sizeOf(context).width <= 360
+                                    ? 22
+                                    : 26,
                           ),
                         ),
                       ],
@@ -122,7 +146,8 @@ class HomeDashboardScreen extends StatelessWidget {
                             behavior: SnackBarBehavior.floating,
                             backgroundColor: AppColors.deepBurgundy,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                             content: Text(
                               isTr
                                   ? 'Harika! ${couple.connectionStreak} gündür her gün sevginizi besliyorsunuz. 🔥'
@@ -140,11 +165,18 @@ class HomeDashboardScreen extends StatelessWidget {
               // Soul Connection Invite Card (Displayed when Partner is not linked yet)
               if (!isPartnerLinked) ...[
                 GlassCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  gradient: isDark
-                      ? AppColors.darkCardGradient
-                      : AppColors.intimateCardGradient,
-                  borderColor: isDark ? AppColors.darkBorder : AppColors.heartGold.withValues(alpha: 0.5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
+                  gradient:
+                      isDark
+                          ? AppColors.darkCardGradient
+                          : AppColors.intimateCardGradient,
+                  borderColor:
+                      isDark
+                          ? AppColors.darkBorder
+                          : AppColors.heartGold.withValues(alpha: 0.5),
                   child: Column(
                     children: [
                       const SoulConnectionArt(
@@ -157,9 +189,14 @@ class HomeDashboardScreen extends StatelessWidget {
                         isTr
                             ? 'İki Ruh Birbirini Bekliyor'
                             : 'Two Souls Waiting to Connect',
-                        style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                        style: AppTextStyles.titleMedium(
+                          isDark: isDark,
+                        ).copyWith(
                           fontWeight: FontWeight.w800,
-                          color: isDark ? AppColors.heartGoldGlow : AppColors.terracottaDeep,
+                          color:
+                              isDark
+                                  ? AppColors.heartGoldGlow
+                                  : AppColors.terracottaDeep,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -173,7 +210,9 @@ class HomeDashboardScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       OutlinedButton.icon(
                         icon: const Icon(Icons.share_rounded, size: 16),
-                        label: Text(isTr ? 'Partneri Davet Et 💌' : 'Invite Partner 💌'),
+                        label: Text(
+                          isTr ? 'Partneri Davet Et 💌' : 'Invite Partner 💌',
+                        ),
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -192,14 +231,16 @@ class HomeDashboardScreen extends StatelessWidget {
               if (currentQ != null)
                 GlassCard(
                   padding: const EdgeInsets.all(22),
-                  gradient: isDark
-                      ? AppColors.darkCardGradient
-                      : AppColors.intimateCardGradient,
-                  borderColor: isBothAnswered
-                      ? AppColors.champagneGold
-                      : (isDark
-                          ? AppColors.darkBorder
-                          : AppColors.blushPinkDeep.withValues(alpha: 0.6)),
+                  gradient:
+                      isDark
+                          ? AppColors.darkCardGradient
+                          : AppColors.intimateCardGradient,
+                  borderColor:
+                      isBothAnswered
+                          ? AppColors.champagneGold
+                          : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.blushPinkDeep.withValues(alpha: 0.6)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -209,37 +250,45 @@ class HomeDashboardScreen extends StatelessWidget {
                           Flexible(
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: isDark
-                                    ? AppColors.darkCardElevated
-                                    : Colors.white,
+                                color:
+                                    isDark
+                                        ? AppColors.darkCardElevated
+                                        : Colors.white,
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
-                                  color: isDark
-                                      ? AppColors.darkBorder
-                                      : AppColors.lightBorder,
+                                  color:
+                                      isDark
+                                          ? AppColors.darkBorder
+                                          : AppColors.lightBorder,
                                 ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(currentQ.categoryIcon,
-                                      style: const TextStyle(fontSize: 14)),
+                                  Text(
+                                    currentQ.categoryIcon,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
                                   const SizedBox(width: 6),
                                   Flexible(
                                     child: Text(
                                       currentQ.categoryName(isTr).toUpperCase(),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
-                                      style: AppTextStyles.bodySmall(isDark: isDark)
-                                          .copyWith(
+                                      style: AppTextStyles.bodySmall(
+                                        isDark: isDark,
+                                      ).copyWith(
                                         fontWeight: FontWeight.w700,
                                         fontSize: 10,
                                         letterSpacing: 1,
-                                        color: isDark
-                                            ? AppColors.blushPinkDeep
-                                            : AppColors.deepBurgundy,
+                                        color:
+                                            isDark
+                                                ? AppColors.blushPinkDeep
+                                                : AppColors.deepBurgundy,
                                       ),
                                     ),
                                   ),
@@ -251,9 +300,13 @@ class HomeDashboardScreen extends StatelessWidget {
                           IconButton(
                             icon: const Icon(Icons.shuffle_rounded, size: 20),
                             tooltip:
-                                isTr ? 'Başka Soru Çek' : 'Draw Another Question',
+                                isTr
+                                    ? 'Başka Soru Çek'
+                                    : 'Draw Another Question',
                             onPressed: () {
-                              context.read<AppStateProvider>().drawRandomQuestion();
+                              context
+                                  .read<AppStateProvider>()
+                                  .drawRandomQuestion();
                             },
                           ),
                         ],
@@ -263,8 +316,9 @@ class HomeDashboardScreen extends StatelessWidget {
 
                       Text(
                         currentQ.text(isTr),
-                        style: AppTextStyles.displaySmall(isDark: isDark)
-                            .copyWith(
+                        style: AppTextStyles.displaySmall(
+                          isDark: isDark,
+                        ).copyWith(
                           fontWeight: FontWeight.w700,
                           height: 1.35,
                           fontSize: 20,
@@ -303,31 +357,38 @@ class HomeDashboardScreen extends StatelessWidget {
                       // Primary CTA: Connect Today or Reveal Answers
                       if (isBothAnswered)
                         GradientButton(
-                          text: isTr
-                              ? 'Cevapları Birlikte Aç ✨ (İkiniz de Hazır!)'
-                              : 'Reveal Answers Together ✨ (Both Ready!)',
+                          text:
+                              isTr
+                                  ? 'Cevapları Birlikte Aç ✨ (İkiniz de Hazır!)'
+                                  : 'Reveal Answers Together ✨ (Both Ready!)',
                           gradient: AppColors.sunsetGold,
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    AnswerRevealScreen(question: currentQ),
+                                builder:
+                                    (context) =>
+                                        AnswerRevealScreen(question: currentQ),
                               ),
                             );
                           },
                         )
                       else
                         GradientButton(
-                          text: activeAnswer != null
-                              ? (isTr
-                                  ? 'Cevabım Hazır • Partnere Bak'
-                                  : 'My Answer Saved • View Status')
-                              : (isTr ? 'Bugün Bağlan 💌' : 'Connect Today 💌'),
+                          text:
+                              activeAnswer != null
+                                  ? (isTr
+                                      ? 'Cevabım Hazır • Partnere Bak'
+                                      : 'My Answer Saved • View Status')
+                                  : (isTr
+                                      ? 'Bugün Bağlan 💌'
+                                      : 'Connect Today 💌'),
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => DailyQuestionScreen(
-                                    initialQuestion: currentQ),
+                                builder:
+                                    (context) => DailyQuestionScreen(
+                                      initialQuestion: currentQ,
+                                    ),
                               ),
                             );
                           },
@@ -359,8 +420,10 @@ class HomeDashboardScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: Center(
-                          child: Text(activeChallenge.rewardBadge,
-                              style: const TextStyle(fontSize: 24)),
+                          child: Text(
+                            activeChallenge.rewardBadge,
+                            style: const TextStyle(fontSize: 24),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -377,29 +440,35 @@ class HomeDashboardScreen extends StatelessWidget {
                                         : 'WEEKLY COUPLE CHALLENGE',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.bodySmall(isDark: isDark)
-                                        .copyWith(
+                                    style: AppTextStyles.bodySmall(
+                                      isDark: isDark,
+                                    ).copyWith(
                                       fontSize: 10,
                                       letterSpacing: 1,
                                       fontWeight: FontWeight.w700,
-                                      color: isDark
-                                          ? AppColors.blushPinkDeep
-                                          : AppColors.burgundyRose,
+                                      color:
+                                          isDark
+                                              ? AppColors.blushPinkDeep
+                                              : AppColors.burgundyRose,
                                     ),
                                   ),
                                 ),
                                 if (activeChallenge.isCompleted) ...[
                                   const SizedBox(width: 6),
-                                  const Icon(Icons.check_circle_rounded,
-                                      color: AppColors.successGreen, size: 16),
+                                  const Icon(
+                                    Icons.check_circle_rounded,
+                                    color: AppColors.successGreen,
+                                    size: 16,
+                                  ),
                                 ],
                               ],
                             ),
                             const SizedBox(height: 2),
                             Text(
                               activeChallenge.title(isTr),
-                              style: AppTextStyles.titleMedium(isDark: isDark)
-                                  .copyWith(
+                              style: AppTextStyles.titleMedium(
+                                isDark: isDark,
+                              ).copyWith(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 15,
                               ),
@@ -414,8 +483,11 @@ class HomeDashboardScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward_ios_rounded,
-                          size: 14, color: AppColors.lightTextMuted),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 14,
+                        color: AppColors.lightTextMuted,
+                      ),
                     ],
                   ),
                 ),
@@ -444,14 +516,21 @@ class HomeDashboardScreen extends StatelessWidget {
                           const SizedBox(height: 10),
                           Text(
                             isTr ? 'Romantik Sürpriz' : 'Romantic Surprise',
-                            style: AppTextStyles.titleMedium(isDark: isDark)
-                                .copyWith(fontWeight: FontWeight.w700, fontSize: 14),
+                            style: AppTextStyles.titleMedium(
+                              isDark: isDark,
+                            ).copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            isTr ? 'Tatlı bir jest çekin' : 'Roll spontaneous idea',
-                            style: AppTextStyles.bodySmall(isDark: isDark)
-                                .copyWith(fontSize: 11),
+                            isTr
+                                ? 'Tatlı bir jest çekin'
+                                : 'Roll spontaneous idea',
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(fontSize: 11),
                           ),
                         ],
                       ),
@@ -476,16 +555,21 @@ class HomeDashboardScreen extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Text(upcomingDate?.icon ?? '💍',
-                                  style: const TextStyle(fontSize: 24)),
+                              Text(
+                                upcomingDate?.icon ?? '💍',
+                                style: const TextStyle(fontSize: 24),
+                              ),
                               const Spacer(),
                               if (upcomingDate != null)
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.champagneGold
-                                        .withValues(alpha: 0.18),
+                                    color: AppColors.champagneGold.withValues(
+                                      alpha: 0.18,
+                                    ),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
@@ -505,14 +589,19 @@ class HomeDashboardScreen extends StatelessWidget {
                                 (isTr ? 'Özel Günler' : 'Special Dates'),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.titleMedium(isDark: isDark)
-                                .copyWith(fontWeight: FontWeight.w700, fontSize: 14),
+                            style: AppTextStyles.titleMedium(
+                              isDark: isDark,
+                            ).copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             isTr ? 'Geri sayım & takvim' : 'Countdown & dates',
-                            style: AppTextStyles.bodySmall(isDark: isDark)
-                                .copyWith(fontSize: 11),
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(fontSize: 11),
                           ),
                         ],
                       ),
@@ -532,8 +621,10 @@ class HomeDashboardScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(featuredInterest.icon,
-                              style: const TextStyle(fontSize: 22)),
+                          Text(
+                            featuredInterest.icon,
+                            style: const TextStyle(fontSize: 22),
+                          ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Column(
@@ -543,20 +634,23 @@ class HomeDashboardScreen extends StatelessWidget {
                                   isTr
                                       ? 'GÜNÜN ORTAK KIVILCIMI'
                                       : 'MUTUAL SPARK OF THE DAY',
-                                  style: AppTextStyles.bodySmall(isDark: isDark)
-                                      .copyWith(
+                                  style: AppTextStyles.bodySmall(
+                                    isDark: isDark,
+                                  ).copyWith(
                                     fontSize: 10,
                                     letterSpacing: 1,
                                     fontWeight: FontWeight.w700,
-                                    color: isDark
-                                        ? AppColors.blushPinkDeep
-                                        : AppColors.burgundyRose,
+                                    color:
+                                        isDark
+                                            ? AppColors.blushPinkDeep
+                                            : AppColors.burgundyRose,
                                   ),
                                 ),
                                 Text(
                                   featuredInterest.title(isTr),
-                                  style: AppTextStyles.titleMedium(isDark: isDark)
-                                      .copyWith(fontWeight: FontWeight.w700),
+                                  style: AppTextStyles.titleMedium(
+                                    isDark: isDark,
+                                  ).copyWith(fontWeight: FontWeight.w700),
                                 ),
                               ],
                             ),
@@ -585,9 +679,13 @@ class HomeDashboardScreen extends StatelessWidget {
     if (hour < 12) {
       return isTr ? 'Günaydın sevgililer ✨' : 'Good morning, lovely souls ✨';
     } else if (hour < 18) {
-      return isTr ? 'Tünaydın güzel kalpler ☀️' : 'Good afternoon, sweethearts ☀️';
+      return isTr
+          ? 'Tünaydın güzel kalpler ☀️'
+          : 'Good afternoon, sweethearts ☀️';
     } else {
-      return isTr ? 'İyi akşamlar sevgililer 🌙' : 'Good evening, beloved souls 🌙';
+      return isTr
+          ? 'İyi akşamlar sevgililer 🌙'
+          : 'Good evening, beloved souls 🌙';
     }
   }
 }
@@ -619,9 +717,10 @@ class MiniPartnerAvatarStatus extends StatelessWidget {
               width: 34,
               height: 34,
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkCardElevated
-                    : AppColors.blushPinkLight,
+                color:
+                    isDark
+                        ? AppColors.darkCardElevated
+                        : AppColors.blushPinkLight,
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -635,9 +734,10 @@ class MiniPartnerAvatarStatus extends StatelessWidget {
                 width: 11,
                 height: 11,
                 decoration: BoxDecoration(
-                  color: hasAnswered
-                      ? AppColors.successGreen
-                      : AppColors.champagneGold,
+                  color:
+                      hasAnswered
+                          ? AppColors.successGreen
+                          : AppColors.champagneGold,
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 1.5),
                 ),
@@ -655,10 +755,9 @@ class MiniPartnerAvatarStatus extends StatelessWidget {
                 name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12,
-                ),
+                style: AppTextStyles.bodySmall(
+                  isDark: isDark,
+                ).copyWith(fontWeight: FontWeight.w700, fontSize: 12),
               ),
               Text(
                 hasAnswered
@@ -668,9 +767,10 @@ class MiniPartnerAvatarStatus extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 10,
-                  color: hasAnswered
-                      ? AppColors.successGreen
-                      : AppColors.champagneGold,
+                  color:
+                      hasAnswered
+                          ? AppColors.successGreen
+                          : AppColors.champagneGold,
                   fontWeight: FontWeight.w600,
                 ),
               ),

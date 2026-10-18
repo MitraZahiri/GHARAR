@@ -52,7 +52,13 @@ class ResponsiveUtils {
   }
 
   /// Clamps text scale to prevent OS accessibility font sizes from breaking fixed-height designs
-  static TextScaler clampedTextScaler(BuildContext context, {double min = 0.85, double max = 1.3}) {
-    return MediaQuery.textScalerOf(context).clamp(minScaleFactor: min, maxScaleFactor: max);
+  static TextScaler clampedTextScaler(
+    BuildContext context, {
+    double min = 0.85,
+    double max = 1.3,
+  }) {
+    return MediaQuery.textScalerOf(
+      context,
+    ).clamp(minScaleFactor: min, maxScaleFactor: max);
   }
 }

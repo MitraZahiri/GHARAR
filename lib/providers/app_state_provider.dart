@@ -74,7 +74,9 @@ class AppStateProvider extends ChangeNotifier {
   List<QuestionModel> get questions => _questions;
   int get currentQuestionIndex => _currentQuestionIndex;
   QuestionModel? get currentQuestion =>
-      _questions.isNotEmpty ? _questions[_currentQuestionIndex % _questions.length] : null;
+      _questions.isNotEmpty
+          ? _questions[_currentQuestionIndex % _questions.length]
+          : null;
 
   Map<String, List<AnswerModel>> get answersMap => _answersMap;
   List<ActivityModel> get activities => _activities;
@@ -235,7 +237,8 @@ class AppStateProvider extends ChangeNotifier {
     _couple = _couple!.copyWith(
       partner2: partner,
       isLinked: true,
-      connectionStreak: (_couple!.connectionStreak == 0) ? 1 : _couple!.connectionStreak,
+      connectionStreak:
+          (_couple!.connectionStreak == 0) ? 1 : _couple!.connectionStreak,
     );
     _storage.saveCouple(_couple!);
     notifyListeners();
@@ -367,15 +370,17 @@ class AppStateProvider extends ChangeNotifier {
     final list = List<AnswerModel>.from(_answersMap[questionId] ?? []);
     list.removeWhere((a) => a.authorId == partner.id);
 
-    list.add(AnswerModel(
-      id: 'ans_sim_${DateTime.now().millisecondsSinceEpoch}',
-      questionId: questionId,
-      authorId: partner.id,
-      authorName: partner.name,
-      answerText: simulatedText,
-      answeredAt: DateTime.now(),
-      reactionEmoji: '🥰',
-    ));
+    list.add(
+      AnswerModel(
+        id: 'ans_sim_${DateTime.now().millisecondsSinceEpoch}',
+        questionId: questionId,
+        authorId: partner.id,
+        authorName: partner.name,
+        answerText: simulatedText,
+        answeredAt: DateTime.now(),
+        reactionEmoji: '🥰',
+      ),
+    );
 
     _answersMap[questionId] = list;
     _storage.saveAnswers(_answersMap);
@@ -394,12 +399,13 @@ class AppStateProvider extends ChangeNotifier {
   void addReactionEmoji(String questionId, String answerId, String emoji) {
     final list = _answersMap[questionId];
     if (list == null) return;
-    final updated = list.map((a) {
-      if (a.id == answerId) {
-        return a.copyWith(reactionEmoji: emoji);
-      }
-      return a;
-    }).toList();
+    final updated =
+        list.map((a) {
+          if (a.id == answerId) {
+            return a.copyWith(reactionEmoji: emoji);
+          }
+          return a;
+        }).toList();
     _answersMap[questionId] = updated;
     _storage.saveAnswers(_answersMap);
     notifyListeners();
@@ -407,43 +413,46 @@ class AppStateProvider extends ChangeNotifier {
 
   // Activities Logic
   void toggleSaveActivity(String activityId) {
-    _activities = _activities.map((a) {
-      if (a.id == activityId) {
-        return a.copyWith(isSaved: !a.isSaved);
-      }
-      return a;
-    }).toList();
+    _activities =
+        _activities.map((a) {
+          if (a.id == activityId) {
+            return a.copyWith(isSaved: !a.isSaved);
+          }
+          return a;
+        }).toList();
     _storage.saveActivities(_activities);
     notifyListeners();
   }
 
   void toggleCompleteActivity(String activityId) {
-    _activities = _activities.map((a) {
-      if (a.id == activityId) {
-        final nowCompleted = !a.isCompleted;
-        return a.copyWith(
-          isCompleted: nowCompleted,
-          completedAt: nowCompleted ? DateTime.now() : null,
-        );
-      }
-      return a;
-    }).toList();
+    _activities =
+        _activities.map((a) {
+          if (a.id == activityId) {
+            final nowCompleted = !a.isCompleted;
+            return a.copyWith(
+              isCompleted: nowCompleted,
+              completedAt: nowCompleted ? DateTime.now() : null,
+            );
+          }
+          return a;
+        }).toList();
     _storage.saveActivities(_activities);
     notifyListeners();
   }
 
   // Challenges
   void toggleCompleteChallenge(String challengeId) {
-    _challenges = _challenges.map((c) {
-      if (c.id == challengeId) {
-        final nowDone = !c.isCompleted;
-        return c.copyWith(
-          isCompleted: nowDone,
-          completedAt: nowDone ? DateTime.now() : null,
-        );
-      }
-      return c;
-    }).toList();
+    _challenges =
+        _challenges.map((c) {
+          if (c.id == challengeId) {
+            final nowDone = !c.isCompleted;
+            return c.copyWith(
+              isCompleted: nowDone,
+              completedAt: nowDone ? DateTime.now() : null,
+            );
+          }
+          return c;
+        }).toList();
     _storage.saveChallenges(_challenges);
     notifyListeners();
   }
@@ -538,9 +547,16 @@ class AppStateProvider extends ChangeNotifier {
   // Unlink / Reset
   void unlinkPartner() {
     if (_couple != null) {
-      _couple = _couple!.copyWith(
+      _couple = CoupleModel(
+        id: _couple!.id,
+        partner1: _couple!.partner1,
         partner2: null,
+        inviteCode: _couple!.inviteCode,
+        anniversaryDate: _couple!.anniversaryDate,
+        connectionStreak: _couple!.connectionStreak,
+        streakLastMaintained: _couple!.streakLastMaintained,
         isLinked: false,
+        isPremium: _couple!.isPremium,
       );
       _storage.saveCouple(_couple!);
       notifyListeners();
@@ -549,9 +565,11 @@ class AppStateProvider extends ChangeNotifier {
 
   // Authentication Methods (Apple ID & Email/Name)
   Future<void> signInWithApple() async {
-    final appleEmail = (_userEmail != null && _userEmail!.endsWith('@privaterelay.appleid.com'))
-        ? _userEmail!
-        : 'user.apple@privaterelay.appleid.com';
+    final appleEmail =
+        (_userEmail != null &&
+                _userEmail!.endsWith('@privaterelay.appleid.com'))
+            ? _userEmail!
+            : 'user.apple@privaterelay.appleid.com';
     _isAuthenticated = true;
     _authProvider = 'apple';
     _userEmail = appleEmail;
@@ -589,7 +607,8 @@ class AppStateProvider extends ChangeNotifier {
     bool isRegister = true,
   }) async {
     final defaultName = isTurkish ? 'Ben' : 'You';
-    final trimmedName = name.trim().isEmpty ? (_currentUser?.name ?? defaultName) : name.trim();
+    final trimmedName =
+        name.trim().isEmpty ? (_currentUser?.name ?? defaultName) : name.trim();
     final trimmedEmail = email.trim().toLowerCase();
     _isAuthenticated = true;
     _authProvider = 'email';

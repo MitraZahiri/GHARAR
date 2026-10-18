@@ -50,8 +50,12 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
               children: [
                 Expanded(
                   child: DiscoverActionTile(
-                    title: isTr ? 'Bizi Ne Kadar Tanıyoruz?' : 'Quiz: How Well We Know Us',
-                    subtitle: isTr ? 'Eğlenceli tahmin oyunu' : 'Playful predictions',
+                    title:
+                        isTr
+                            ? 'Bizi Ne Kadar Tanıyoruz?'
+                            : 'Quiz: How Well We Know Us',
+                    subtitle:
+                        isTr ? 'Eğlenceli tahmin oyunu' : 'Playful predictions',
                     icon: '🎯',
                     isDark: isDark,
                     onTap: () {
@@ -66,8 +70,10 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
                 const SizedBox(width: 10),
                 Expanded(
                   child: DiscoverActionTile(
-                    title: isTr ? 'Nereye İlerliyoruz?' : 'Where Are We Heading?',
-                    subtitle: isTr ? 'Ortak gelecek hayalleri' : 'Future alignment',
+                    title:
+                        isTr ? 'Nereye İlerliyoruz?' : 'Where Are We Heading?',
+                    subtitle:
+                        isTr ? 'Ortak gelecek hayalleri' : 'Future alignment',
                     icon: '🧭',
                     isDark: isDark,
                     onTap: () {
@@ -88,10 +94,15 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
             controller: _tabController,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            indicatorColor: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
-            labelColor: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
-            unselectedLabelColor: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-            labelStyle: AppTextStyles.labelLarge(isDark: isDark).copyWith(fontSize: 13),
+            indicatorColor:
+                isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+            labelColor:
+                isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+            unselectedLabelColor:
+                isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+            labelStyle: AppTextStyles.labelLarge(
+              isDark: isDark,
+            ).copyWith(fontSize: 13),
             tabs: [
               Tab(text: isTr ? 'Ortak Kıvılcımlar' : 'Shared Sparks'),
               Tab(text: isTr ? 'Güzel Farklarımız' : 'Differences'),
@@ -156,18 +167,26 @@ class DiscoverActionTile extends StatelessWidget {
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.labelLarge(isDark: isDark).copyWith(fontSize: 12),
+                  style: AppTextStyles.labelLarge(
+                    isDark: isDark,
+                  ).copyWith(fontSize: 12),
                 ),
                 Text(
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.bodySmall(isDark: isDark).copyWith(fontSize: 10),
+                  style: AppTextStyles.bodySmall(
+                    isDark: isDark,
+                  ).copyWith(fontSize: 10),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.lightTextMuted),
+          const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 12,
+            color: AppColors.lightTextMuted,
+          ),
         ],
       ),
     );
@@ -190,11 +209,7 @@ class SharedSparksTabView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       itemCount: list.length,
       itemBuilder: (context, index) {
-        return SharedSparkCard(
-          item: list[index],
-          isDark: isDark,
-          isTr: isTr,
-        );
+        return SharedSparkCard(item: list[index], isDark: isDark, isTr: isTr);
       },
     );
   }
@@ -235,14 +250,17 @@ class SharedSparkCard extends StatelessWidget {
                         fontSize: 10,
                         letterSpacing: 1,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.blushPinkDeep : AppColors.burgundyRose,
+                        color:
+                            isDark
+                                ? AppColors.blushPinkDeep
+                                : AppColors.burgundyRose,
                       ),
                     ),
                     Text(
                       item.title(isTr),
-                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTextStyles.titleMedium(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
@@ -296,10 +314,12 @@ class SharedSparkCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        isTr ? 'Önerilen Randevu Fikri:' : 'Suggested Date Idea:',
-                        style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                        isTr
+                            ? 'Önerilen Randevu Fikri:'
+                            : 'Suggested Date Idea:',
+                        style: AppTextStyles.bodySmall(
+                          isDark: isDark,
+                        ).copyWith(fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -334,11 +354,7 @@ class DifferencesTabView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       itemCount: list.length,
       itemBuilder: (context, index) {
-        return DifferenceCard(
-          item: list[index],
-          isDark: isDark,
-          isTr: isTr,
-        );
+        return DifferenceCard(item: list[index], isDark: isDark, isTr: isTr);
       },
     );
   }
@@ -372,9 +388,9 @@ class DifferenceCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   item.title(isTr),
-                  style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTextStyles.titleMedium(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
               Container(
@@ -406,7 +422,10 @@ class DifferenceCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkCardElevated : AppColors.blushPinkLight,
+                color:
+                    isDark
+                        ? AppColors.darkCardElevated
+                        : AppColors.blushPinkLight,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isDark ? AppColors.darkBorder : AppColors.blushPink,
@@ -420,10 +439,15 @@ class DifferenceCard extends StatelessWidget {
                       const Text('🕊️', style: TextStyle(fontSize: 16)),
                       const SizedBox(width: 8),
                       Text(
-                        isTr ? 'Birlikte Sohbet Başlatıcı:' : 'Respectful Conversation Bridge:',
+                        isTr
+                            ? 'Birlikte Sohbet Başlatıcı:'
+                            : 'Respectful Conversation Bridge:',
                         style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                           fontWeight: FontWeight.w700,
-                          color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+                          color:
+                              isDark
+                                  ? AppColors.blushPinkDeep
+                                  : AppColors.deepBurgundy,
                         ),
                       ),
                     ],
@@ -431,9 +455,9 @@ class DifferenceCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     item.bridgeConv(isTr)!,
-                    style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: AppTextStyles.bodyMedium(
+                      isDark: isDark,
+                    ).copyWith(fontStyle: FontStyle.italic),
                   ),
                 ],
               ),
@@ -458,29 +482,41 @@ class GrowthHubTabView extends StatelessWidget {
       {
         'titleEn': 'Emotional Validation & Safe Harbor',
         'titleTr': 'Duygusal Kabul & Güvenli Liman',
-        'descEn': 'Practice acknowledging your partner’s emotions without jumping into problem-solving.',
-        'descTr': 'Partnerinizin hislerini hemen düzeltmeye çalışmadan sadece şefkatle dinleme pratiği.',
+        'descEn':
+            'Practice acknowledging your partner’s emotions without jumping into problem-solving.',
+        'descTr':
+            'Partnerinizin hislerini hemen düzeltmeye çalışmadan sadece şefkatle dinleme pratiği.',
         'icon': '🕊️',
-        'promptEn': '“It makes complete sense why you feel that way, and I am right here with you.”',
-        'promptTr': '“Böyle hissetmeni o kadar iyi anlıyorum ki... Yanındayım ve seni dinliyorum.”',
+        'promptEn':
+            '“It makes complete sense why you feel that way, and I am right here with you.”',
+        'promptTr':
+            '“Böyle hissetmeni o kadar iyi anlıyorum ki... Yanındayım ve seni dinliyorum.”',
       },
       {
         'titleEn': 'Gentle Boundary Setting',
         'titleTr': 'Şefkatli Sınırlar & Kişisel Alan',
-        'descEn': 'Expressing personal recharging needs with love so space never feels like abandonment.',
-        'descTr': 'Kişisel dinlenme ihtiyacını sevgiyle ifade ederek yalnız kalmayı bir uzaklaşma değil tazelenme yapma sanatı.',
+        'descEn':
+            'Expressing personal recharging needs with love so space never feels like abandonment.',
+        'descTr':
+            'Kişisel dinlenme ihtiyacını sevgiyle ifade ederek yalnız kalmayı bir uzaklaşma değil tazelenme yapma sanatı.',
         'icon': '🌿',
-        'promptEn': '“I love you deeply. I need 30 quiet minutes to recharge my energy so I can be fully present with you.”',
-        'promptTr': '“Seni çok seviyorum. Birazdan seninle tüm kalbimle ilgilenebilmek için 30 dakika sakin bir zamana ihtiyacım var.”',
+        'promptEn':
+            '“I love you deeply. I need 30 quiet minutes to recharge my energy so I can be fully present with you.”',
+        'promptTr':
+            '“Seni çok seviyorum. Birazdan seninle tüm kalbimle ilgilenebilmek için 30 dakika sakin bir zamana ihtiyacım var.”',
       },
       {
         'titleEn': 'Healthy Conflict & The 5-Minute Pause',
         'titleTr': 'Şefkatli Çözüm & 5 Dakikalık Mola',
-        'descEn': 'When conversations get heated, take a gentle pause before words leave unintended scars.',
-        'descTr': 'Tartışmalar hararetlendiğinde kalpler kırılmadan önce birbirine sarılıp mola verme kuralı.',
+        'descEn':
+            'When conversations get heated, take a gentle pause before words leave unintended scars.',
+        'descTr':
+            'Tartışmalar hararetlendiğinde kalpler kırılmadan önce birbirine sarılıp mola verme kuralı.',
         'icon': '🕯️',
-        'promptEn': '“We are on the same team against the problem, never against each other.”',
-        'promptTr': '“Biz aynı takımdayız; sorunla birlikte mücadele ediyoruz, birbirimizle değil.”',
+        'promptEn':
+            '“We are on the same team against the problem, never against each other.”',
+        'promptTr':
+            '“Biz aynı takımdayız; sorunla birlikte mücadele ediyoruz, birbirimizle değil.”',
       },
     ];
 
@@ -497,14 +533,17 @@ class GrowthHubTabView extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text(ex['icon'] as String, style: const TextStyle(fontSize: 24)),
+                  Text(
+                    ex['icon'] as String,
+                    style: const TextStyle(fontSize: 24),
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       isTr ? ex['titleTr'] as String : ex['titleEn'] as String,
-                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTextStyles.titleMedium(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],
@@ -518,12 +557,15 @@ class GrowthHubTabView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkCardElevated : AppColors.warmCream,
+                  color:
+                      isDark ? AppColors.darkCardElevated : AppColors.warmCream,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Text(
                   isTr ? ex['promptTr'] as String : ex['promptEn'] as String,
-                  style: AppTextStyles.quote(isDark: isDark).copyWith(fontSize: 14),
+                  style: AppTextStyles.quote(
+                    isDark: isDark,
+                  ).copyWith(fontSize: 14),
                 ),
               ),
             ],

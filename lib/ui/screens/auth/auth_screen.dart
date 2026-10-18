@@ -63,7 +63,9 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
-    final currentLanguage = context.select<AppStateProvider, AppLanguage>((p) => p.currentLanguage);
+    final currentLanguage = context.select<AppStateProvider, AppLanguage>(
+      (p) => p.currentLanguage,
+    );
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
@@ -83,25 +85,31 @@ class _AuthScreenState extends State<AuthScreen> {
                       children: [
                         Text(
                           loc?.translate('appName') ?? 'GHARAR',
-                          style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
+                          style: AppTextStyles.displaySmall(
+                            isDark: isDark,
+                          ).copyWith(
                             fontWeight: FontWeight.w800,
                             letterSpacing: 1.5,
                             fontSize: 22,
-                            color: isDark
-                                ? AppColors.blushPinkDeep
-                                : AppColors.deepBurgundy,
+                            color:
+                                isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy,
                           ),
                         ),
                         Text(
                           currentLanguage.tagline,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(
                             fontSize: 10,
                             letterSpacing: 0.5,
-                            color: isDark
-                                ? AppColors.lavenderAccent
-                                : AppColors.burgundyRose,
+                            color:
+                                isDark
+                                    ? AppColors.lavenderAccent
+                                    : AppColors.burgundyRose,
                           ),
                         ),
                       ],
@@ -111,29 +119,45 @@ class _AuthScreenState extends State<AuthScreen> {
                   // Multilingual Language Switcher Chip (8 Languages & RTL)
                   InkWell(
                     borderRadius: BorderRadius.circular(20),
-                    onTap: () => _showLanguagePickerSheet(context, isDark, currentLanguage),
+                    onTap:
+                        () => _showLanguagePickerSheet(
+                          context,
+                          isDark,
+                          currentLanguage,
+                        ),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkCardElevated
-                            : AppColors.blushPinkLight,
+                        color:
+                            isDark
+                                ? AppColors.darkCardElevated
+                                : AppColors.blushPinkLight,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: isDark
-                              ? AppColors.darkBorder
-                              : AppColors.blushPinkDeep.withValues(alpha: 0.35),
+                          color:
+                              isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.blushPinkDeep.withValues(
+                                    alpha: 0.35,
+                                  ),
                         ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(currentLanguage.flag,
-                              style: const TextStyle(fontSize: 15)),
+                          Text(
+                            currentLanguage.flag,
+                            style: const TextStyle(fontSize: 15),
+                          ),
                           const SizedBox(width: 5),
                           Text(
                             currentLanguage.nativeName,
-                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(
                               fontWeight: FontWeight.w700,
                               fontSize: 12,
                             ),
@@ -142,9 +166,10 @@ class _AuthScreenState extends State<AuthScreen> {
                           Icon(
                             Icons.arrow_drop_down_rounded,
                             size: 16,
-                            color: isDark
-                                ? AppColors.blushPinkDeep
-                                : AppColors.deepBurgundy,
+                            color:
+                                isDark
+                                    ? AppColors.blushPinkDeep
+                                    : AppColors.deepBurgundy,
                           ),
                         ],
                       ),
@@ -170,10 +195,9 @@ class _AuthScreenState extends State<AuthScreen> {
               Text(
                 loc?.translate('authTitle') ?? 'Welcome to Your Sanctuary',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 22,
-                ),
+                style: AppTextStyles.displaySmall(
+                  isDark: isDark,
+                ).copyWith(fontWeight: FontWeight.w800, fontSize: 22),
               ),
               const SizedBox(height: 6),
               Padding(
@@ -184,7 +208,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
                     fontSize: 13,
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextMuted,
+                    color:
+                        isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextMuted,
                   ),
                 ),
               ),
@@ -195,7 +222,8 @@ class _AuthScreenState extends State<AuthScreen> {
               AppleSignInButton(
                 isDark: isDark,
                 isLoading: _isLoading,
-                label: loc?.translate('signInWithApple') ?? 'Sign in with Apple',
+                label:
+                    loc?.translate('signInWithApple') ?? 'Sign in with Apple',
                 onPressed: _isLoading ? null : () => _submitAppleAuth(context),
               ),
 
@@ -206,7 +234,8 @@ class _AuthScreenState extends State<AuthScreen> {
                 children: [
                   Expanded(
                     child: Divider(
-                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                      color:
+                          isDark ? AppColors.darkBorder : AppColors.lightBorder,
                     ),
                   ),
                   Padding(
@@ -215,13 +244,17 @@ class _AuthScreenState extends State<AuthScreen> {
                       loc?.translate('orDivider') ?? 'or continue with email',
                       style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                         fontSize: 11,
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextMuted,
+                        color:
+                            isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextMuted,
                       ),
                     ),
                   ),
                   Expanded(
                     child: Divider(
-                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                      color:
+                          isDark ? AppColors.darkBorder : AppColors.lightBorder,
                     ),
                   ),
                 ],
@@ -232,10 +265,14 @@ class _AuthScreenState extends State<AuthScreen> {
               // Mode Switcher Tabs (Sign In vs New Account)
               Container(
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkCardElevated : AppColors.blushPinkLight,
+                  color:
+                      isDark
+                          ? AppColors.darkCardElevated
+                          : AppColors.blushPinkLight,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    color:
+                        isDark ? AppColors.darkBorder : AppColors.lightBorder,
                   ),
                 ),
                 padding: const EdgeInsets.all(4),
@@ -248,34 +285,43 @@ class _AuthScreenState extends State<AuthScreen> {
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
-                            color: !_isRegister
-                                ? (isDark ? AppColors.darkCard : Colors.white)
-                                : Colors.transparent,
+                            color:
+                                !_isRegister
+                                    ? (isDark
+                                        ? AppColors.darkCard
+                                        : Colors.white)
+                                    : Colors.transparent,
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: !_isRegister
-                                ? [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.08),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ]
-                                : null,
+                            boxShadow:
+                                !_isRegister
+                                    ? [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.08,
+                                        ),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                    : null,
                           ),
                           child: Center(
                             child: Text(
                               loc?.translate('signInTab') ?? 'Sign In',
                               style: TextStyle(
                                 fontWeight:
-                                    !_isRegister ? FontWeight.w700 : FontWeight.w500,
+                                    !_isRegister
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
                                 fontSize: 13,
-                                color: !_isRegister
-                                    ? (isDark
-                                        ? AppColors.blushPinkDeep
-                                        : AppColors.deepBurgundy)
-                                    : (isDark
-                                        ? AppColors.darkTextSecondary
-                                        : AppColors.lightTextMuted),
+                                color:
+                                    !_isRegister
+                                        ? (isDark
+                                            ? AppColors.blushPinkDeep
+                                            : AppColors.deepBurgundy)
+                                        : (isDark
+                                            ? AppColors.darkTextSecondary
+                                            : AppColors.lightTextMuted),
                               ),
                             ),
                           ),
@@ -289,34 +335,43 @@ class _AuthScreenState extends State<AuthScreen> {
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
-                            color: _isRegister
-                                ? (isDark ? AppColors.darkCard : Colors.white)
-                                : Colors.transparent,
+                            color:
+                                _isRegister
+                                    ? (isDark
+                                        ? AppColors.darkCard
+                                        : Colors.white)
+                                    : Colors.transparent,
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: _isRegister
-                                ? [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.08),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ]
-                                : null,
+                            boxShadow:
+                                _isRegister
+                                    ? [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.08,
+                                        ),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                    : null,
                           ),
                           child: Center(
                             child: Text(
                               loc?.translate('registerTab') ?? 'New Account',
                               style: TextStyle(
                                 fontWeight:
-                                    _isRegister ? FontWeight.w700 : FontWeight.w500,
+                                    _isRegister
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
                                 fontSize: 13,
-                                color: _isRegister
-                                    ? (isDark
-                                        ? AppColors.blushPinkDeep
-                                        : AppColors.deepBurgundy)
-                                    : (isDark
-                                        ? AppColors.darkTextSecondary
-                                        : AppColors.lightTextMuted),
+                                color:
+                                    _isRegister
+                                        ? (isDark
+                                            ? AppColors.blushPinkDeep
+                                            : AppColors.deepBurgundy)
+                                        : (isDark
+                                            ? AppColors.darkTextSecondary
+                                            : AppColors.lightTextMuted),
                               ),
                             ),
                           ),
@@ -341,19 +396,27 @@ class _AuthScreenState extends State<AuthScreen> {
                       if (_isRegister) ...[
                         Text(
                           loc?.translate('enterYourName') ?? 'Your Name',
-                          style: AppTextStyles.labelLarge(isDark: isDark).copyWith(fontSize: 13),
+                          style: AppTextStyles.labelLarge(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 13),
                         ),
                         const SizedBox(height: 6),
                         TextFormField(
                           controller: _nameController,
                           textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.person_rounded, size: 20),
-                            hintText: loc?.translate('enterYourName') ?? 'Your Name',
+                            prefixIcon: const Icon(
+                              Icons.person_rounded,
+                              size: 20,
+                            ),
+                            hintText:
+                                loc?.translate('enterYourName') ?? 'Your Name',
                           ),
                           validator: (val) {
-                            if (_isRegister && (val == null || val.trim().isEmpty)) {
-                              return loc?.translate('nameRequired') ?? 'Please enter your name';
+                            if (_isRegister &&
+                                (val == null || val.trim().isEmpty)) {
+                              return loc?.translate('nameRequired') ??
+                                  'Please enter your name';
                             }
                             return null;
                           },
@@ -364,7 +427,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       // Email Field
                       Text(
                         loc?.translate('emailAddress') ?? 'Email Address',
-                        style: AppTextStyles.labelLarge(isDark: isDark).copyWith(fontSize: 13),
+                        style: AppTextStyles.labelLarge(
+                          isDark: isDark,
+                        ).copyWith(fontSize: 13),
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
@@ -373,14 +438,17 @@ class _AuthScreenState extends State<AuthScreen> {
                         autocorrect: false,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.email_rounded, size: 20),
-                          hintText: loc?.translate('emailHint') ?? 'name@example.com',
+                          hintText:
+                              loc?.translate('emailHint') ?? 'name@example.com',
                         ),
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
-                            return loc?.translate('emailRequired') ?? 'Please enter your email address';
+                            return loc?.translate('emailRequired') ??
+                                'Please enter your email address';
                           }
                           if (!val.contains('@') || !val.contains('.')) {
-                            return loc?.translate('invalidEmail') ?? 'Please enter a valid email address';
+                            return loc?.translate('invalidEmail') ??
+                                'Please enter a valid email address';
                           }
                           return null;
                         },
@@ -391,7 +459,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       // Password Field
                       Text(
                         loc?.translate('passwordHint') ?? 'Password',
-                        style: AppTextStyles.labelLarge(isDark: isDark).copyWith(fontSize: 13),
+                        style: AppTextStyles.labelLarge(
+                          isDark: isDark,
+                        ).copyWith(fontSize: 13),
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
@@ -407,8 +477,10 @@ class _AuthScreenState extends State<AuthScreen> {
                                   : Icons.visibility_rounded,
                               size: 20,
                             ),
-                            onPressed: () => setState(
-                                () => _obscurePassword = !_obscurePassword),
+                            onPressed:
+                                () => setState(
+                                  () => _obscurePassword = !_obscurePassword,
+                                ),
                           ),
                         ),
                         validator: (val) {
@@ -424,10 +496,13 @@ class _AuthScreenState extends State<AuthScreen> {
 
                       // Submit Button
                       GradientButton(
-                        text: _isLoading
-                            ? '...'
-                            : (loc?.translate('authContinue') ?? 'Enter Sanctuary ➔'),
-                        onPressed: _isLoading ? null : () => _submitEmailAuth(context),
+                        text:
+                            _isLoading
+                                ? '...'
+                                : (loc?.translate('authContinue') ??
+                                    'Enter Sanctuary ➔'),
+                        onPressed:
+                            _isLoading ? null : () => _submitEmailAuth(context),
                       ),
                     ],
                   ),
@@ -445,13 +520,19 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.shield_rounded, size: 14, color: AppColors.champagneGold),
+                      const Icon(
+                        Icons.shield_rounded,
+                        size: 14,
+                        color: AppColors.champagneGold,
+                      ),
                       const SizedBox(width: 6),
                       Flexible(
                         child: Text(
                           'Private & End-to-End Encrypted Couple Space',
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodySmall(isDark: isDark).copyWith(fontSize: 11),
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(fontSize: 11),
                         ),
                       ),
                     ],
@@ -468,7 +549,10 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void _showLanguagePickerSheet(
-      BuildContext context, bool isDark, AppLanguage currentLang) {
+    BuildContext context,
+    bool isDark,
+    AppLanguage currentLang,
+  ) {
     final isTr = currentLang.code == 'tr';
 
     showModalBottomSheet(
@@ -515,8 +599,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isTr ? 'Uygulama Dili Seçin' : 'Choose App Language',
-                            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
+                            isTr
+                                ? 'Uygulama Dili Seçin'
+                                : 'Choose App Language',
+                            style: AppTextStyles.titleMedium(
+                              isDark: isDark,
+                            ).copyWith(
                               fontWeight: FontWeight.w800,
                               fontSize: 18,
                             ),
@@ -541,8 +629,10 @@ class _AuthScreenState extends State<AuthScreen> {
               Flexible(
                 child: ListView.separated(
                   shrinkWrap: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   itemCount: AppLanguage.supportedLanguages.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 8),
                   itemBuilder: (ctx, index) {
@@ -552,36 +642,46 @@ class _AuthScreenState extends State<AuthScreen> {
                     return InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        context.read<AppStateProvider>().setLanguageCode(lang.code);
+                        context.read<AppStateProvider>().setLanguageCode(
+                          lang.code,
+                        );
                         Navigator.of(ctx).pop();
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected
-                              ? (isDark
-                                  ? AppColors.blushPinkDeep
-                                      .withValues(alpha: 0.22)
-                                  : AppColors.blushPinkLight)
-                              : Colors.transparent,
+                          color:
+                              isSelected
+                                  ? (isDark
+                                      ? AppColors.blushPinkDeep.withValues(
+                                        alpha: 0.22,
+                                      )
+                                      : AppColors.blushPinkLight)
+                                  : Colors.transparent,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isSelected
-                                ? (isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy)
-                                : (isDark
-                                    ? AppColors.darkBorder
-                                        .withValues(alpha: 0.5)
-                                    : AppColors.lightBorder),
+                            color:
+                                isSelected
+                                    ? (isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy)
+                                    : (isDark
+                                        ? AppColors.darkBorder.withValues(
+                                          alpha: 0.5,
+                                        )
+                                        : AppColors.lightBorder),
                             width: isSelected ? 1.8 : 1.0,
                           ),
                         ),
                         child: Row(
                           children: [
-                            Text(lang.flag,
-                                style: const TextStyle(fontSize: 28)),
+                            Text(
+                              lang.flag,
+                              style: const TextStyle(fontSize: 28),
+                            ),
                             const SizedBox(width: 14),
                             Expanded(
                               child: Column(
@@ -592,11 +692,12 @@ class _AuthScreenState extends State<AuthScreen> {
                                       Text(
                                         lang.nativeName,
                                         style: AppTextStyles.titleMedium(
-                                                isDark: isDark)
-                                            .copyWith(
-                                          fontWeight: isSelected
-                                              ? FontWeight.w800
-                                              : FontWeight.w600,
+                                          isDark: isDark,
+                                        ).copyWith(
+                                          fontWeight:
+                                              isSelected
+                                                  ? FontWeight.w800
+                                                  : FontWeight.w600,
                                           fontSize: 15,
                                         ),
                                       ),
@@ -604,24 +705,28 @@ class _AuthScreenState extends State<AuthScreen> {
                                       Text(
                                         '(${lang.name})',
                                         style: AppTextStyles.bodySmall(
-                                                isDark: isDark)
-                                            .copyWith(
+                                          isDark: isDark,
+                                        ).copyWith(
                                           fontSize: 12,
-                                          color: isDark
-                                              ? AppColors.darkTextSecondary
-                                              : AppColors.lightTextMuted,
+                                          color:
+                                              isDark
+                                                  ? AppColors.darkTextSecondary
+                                                  : AppColors.lightTextMuted,
                                         ),
                                       ),
                                       if (lang.isRtl) ...[
                                         const SizedBox(width: 6),
                                         Container(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 6, vertical: 2),
+                                            horizontal: 6,
+                                            vertical: 2,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: AppColors.champagneGold
                                                 .withValues(alpha: 0.2),
-                                            borderRadius:
-                                                BorderRadius.circular(6),
+                                            borderRadius: BorderRadius.circular(
+                                              6,
+                                            ),
                                           ),
                                           child: const Text(
                                             'RTL',
@@ -639,13 +744,14 @@ class _AuthScreenState extends State<AuthScreen> {
                                   Text(
                                     lang.tagline,
                                     style: AppTextStyles.bodySmall(
-                                            isDark: isDark)
-                                        .copyWith(
+                                      isDark: isDark,
+                                    ).copyWith(
                                       fontSize: 11,
                                       fontStyle: FontStyle.italic,
-                                      color: isDark
-                                          ? AppColors.lavenderAccent
-                                          : AppColors.burgundyRose,
+                                      color:
+                                          isDark
+                                              ? AppColors.lavenderAccent
+                                              : AppColors.burgundyRose,
                                     ),
                                   ),
                                 ],
@@ -654,9 +760,10 @@ class _AuthScreenState extends State<AuthScreen> {
                             if (isSelected)
                               Icon(
                                 Icons.check_circle_rounded,
-                                color: isDark
-                                    ? AppColors.blushPinkDeep
-                                    : AppColors.deepBurgundy,
+                                color:
+                                    isDark
+                                        ? AppColors.blushPinkDeep
+                                        : AppColors.deepBurgundy,
                                 size: 22,
                               ),
                           ],

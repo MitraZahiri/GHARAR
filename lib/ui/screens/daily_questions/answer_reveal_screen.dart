@@ -13,10 +13,7 @@ import '../../widgets/gradient_button.dart';
 class AnswerRevealScreen extends StatefulWidget {
   final QuestionModel question;
 
-  const AnswerRevealScreen({
-    super.key,
-    required this.question,
-  });
+  const AnswerRevealScreen({super.key, required this.question});
 
   @override
   State<AnswerRevealScreen> createState() => _AnswerRevealScreenState();
@@ -69,9 +66,9 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
         appBar: AppBar(
           title: Text(
             isTr ? 'Cevaplarımız Açıldı ✨' : 'Answers Revealed ✨',
-            style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTextStyles.titleMedium(
+              isDark: isDark,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
           leading: IconButton(
             icon: const Icon(Icons.close_rounded),
@@ -85,7 +82,10 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
             children: [
               // Celebration Badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   gradient: AppColors.sunsetGold,
                   borderRadius: BorderRadius.circular(24),
@@ -105,7 +105,9 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                       const Text('🎉', style: TextStyle(fontSize: 18)),
                       const SizedBox(width: 8),
                       Text(
-                        isTr ? 'İki Kalp Senkronize Oldu!' : 'Two Souls in Sync!',
+                        isTr
+                            ? 'İki Kalp Senkronize Oldu!'
+                            : 'Two Souls in Sync!',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -122,28 +124,34 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
               // Question Card
               GlassCard(
                 padding: const EdgeInsets.all(22),
-                gradient: isDark
-                    ? AppColors.darkCardGradient
-                    : AppColors.intimateCardGradient,
+                gradient:
+                    isDark
+                        ? AppColors.darkCardGradient
+                        : AppColors.intimateCardGradient,
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(widget.question.categoryIcon,
-                            style: const TextStyle(fontSize: 20)),
+                        Text(
+                          widget.question.categoryIcon,
+                          style: const TextStyle(fontSize: 20),
+                        ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
                             widget.question.categoryName(isTr).toUpperCase(),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
-                            style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(
                               letterSpacing: 1.2,
                               fontWeight: FontWeight.w700,
-                              color: isDark
-                                  ? AppColors.blushPinkDeep
-                                  : AppColors.deepBurgundy,
+                              color:
+                                  isDark
+                                      ? AppColors.blushPinkDeep
+                                      : AppColors.deepBurgundy,
                             ),
                           ),
                         ),
@@ -153,10 +161,9 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                     Text(
                       widget.question.text(isTr),
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.displaySmall(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w600,
-                        height: 1.35,
-                      ),
+                      style: AppTextStyles.displaySmall(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w600, height: 1.35),
                     ),
                   ],
                 ),
@@ -168,14 +175,16 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkCardElevated
-                      : AppColors.blushPinkLight,
+                  color:
+                      isDark
+                          ? AppColors.darkCardElevated
+                          : AppColors.blushPinkLight,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isDark
-                        ? AppColors.darkBorder
-                        : AppColors.blushPink.withValues(alpha: 0.8),
+                    color:
+                        isDark
+                            ? AppColors.darkBorder
+                            : AppColors.blushPink.withValues(alpha: 0.8),
                   ),
                 ),
                 child: Row(
@@ -187,11 +196,14 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                         isTr
                             ? 'Birbirinizin gözlerine bakın ve cevaplarınızı sırayla sesli okuyun. Ne hissettirdiğini birbirinize anlatın.'
                             : 'Look into each other’s eyes and read your thoughts aloud. Savor the tenderness of this moment.',
-                        style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
+                        style: AppTextStyles.bodyMedium(
+                          isDark: isDark,
+                        ).copyWith(
                           fontStyle: FontStyle.italic,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.burgundyRose,
+                          color:
+                              isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.burgundyRose,
                         ),
                       ),
                     ),
@@ -227,15 +239,17 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
 
               // Action Buttons: Save to Journal & Close
               GradientButton(
-                text: isTr
-                    ? 'Bu Anı Çift Günlüğüne Kaydet 📖'
-                    : 'Save this Memory to Journal 📖',
+                text:
+                    isTr
+                        ? 'Bu Anı Çift Günlüğüne Kaydet 📖'
+                        : 'Save this Memory to Journal 📖',
                 onPressed: () {
                   final snippet = widget.question.text(isTr);
                   context.read<AppStateProvider>().addJournalEntry(
-                    title: isTr
-                        ? '${widget.question.categoryName(isTr)} Sohbetimiz'
-                        : 'Our Conversation: ${widget.question.categoryName(isTr)}',
+                    title:
+                        isTr
+                            ? '${widget.question.categoryName(isTr)} Sohbetimiz'
+                            : 'Our Conversation: ${widget.question.categoryName(isTr)}',
                     notes:
                         '${partner1.name}: "${ans1?.answerText ?? ''}"\n\n${partner2.name}: "${ans2?.answerText ?? ''}"',
                     moodEmoji: '💖',
@@ -248,7 +262,8 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                       backgroundColor: AppColors.successGreen,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       content: Text(
                         isTr
                             ? 'Cevaplarınız Anılar & Çift Günlüğü bölümüne kaydedildi! 💖'
@@ -267,9 +282,10 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                 child: Text(
                   isTr ? 'Günün Sorularını Tamamla' : 'Return to Dashboard',
                   style: AppTextStyles.labelLarge(isDark: isDark).copyWith(
-                    color: isDark
-                        ? AppColors.lavenderAccent
-                        : AppColors.burgundyRose,
+                    color:
+                        isDark
+                            ? AppColors.lavenderAccent
+                            : AppColors.burgundyRose,
                   ),
                 ),
               ),
@@ -281,7 +297,6 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
       ),
     );
   }
-
 }
 
 /// Dedicated widget for displaying a partner's revealed answer.
@@ -315,14 +330,16 @@ class RevealedAnswerCard extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkCardElevated
-                      : AppColors.blushPinkLight,
+                  color:
+                      isDark
+                          ? AppColors.darkCardElevated
+                          : AppColors.blushPinkLight,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isDark
-                        ? AppColors.blushPinkDeep
-                        : AppColors.burgundyRose,
+                    color:
+                        isDark
+                            ? AppColors.blushPinkDeep
+                            : AppColors.burgundyRose,
                     width: 1.5,
                   ),
                 ),
@@ -342,9 +359,9 @@ class RevealedAnswerCard extends StatelessWidget {
                       partner.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTextStyles.titleMedium(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w700),
                     ),
                     Text(
                       isTr ? 'Cevaplandı' : 'Shared with love',
@@ -358,12 +375,15 @@ class RevealedAnswerCard extends StatelessWidget {
               const SizedBox(width: 8),
               if (answer.reactionEmoji != null)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkCardElevated
-                        : AppColors.blushPinkLight,
+                    color:
+                        isDark
+                            ? AppColors.darkCardElevated
+                            : AppColors.blushPinkLight,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
@@ -381,23 +401,26 @@ class RevealedAnswerCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.darkCardElevated.withValues(alpha: 0.5)
-                  : AppColors.warmCream,
+              color:
+                  isDark
+                      ? AppColors.darkCardElevated.withValues(alpha: 0.5)
+                      : AppColors.warmCream,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(
-                color: isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightBorder.withValues(alpha: 0.5),
+                color:
+                    isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder.withValues(alpha: 0.5),
               ),
             ),
             child: Text(
               answer.answerText,
               style: AppTextStyles.bodyLarge(isDark: isDark).copyWith(
                 height: 1.55,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color:
+                    isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
               ),
             ),
           ),
@@ -417,10 +440,10 @@ class RevealedAnswerCard extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     context.read<AppStateProvider>().addReactionEmoji(
-                          questionId,
-                          answer.id,
-                          emoji,
-                        );
+                      questionId,
+                      answer.id,
+                      emoji,
+                    );
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),

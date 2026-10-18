@@ -26,7 +26,9 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
-    final tagline = context.select<AppStateProvider, String>((p) => p.currentLanguage.tagline);
+    final tagline = context.select<AppStateProvider, String>(
+      (p) => p.currentLanguage.tagline,
+    );
 
     return AppBar(
       toolbarHeight: 68,
@@ -49,7 +51,10 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.2,
                     fontSize: 20,
-                    color: isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
+                    color:
+                        isDark
+                            ? AppColors.blushPinkDeep
+                            : AppColors.deepBurgundy,
                   ),
                 ),
                 Text(
@@ -59,7 +64,10 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
                   style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                     fontSize: 10,
                     letterSpacing: 0.5,
-                    color: isDark ? AppColors.lavenderAccent : AppColors.burgundyRose,
+                    color:
+                        isDark
+                            ? AppColors.lavenderAccent
+                            : AppColors.burgundyRose,
                   ),
                 ),
               ],
@@ -114,7 +122,9 @@ class PartnerSwitcherPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
-    final active = context.select<AppStateProvider, UserModel>((p) => p.activePartner);
+    final active = context.select<AppStateProvider, UserModel>(
+      (p) => p.activePartner,
+    );
 
     return GestureDetector(
       onTap: () {
@@ -128,7 +138,9 @@ class PartnerSwitcherPill extends StatelessWidget {
             duration: const Duration(milliseconds: 1400),
             backgroundColor: AppColors.deepBurgundy,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             content: Row(
               children: [
                 Text(newActive.avatar, style: const TextStyle(fontSize: 18)),
@@ -138,7 +150,10 @@ class PartnerSwitcherPill extends StatelessWidget {
                     isTr
                         ? 'Artık ${newActive.name} olarak görüntülüyorsunuz'
                         : 'Now viewing as ${newActive.name}',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -154,9 +169,10 @@ class PartnerSwitcherPill extends StatelessWidget {
           color: isDark ? AppColors.darkCardElevated : AppColors.blushPinkLight,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark
-                ? AppColors.darkBorder
-                : AppColors.blushPinkDeep.withValues(alpha: 0.5),
+            color:
+                isDark
+                    ? AppColors.darkBorder
+                    : AppColors.blushPinkDeep.withValues(alpha: 0.5),
           ),
         ),
         child: Row(
@@ -173,7 +189,10 @@ class PartnerSwitcherPill extends StatelessWidget {
                 style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                   fontWeight: FontWeight.w700,
                   fontSize: 11,
-                  color: isDark ? AppColors.darkTextPrimary : AppColors.deepBurgundy,
+                  color:
+                      isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.deepBurgundy,
                 ),
               ),
             ),

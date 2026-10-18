@@ -23,9 +23,9 @@ class SpecialDatesScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           isTr ? 'Özel Günlerimiz & Geri Sayım' : 'Special Dates & Countdowns',
-          style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyles.titleMedium(
+            isDark: isDark,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
@@ -40,11 +40,7 @@ class SpecialDatesScreen extends StatelessWidget {
         itemCount: dates.length,
         itemBuilder: (context, index) {
           final item = dates[index];
-          return SpecialDateItemTile(
-            item: item,
-            isDark: isDark,
-            isTr: isTr,
-          );
+          return SpecialDateItemTile(item: item, isDark: isDark, isTr: isTr);
         },
       ),
     );
@@ -71,8 +67,9 @@ class SpecialDatesScreen extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(32),
+                ),
               ),
               child: SingleChildScrollView(
                 child: Column(
@@ -84,9 +81,10 @@ class SpecialDatesScreen extends StatelessWidget {
                         width: 44,
                         height: 5,
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder,
+                          color:
+                              isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder,
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
@@ -94,19 +92,20 @@ class SpecialDatesScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       isTr ? 'Özel Gün / Yıldönümü Ekle' : 'Add Special Date',
-                      style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                      ),
+                      style: AppTextStyles.titleMedium(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w700, fontSize: 18),
                     ),
                     const SizedBox(height: 16),
                     TextField(
                       controller: titleController,
                       decoration: InputDecoration(
-                        labelText: isTr ? 'Etkinlik / Gün Adı' : 'Event / Date Title',
-                        hintText: isTr
-                            ? 'Örn: Paris Tatilimiz 🗼'
-                            : 'e.g. Paris Getaway 🗼',
+                        labelText:
+                            isTr ? 'Etkinlik / Gün Adı' : 'Event / Date Title',
+                        hintText:
+                            isTr
+                                ? 'Örn: Paris Tatilimiz 🗼'
+                                : 'e.g. Paris Getaway 🗼',
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -114,7 +113,10 @@ class SpecialDatesScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: OutlinedButton.icon(
-                            icon: const Icon(Icons.calendar_month_rounded, size: 18),
+                            icon: const Icon(
+                              Icons.calendar_month_rounded,
+                              size: 18,
+                            ),
                             label: Text(
                               DateFormat('MMM d, yyyy').format(selectedDate),
                             ),
@@ -186,9 +188,10 @@ class SpecialDateItemTile extends StatelessWidget {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.darkCardElevated
-                  : AppColors.blushPinkLight,
+              color:
+                  isDark
+                      ? AppColors.darkCardElevated
+                      : AppColors.blushPinkLight,
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -208,9 +211,10 @@ class SpecialDateItemTile extends StatelessWidget {
                     fontSize: 10,
                     letterSpacing: 1,
                     fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? AppColors.blushPinkDeep
-                        : AppColors.burgundyRose,
+                    color:
+                        isDark
+                            ? AppColors.blushPinkDeep
+                            : AppColors.burgundyRose,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -218,10 +222,9 @@ class SpecialDateItemTile extends StatelessWidget {
                   item.title(isTr),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.titleMedium(isDark: isDark).copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                  ),
+                  style: AppTextStyles.titleMedium(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w700, fontSize: 15),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -238,18 +241,20 @@ class SpecialDateItemTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              gradient: days <= 14
-                  ? AppColors.sunsetGold
-                  : (isDark
-                      ? AppColors.darkCardGradient
-                      : AppColors.intimateCardGradient),
+              gradient:
+                  days <= 14
+                      ? AppColors.sunsetGold
+                      : (isDark
+                          ? AppColors.darkCardGradient
+                          : AppColors.intimateCardGradient),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: days <= 14
-                    ? AppColors.streakFlame
-                    : (isDark
-                        ? AppColors.darkBorder
-                        : AppColors.lightBorder),
+                color:
+                    days <= 14
+                        ? AppColors.streakFlame
+                        : (isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder),
               ),
             ),
             child: Column(
@@ -260,11 +265,12 @@ class SpecialDateItemTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: days <= 14
-                        ? Colors.white
-                        : (isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.deepBurgundy),
+                    color:
+                        days <= 14
+                            ? Colors.white
+                            : (isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.deepBurgundy),
                   ),
                 ),
                 Text(
@@ -272,11 +278,12 @@ class SpecialDateItemTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: days <= 14
-                        ? Colors.white.withValues(alpha: 0.9)
-                        : (isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.lightTextMuted),
+                    color:
+                        days <= 14
+                            ? Colors.white.withValues(alpha: 0.9)
+                            : (isDark
+                                ? AppColors.darkTextMuted
+                                : AppColors.lightTextMuted),
                   ),
                 ),
               ],
