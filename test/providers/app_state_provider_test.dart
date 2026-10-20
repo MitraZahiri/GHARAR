@@ -251,5 +251,49 @@ void main() {
         expect(provider.isAuthenticated, isFalse);
       },
     );
+
+    test('Soulmate emotional mood check-in and love nudge tracking', () async {
+      provider.completeOnboarding(
+        name: 'Kerem',
+        avatar: '🕊️',
+        relationshipStage: 'married',
+        goals: const ['deep_talks'],
+        languageCode: 'tr',
+      );
+      provider.linkPartner(partnerName: 'Elif', avatar: '🌸');
+
+      // Initially no moods or nudges
+      expect(provider.activePartnerMood, isNull);
+      expect(provider.otherPartnerMood, isNull);
+      expect(provider.lastNudgeTime, isNull);
+
+      // Active partner sets mood
+      provider.setMyMood('peaceful');
+      expect(provider.activePartnerMood, 'peaceful');
+      expect(provider.getMoodForPartner(provider.activePartner.id), 'peaceful');
+
+      // Switch to other partner and set their mood
+      provider.switchActivePartner();
+      expect(provider.activePartner.name, 'Elif');
+      expect(
+        provider.otherPartnerMood,
+        'peaceful',
+      ); // Kerem's mood is seen by Elif
+
+      provider.setMyMood('romantic');
+      expect(provider.activePartnerMood, 'romantic'); // Elif's mood
+      expect(provider.otherPartnerMood, 'peaceful'); // Kerem's mood
+
+      // Elif sends a love nudge to Kerem
+      provider.sendLoveNudge(message: 'Seni Düşünüyorum 💓');
+      expect(provider.lastNudgeTime, isNotNull);
+      expect(provider.lastNudgeSenderId, provider.activePartner.id);
+      expect(provider.lastNudgeMessage, 'Seni Düşünüyorum 💓');
+
+      // Switch back to Kerem and verify he sees Elif's nudge
+      provider.switchActivePartner();
+      expect(provider.activePartner.name, 'Kerem');
+      expect(provider.hasReceivedRecentNudge, isTrue);
+    });
   });
 }

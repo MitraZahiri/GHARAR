@@ -44,6 +44,11 @@ class AppStateProvider extends ChangeNotifier {
   List<SpecialDateModel> _specialDates = [];
   List<AIMessageModel> _aiMessages = [];
 
+  Map<String, String> _partnerMoods = {};
+  DateTime? _lastNudgeTime;
+  String? _lastNudgeSenderId;
+  String? _lastNudgeMessage;
+
   bool _isGeneratingAI = false;
 
   AppStateProvider(this._storage, {AuthService? authService})
@@ -97,6 +102,20 @@ class AppStateProvider extends ChangeNotifier {
   List<SpecialDateModel> get specialDates => _specialDates;
   List<AIMessageModel> get aiMessages => _aiMessages;
   bool get isGeneratingAI => _isGeneratingAI;
+
+  Map<String, String> get partnerMoods => _partnerMoods;
+  String? get activePartnerMood => _partnerMoods[activePartner.id];
+  String? get otherPartnerMood => _partnerMoods[otherPartner.id];
+  String? getMoodForPartner(String partnerId) => _partnerMoods[partnerId];
+  DateTime? get lastNudgeTime => _lastNudgeTime;
+  String? get lastNudgeSenderId => _lastNudgeSenderId;
+  String? get lastNudgeMessage => _lastNudgeMessage;
+  bool get hasReceivedRecentNudge {
+    if (_lastNudgeTime == null || _lastNudgeSenderId != otherPartner.id) {
+      return false;
+    }
+    return DateTime.now().difference(_lastNudgeTime!).inHours < 12;
+  }
 
   bool get isPartnerLinked => _couple?.isLinked ?? false;
 
@@ -160,6 +179,11 @@ class AppStateProvider extends ChangeNotifier {
     _milestones = SeedDataService.defaultMilestones;
     _aiMessages = AICompanionService.getInitialMessages();
 
+    _partnerMoods = _storage.getPartnerMoods();
+    _lastNudgeTime = _storage.getLastNudgeTime();
+    _lastNudgeSenderId = _storage.getLastNudgeSender();
+    _lastNudgeMessage = _storage.getLastNudgeMessage();
+
     if (_currentUser != null) {
       _activeViewingPartnerId = _currentUser!.id;
     }
@@ -175,6 +199,25 @@ class AppStateProvider extends ChangeNotifier {
     } else {
       _activeViewingPartnerId = _couple!.partner1.id;
     }
+    notifyListeners();
+  }
+
+  // Soulmate Mood Check-in
+  void setMyMood(String moodKey) {
+    _partnerMoods[activePartner.id] = moodKey;
+    _storage.savePartnerMoods(_partnerMoods);
+    notifyListeners();
+  }
+
+  // Love Nudge / "Seni Düşünüyorum"
+  void sendLoveNudge({String? message}) {
+    _lastNudgeTime = DateTime.now();
+    _lastNudgeSenderId = activePartner.id;
+    _lastNudgeMessage =
+        message ?? (isTurkish ? 'Seni Düşünüyorum 💓' : 'Thinking of you 💓');
+    _storage.setLastNudgeTime(_lastNudgeTime);
+    _storage.setLastNudgeSender(_lastNudgeSenderId);
+    _storage.setLastNudgeMessage(_lastNudgeMessage);
     notifyListeners();
   }
 
@@ -725,6 +768,10 @@ class AppStateProvider extends ChangeNotifier {
 
   Future<void> signOut() async {
     _isAuthenticated = false;
+    _partnerMoods = {};
+    _lastNudgeTime = null;
+    _lastNudgeSenderId = null;
+    _lastNudgeMessage = null;
     _storage.setIsAuthenticated(false);
     await _authService.signOut();
     notifyListeners();

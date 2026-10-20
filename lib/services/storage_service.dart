@@ -22,6 +22,10 @@ class StorageService {
   static const _keyIsAuthenticated = 'gharar_is_authenticated';
   static const _keyUserEmail = 'gharar_user_email';
   static const _keyAuthProvider = 'gharar_auth_provider';
+  static const _keyPartnerMoods = 'gharar_partner_moods';
+  static const _keyLastNudgeTime = 'gharar_last_nudge_time';
+  static const _keyLastNudgeSender = 'gharar_last_nudge_sender';
+  static const _keyLastNudgeMessage = 'gharar_last_nudge_message';
 
   final SharedPreferences _prefs;
 
@@ -196,6 +200,47 @@ class StorageService {
         _keySpecialDates,
         jsonEncode(dates.map((d) => d.toJson()).toList()),
       );
+
+  // Partner Moods
+  Map<String, String> getPartnerMoods() {
+    final raw = _prefs.getString(_keyPartnerMoods);
+    if (raw == null) return {};
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+      return decoded.map((k, v) => MapEntry(k, v.toString()));
+    } catch (_) {
+      return {};
+    }
+  }
+
+  Future<void> savePartnerMoods(Map<String, String> moods) =>
+      _prefs.setString(_keyPartnerMoods, jsonEncode(moods));
+
+  // Love Nudge
+  DateTime? getLastNudgeTime() {
+    final raw = _prefs.getString(_keyLastNudgeTime);
+    if (raw == null) return null;
+    return DateTime.tryParse(raw);
+  }
+
+  Future<void> setLastNudgeTime(DateTime? time) =>
+      time != null
+          ? _prefs.setString(_keyLastNudgeTime, time.toIso8601String())
+          : _prefs.remove(_keyLastNudgeTime);
+
+  String? getLastNudgeSender() => _prefs.getString(_keyLastNudgeSender);
+
+  Future<void> setLastNudgeSender(String? senderId) =>
+      senderId != null
+          ? _prefs.setString(_keyLastNudgeSender, senderId)
+          : _prefs.remove(_keyLastNudgeSender);
+
+  String? getLastNudgeMessage() => _prefs.getString(_keyLastNudgeMessage);
+
+  Future<void> setLastNudgeMessage(String? msg) =>
+      msg != null
+          ? _prefs.setString(_keyLastNudgeMessage, msg)
+          : _prefs.remove(_keyLastNudgeMessage);
 
   Future<void> clearAll() async {
     await _prefs.clear();
