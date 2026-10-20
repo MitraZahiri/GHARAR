@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "GHARAR (Skia Engine - Emulator Safe)",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--no-enable-impeller"
+      ]
+    }
+  ]
+}
