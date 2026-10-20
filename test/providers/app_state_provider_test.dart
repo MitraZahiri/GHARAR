@@ -295,5 +295,75 @@ void main() {
       expect(provider.activePartner.name, 'Kerem');
       expect(provider.hasReceivedRecentNudge, isTrue);
     });
+
+    test(
+      'Leaving surprise love note on partner main page while phone closed/offline',
+      () {
+        provider.completeOnboarding(
+          name: 'Kerem',
+          avatar: '🕊️',
+          relationshipStage: 'married',
+          goals: const ['deep_talks'],
+          languageCode: 'tr',
+        );
+        provider.linkPartner(partnerName: 'Elif', avatar: '🌸');
+
+        // Initially no notes
+        expect(provider.loveNotes, isEmpty);
+        expect(provider.latestNoteForActivePartner, isNull);
+
+        // Kerem writes a surprise love note on Elif's main page while her phone is closed
+        provider.postLoveNote(
+          text:
+              'Günaydın sevgilim, telefonunu açtığında bu notla uyanmanı istedim ☀️💖',
+          paperColor: 'rose',
+          emoji: '💌',
+        );
+
+        expect(provider.loveNotes.length, 1);
+        final note = provider.loveNotes.first;
+        expect(note.senderName, 'Kerem');
+        expect(note.receiverId, provider.otherPartner.id); // Targeted to Elif
+        expect(note.isRead, isFalse);
+
+        // Kerem does not have an unread note for himself yet
+        expect(provider.latestNoteForActivePartner, isNull);
+        expect(provider.latestNoteSentByActivePartner, isNotNull);
+
+        // Now Elif opens her phone and opens GHARAR
+        provider.switchActivePartner();
+        expect(provider.activePartner.name, 'Elif');
+
+        // Elif sees the surprise note on her main page!
+        final elifsNote = provider.latestNoteForActivePartner;
+        expect(elifsNote, isNotNull);
+        expect(
+          elifsNote?.text,
+          contains('telefonunu açtığında bu notla uyanmanı istedim'),
+        );
+        expect(elifsNote?.isRead, isFalse);
+
+        // Elif opens and reads the note
+        provider.markLoveNoteAsRead(elifsNote!.id);
+        expect(provider.latestNoteForActivePartner?.isRead, isTrue);
+
+        // Elif writes a reply back to Kerem's main page
+        provider.postLoveNote(
+          text: 'Bunu görmek günümü aydınlattı, seni çok seviyorum! 🌸',
+          paperColor: 'parchment',
+          emoji: '🥰',
+        );
+
+        expect(provider.loveNotes.length, 2);
+
+        // Switch back to Kerem
+        provider.switchActivePartner();
+        expect(provider.activePartner.name, 'Kerem');
+        expect(
+          provider.latestNoteForActivePartner?.text,
+          contains('Bunu görmek günümü aydınlattı'),
+        );
+      },
+    );
   });
 }

@@ -7,12 +7,14 @@ import '../models/activity_model.dart';
 import '../models/challenge_model.dart';
 import '../models/journal_entry_model.dart';
 import '../models/special_date_model.dart';
+import '../models/love_note_model.dart';
 
 class StorageService {
   static const _keyUser = 'gharar_user';
   static const _keyCouple = 'gharar_couple';
   static const _keyAnswers = 'gharar_answers';
   static const _keyActivities = 'gharar_activities';
+  static const _keyLoveNotes = 'gharar_love_notes';
   static const _keyChallenges = 'gharar_challenges';
   static const _keyJournal = 'gharar_journal';
   static const _keySpecialDates = 'gharar_special_dates';
@@ -241,6 +243,25 @@ class StorageService {
       msg != null
           ? _prefs.setString(_keyLastNudgeMessage, msg)
           : _prefs.remove(_keyLastNudgeMessage);
+
+  // Love Notes on Main Page
+  List<LoveNoteModel>? getLoveNotes() {
+    final raw = _prefs.getString(_keyLoveNotes);
+    if (raw == null) return null;
+    try {
+      final list = jsonDecode(raw) as List;
+      return list
+          .map((e) => LoveNoteModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> saveLoveNotes(List<LoveNoteModel> notes) => _prefs.setString(
+    _keyLoveNotes,
+    jsonEncode(notes.map((n) => n.toJson()).toList()),
+  );
 
   Future<void> clearAll() async {
     await _prefs.clear();

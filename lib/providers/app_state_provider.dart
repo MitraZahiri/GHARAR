@@ -10,6 +10,7 @@ import '../models/journal_entry_model.dart';
 import '../models/milestone_model.dart';
 import '../models/special_date_model.dart';
 import '../models/ai_message_model.dart';
+import '../models/love_note_model.dart';
 import '../core/localization/app_language.dart';
 import '../services/storage_service.dart';
 import '../services/seed_data_service.dart';
@@ -48,6 +49,8 @@ class AppStateProvider extends ChangeNotifier {
   DateTime? _lastNudgeTime;
   String? _lastNudgeSenderId;
   String? _lastNudgeMessage;
+
+  List<LoveNoteModel> _loveNotes = [];
 
   bool _isGeneratingAI = false;
 
@@ -117,6 +120,25 @@ class AppStateProvider extends ChangeNotifier {
     return DateTime.now().difference(_lastNudgeTime!).inHours < 12;
   }
 
+  // Love Notes Getters
+  List<LoveNoteModel> get loveNotes => _loveNotes;
+
+  LoveNoteModel? get latestNoteForActivePartner {
+    final forMe =
+        _loveNotes.where((n) => n.receiverId == activePartner.id).toList();
+    if (forMe.isEmpty) return null;
+    forMe.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return forMe.first;
+  }
+
+  LoveNoteModel? get latestNoteSentByActivePartner {
+    final fromMe =
+        _loveNotes.where((n) => n.senderId == activePartner.id).toList();
+    if (fromMe.isEmpty) return null;
+    fromMe.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return fromMe.first;
+  }
+
   bool get isPartnerLinked => _couple?.isLinked ?? false;
 
   UserModel get activePartner {
@@ -183,6 +205,7 @@ class AppStateProvider extends ChangeNotifier {
     _lastNudgeTime = _storage.getLastNudgeTime();
     _lastNudgeSenderId = _storage.getLastNudgeSender();
     _lastNudgeMessage = _storage.getLastNudgeMessage();
+    _loveNotes = _storage.getLoveNotes() ?? [];
 
     if (_currentUser != null) {
       _activeViewingPartnerId = _currentUser!.id;
@@ -218,6 +241,74 @@ class AppStateProvider extends ChangeNotifier {
     _storage.setLastNudgeTime(_lastNudgeTime);
     _storage.setLastNudgeSender(_lastNudgeSenderId);
     _storage.setLastNudgeMessage(_lastNudgeMessage);
+    notifyListeners();
+  }
+
+  // Love Notes on Main Page (Telefon kapalıyken sayfaya not bırakma)
+  void postLoveNote({
+    required String text,
+    String paperColor = 'rose',
+    String emoji = '💌',
+  }) {
+    final note = LoveNoteModel(
+      id: 'note_${DateTime.now().millisecondsSinceEpoch}',
+      senderId: activePartner.id,
+      senderName: activePartner.name,
+      receiverId: otherPartner.id,
+      text: text.trim(),
+      paperColor: paperColor,
+      emoji: emoji,
+      createdAt: DateTime.now(),
+      isRead: false,
+    );
+
+    _loveNotes.insert(0, note);
+    _storage.saveLoveNotes(_loveNotes);
+    notifyListeners();
+  }
+
+  void markLoveNoteAsRead(String noteId) {
+    _loveNotes =
+        _loveNotes.map((n) {
+          if (n.id == noteId) {
+            return n.copyWith(isRead: true, readAt: DateTime.now());
+          }
+          return n;
+        }).toList();
+    _storage.saveLoveNotes(_loveNotes);
+    notifyListeners();
+  }
+
+  void deleteLoveNote(String noteId) {
+    _loveNotes.removeWhere((n) => n.id == noteId);
+    _storage.saveLoveNotes(_loveNotes);
+    notifyListeners();
+  }
+
+  void simulatePartnerLoveNote({
+    String? customMessage,
+    String paperColor = 'rose',
+    String emoji = '💌',
+  }) {
+    final defaultMsg =
+        isTurkish
+            ? 'Telefonun kapalıyken ana sayfana bu tatlı notu iliştirdim. Günün harika geçsin sevgilim! ☀️💖'
+            : 'Left this sweet note on your main page while your phone was away. Have a beautiful day my love! ☀️💖';
+
+    final note = LoveNoteModel(
+      id: 'note_sim_${DateTime.now().millisecondsSinceEpoch}',
+      senderId: otherPartner.id,
+      senderName: otherPartner.name,
+      receiverId: activePartner.id,
+      text: customMessage?.trim() ?? defaultMsg,
+      paperColor: paperColor,
+      emoji: emoji,
+      createdAt: DateTime.now(),
+      isRead: false,
+    );
+
+    _loveNotes.insert(0, note);
+    _storage.saveLoveNotes(_loveNotes);
     notifyListeners();
   }
 
@@ -772,6 +863,7 @@ class AppStateProvider extends ChangeNotifier {
     _lastNudgeTime = null;
     _lastNudgeSenderId = null;
     _lastNudgeMessage = null;
+    _loveNotes = [];
     _storage.setIsAuthenticated(false);
     await _authService.signOut();
     notifyListeners();
