@@ -92,7 +92,7 @@ void main() {
   });
 
   group('PartnerInviteScreen Interactive Tests', () {
-    testWidgets('Renders couple code and handles solo mode transition', (
+    testWidgets('Renders couple code, QR code and handles partner linking', (
       WidgetTester tester,
     ) async {
       provider.completeOnboarding(
@@ -114,6 +114,78 @@ void main() {
       expect(find.byType(PartnerInviteScreen), findsOneWidget);
       expect(find.text('SİZE ÖZEL ÇİFT KODU'), findsOneWidget);
       expect(find.text('Kodu Kopyala'), findsOneWidget);
+      expect(find.textContaining('QR Kodu Okutun'), findsOneWidget);
+    });
+
+    testWidgets('Entering partner code links the couple sanctuary', (
+      WidgetTester tester,
+    ) async {
+      provider.completeOnboarding(
+        name: 'Kerem',
+        avatar: '🕊️',
+        relationshipStage: 'stageMarried',
+        goals: ['goalDeeperConversations'],
+        languageCode: 'tr',
+      );
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider<AppStateProvider>.value(
+          value: provider,
+          child: const MaterialApp(home: PartnerInviteScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Switch to Enter Code tab
+      final enterCodeTab = find.textContaining('Partnerimin Kodu');
+      expect(enterCodeTab, findsOneWidget);
+      await tester.tap(enterCodeTab);
+      await tester.pumpAndSettle();
+
+      // Enter partner's code
+      final inputField = find.byType(TextField);
+      expect(inputField, findsOneWidget);
+      await tester.enterText(inputField, 'GHARAR-5555-SOUL');
+      await tester.pumpAndSettle();
+
+      // Tap Link button
+      final linkButton = find.textContaining('Bağlan & Odayı Aç');
+      expect(linkButton, findsOneWidget);
+      await tester.tap(linkButton);
+      await tester.pumpAndSettle();
+
+      expect(provider.isPartnerLinked, isTrue);
+      expect(provider.couple?.partner2?.name, equals('Ruh Eşim'));
+    });
+
+    testWidgets('Simulating partner connection immediately links couple', (
+      WidgetTester tester,
+    ) async {
+      provider.completeOnboarding(
+        name: 'Kerem',
+        avatar: '🕊️',
+        relationshipStage: 'stageMarried',
+        goals: ['goalDeeperConversations'],
+        languageCode: 'tr',
+      );
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider<AppStateProvider>.value(
+          value: provider,
+          child: const MaterialApp(home: PartnerInviteScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final simulateButton = find.textContaining(
+        'Partnerin Girişini Simüle Et',
+      );
+      expect(simulateButton, findsOneWidget);
+      await tester.ensureVisible(simulateButton);
+      await tester.tap(simulateButton);
+      await tester.pumpAndSettle();
+
+      expect(provider.isPartnerLinked, isTrue);
     });
   });
 }

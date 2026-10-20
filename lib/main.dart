@@ -10,6 +10,7 @@ import 'services/storage_service.dart';
 import 'ui/screens/auth/auth_screen.dart';
 import 'ui/screens/main_navigation_shell.dart';
 import 'ui/screens/onboarding/onboarding_screen.dart';
+import 'ui/screens/onboarding/partner_invite_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,9 @@ class GhararApp extends StatelessWidget {
     );
     final hasOnboarded = context.select<AppStateProvider, bool>(
       (p) => p.hasOnboarded,
+    );
+    final isPartnerLinked = context.select<AppStateProvider, bool>(
+      (p) => p.isPartnerLinked,
     );
 
     return MaterialApp(
@@ -71,9 +75,11 @@ class GhararApp extends StatelessWidget {
       home:
           !isAuthenticated
               ? const AuthScreen()
-              : hasOnboarded
-              ? const MainNavigationShell()
-              : const OnboardingScreen(),
+              : !hasOnboarded
+              ? const OnboardingScreen()
+              : !isPartnerLinked
+              ? const PartnerInviteScreen()
+              : const MainNavigationShell(),
     );
   }
 }

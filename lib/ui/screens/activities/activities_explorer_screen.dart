@@ -50,6 +50,7 @@ class _ActivitiesExplorerScreenState extends State<ActivitiesExplorerScreen> {
         title: isTr ? 'Randevu & Deneyimler' : 'Couple Activities',
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'activities_explorer_fab',
         backgroundColor:
             isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
         foregroundColor: Colors.white,

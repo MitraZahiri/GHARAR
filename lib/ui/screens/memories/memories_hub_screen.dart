@@ -57,6 +57,7 @@ class _MemoriesHubScreenState extends State<MemoriesHubScreen>
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'memories_hub_fab',
         backgroundColor:
             isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy,
         foregroundColor: Colors.white,

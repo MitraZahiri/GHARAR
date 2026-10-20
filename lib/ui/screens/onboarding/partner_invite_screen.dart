@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/concentric_soul_background.dart';
+import '../../widgets/couple_qr_card.dart';
 import '../../widgets/custom_primary_button.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/soul_connection_art.dart';
@@ -19,6 +20,7 @@ class PartnerInviteScreen extends StatefulWidget {
 
 class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
   final TextEditingController _partnerCodeController = TextEditingController();
+  int _activeTabIndex = 0; // 0: My QR & Code, 1: Enter Partner's Code
 
   @override
   void dispose() {
@@ -31,6 +33,64 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
       MaterialPageRoute(builder: (context) => const MainNavigationShell()),
       (route) => false,
     );
+  }
+
+  void _onLinkPartnerPressed(bool isTr) {
+    final code = _partnerCodeController.text.trim();
+    if (code.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text(
+            isTr
+                ? 'Lütfen partnerinizin davet kodunu girin.'
+                : 'Please enter your partner’s invite code.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final provider = context.read<AppStateProvider>();
+    provider.linkPartner(partnerName: isTr ? 'Ruh Eşim' : 'My Soulmate');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: AppColors.terracotta,
+        content: Text(
+          isTr
+              ? 'Ruh Eşinizle Bağlantı Kuruldu! Masalsı Alanınız Açılıyor... ✨'
+              : 'Soulmate Connected! Opening Your Sacred Sanctuary... ✨',
+        ),
+      ),
+    );
+
+    _navigateToMain();
+  }
+
+  void _onSimulatePartnerJoined(bool isTr) {
+    final provider = context.read<AppStateProvider>();
+    provider.linkPartner(partnerName: isTr ? 'Ruh Eşim' : 'My Soulmate');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: AppColors.terracotta,
+        content: Text(
+          isTr
+              ? 'Ruh Eşiniz Katıldı! Ortak Alanınız Açılıyor... 🕊️✨'
+              : 'Soulmate Joined! Your Shared Sanctuary is Unlocking... 🕊️✨',
+        ),
+      ),
+    );
+
+    _navigateToMain();
   }
 
   @override
@@ -49,7 +109,7 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // Header Row
+              // Top Bar: Brand & Sign Out Option
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -72,19 +132,56 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                                 : AppColors.deepBurgundy,
                       ),
                     ),
-                    TextButton(
-                      onPressed: _navigateToMain,
-                      style: TextButton.styleFrom(
-                        foregroundColor:
-                            isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
-                        textStyle: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+                    InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        context.read<AppStateProvider>().signOut();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              isDark
+                                  ? AppColors.darkCardElevated
+                                  : Colors.white.withValues(alpha: 0.8),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color:
+                                isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.parchmentBorder,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.logout_rounded,
+                              size: 14,
+                              color:
+                                  isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              isTr ? 'Çıkış' : 'Sign Out',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    isDark
+                                        ? AppColors.darkTextSecondary
+                                        : AppColors.lightTextSecondary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      child: Text(isTr ? 'Atla ➔' : 'Skip ➔'),
                     ),
                   ],
                 ),
@@ -137,12 +234,12 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 18),
 
                       Text(
                         isTr
-                            ? 'İki Kalp, Tek Ortak Alan'
-                            : 'Two Hearts, One Shared Space',
+                            ? 'İki Kalp, Tek Kutsal Alan'
+                            : 'Two Hearts, One Sacred Space',
                         textAlign: TextAlign.center,
                         style: AppTextStyles.displaySmall(
                           isDark: isDark,
@@ -156,16 +253,16 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                                   : AppColors.inkCharcoal,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Text(
                         isTr
-                            ? 'GHARAR iki kişilik senkronize bir deneyimdir. Partnerinizi bu özel kodla davet edin veya partnerinizin kodunu girin.'
-                            : 'GHARAR is a synchronized sanctuary designed exclusively for two. Invite your partner with this unique code or enter theirs.',
+                            ? 'GHARAR iki kişilik senkronize bir deneyimdir. Partneriniz bağlanmadan ortak kutsal alan açılamaz.'
+                            : 'GHARAR is synchronized for two. The sanctuary unlocks only when both souls are joined.',
                         textAlign: TextAlign.center,
                         style: AppTextStyles.bodyMedium(
                           isDark: isDark,
                         ).copyWith(
-                          fontSize: 14,
+                          fontSize: 13,
                           height: 1.45,
                           color:
                               isDark
@@ -174,142 +271,357 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
-                      // Your Invite Code Card
-                      InviteCodeDisplayCard(
-                        inviteCode: inviteCode,
-                        isDark: isDark,
-                        isTr: isTr,
-                      ),
-
-                      const SizedBox(height: 22),
-
-                      // Or Enter Partner's Code
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          isTr
-                              ? 'Veya Partnerinizin Kodunu Girin'
-                              : 'Or Enter Partner’s Code',
-                          style: AppTextStyles.labelLarge(
-                            isDark: isDark,
-                          ).copyWith(fontWeight: FontWeight.w700),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
+                      // Segmented Mode Switcher (Tab 0: My Code & QR | Tab 1: Enter Partner's Code)
                       Container(
+                        padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           color:
                               isDark
                                   ? AppColors.darkCardElevated
-                                  : Colors.white,
-                          borderRadius: BorderRadius.circular(28),
+                                  : AppColors.parchmentBorder.withValues(
+                                    alpha: 0.45,
+                                  ),
+                          borderRadius: BorderRadius.circular(24),
                           border: Border.all(
                             color:
                                 isDark
                                     ? AppColors.darkBorder
                                     : AppColors.parchmentBorder,
-                            width: 1.2,
+                            width: 1.0,
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(
-                                alpha: isDark ? 0.15 : 0.03,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap:
+                                    () => setState(() => _activeTabIndex = 0),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        _activeTabIndex == 0
+                                            ? (isDark
+                                                ? AppColors.terracotta
+                                                : Colors.white)
+                                            : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow:
+                                        _activeTabIndex == 0
+                                            ? [
+                                              BoxShadow(
+                                                color: Colors.black.withValues(
+                                                  alpha: isDark ? 0.2 : 0.06,
+                                                ),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ]
+                                            : null,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      isTr
+                                          ? 'QR & Kodum 📱'
+                                          : 'My QR & Code 📱',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color:
+                                            _activeTabIndex == 0
+                                                ? (_activeTabIndex == 0 &&
+                                                        isDark
+                                                    ? Colors.white
+                                                    : AppColors.inkCharcoal)
+                                                : (isDark
+                                                    ? AppColors
+                                                        .darkTextSecondary
+                                                    : AppColors
+                                                        .lightTextSecondary),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap:
+                                    () => setState(() => _activeTabIndex = 1),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        _activeTabIndex == 1
+                                            ? (isDark
+                                                ? AppColors.terracotta
+                                                : Colors.white)
+                                            : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow:
+                                        _activeTabIndex == 1
+                                            ? [
+                                              BoxShadow(
+                                                color: Colors.black.withValues(
+                                                  alpha: isDark ? 0.2 : 0.06,
+                                                ),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ]
+                                            : null,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      isTr
+                                          ? 'Partnerimin Kodu 🔑'
+                                          : 'Enter Partner’s 🔑',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color:
+                                            _activeTabIndex == 1
+                                                ? (_activeTabIndex == 1 &&
+                                                        isDark
+                                                    ? Colors.white
+                                                    : AppColors.inkCharcoal)
+                                                : (isDark
+                                                    ? AppColors
+                                                        .darkTextSecondary
+                                                    : AppColors
+                                                        .lightTextSecondary),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: TextField(
-                          controller: _partnerCodeController,
-                          textAlign: TextAlign.center,
-                          textCapitalization: TextCapitalization.characters,
-                          style: TextStyle(
-                            fontSize: 15,
-                            letterSpacing: 1.2,
-                            fontWeight: FontWeight.w700,
-                            color:
-                                isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.inkCharcoal,
-                          ),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            hintText: 'GHARAR-XXXX-LOVE',
-                            hintStyle: TextStyle(
-                              letterSpacing: 1.0,
-                              fontWeight: FontWeight.w500,
-                              color:
-                                  isDark
-                                      ? AppColors.darkTextMuted
-                                      : AppColors.lightTextMuted,
-                              fontSize: 13,
-                            ),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.arrow_forward_rounded),
-                              color:
-                                  isDark
-                                      ? AppColors.terracottaLight
-                                      : AppColors.terracotta,
-                              onPressed: () {
-                                if (_partnerCodeController.text
-                                    .trim()
-                                    .isNotEmpty) {
-                                  context.read<AppStateProvider>().linkPartner(
-                                    partnerName:
-                                        isTr ? 'Partneriniz' : 'Partner',
-                                  );
-                                  _navigateToMain();
-                                }
-                              },
-                            ),
-                          ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Tab 0: Show QR Code & Invite Code
+                      if (_activeTabIndex == 0) ...[
+                        CoupleQrCard(
+                          inviteCode: inviteCode,
+                          isDark: isDark,
+                          isTr: isTr,
                         ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // Proceed to Couple Space Button
-                      CustomPrimaryButton(
-                        text:
-                            isTr
-                                ? 'Çift Alanımıza Başla ✨'
-                                : 'Enter Our Couple Sanctuary ✨',
-                        height: 52,
-                        borderRadius: 26,
-                        backgroundColor:
-                            isDark
-                                ? AppColors.terracotta
-                                : AppColors.inkCharcoal,
-                        textColor: Colors.white,
-                        onPressed: _navigateToMain,
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      TextButton(
-                        onPressed: _navigateToMain,
-                        child: Text(
+                        const SizedBox(height: 16),
+                        InviteCodeDisplayCard(
+                          inviteCode: inviteCode,
+                          isDark: isDark,
+                          isTr: isTr,
+                        ),
+                        const SizedBox(height: 14),
+                        Text(
                           isTr
-                              ? 'Şimdilik Tek Başıma Başla'
-                              : 'Explore Sanctuary Solo for Now',
+                              ? 'Ruh eşiniz bu QR kodu okuttuğunda veya davet kodunu girdiğinde odanız ikiniz için aynı anda açılacaktır.'
+                              : 'When your soulmate scans this QR code or enters the invite code, your shared sanctuary will unlock simultaneously.',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
                             color:
                                 isDark
-                                    ? AppColors.terracottaLight
-                                    : AppColors.terracotta,
+                                    ? AppColors.darkTextMuted
+                                    : AppColors.lightTextMuted,
                           ),
+                        ),
+                      ] else ...[
+                        // Tab 1: Enter Partner's Code
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            isTr
+                                ? 'Partnerinizin Kodunu Girin'
+                                : 'Enter Partner’s Unique Code',
+                            style: AppTextStyles.labelLarge(
+                              isDark: isDark,
+                            ).copyWith(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            color:
+                                isDark
+                                    ? AppColors.darkCardElevated
+                                    : Colors.white,
+                            borderRadius: BorderRadius.circular(28),
+                            border: Border.all(
+                              color:
+                                  isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.parchmentBorder,
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(
+                                  alpha: isDark ? 0.15 : 0.03,
+                                ),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: TextField(
+                            controller: _partnerCodeController,
+                            textAlign: TextAlign.center,
+                            textCapitalization: TextCapitalization.characters,
+                            style: TextStyle(
+                              fontSize: 15,
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w700,
+                              color:
+                                  isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.inkCharcoal,
+                            ),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              hintText: 'GHARAR-XXXX-LOVE',
+                              hintStyle: TextStyle(
+                                letterSpacing: 1.0,
+                                fontWeight: FontWeight.w500,
+                                color:
+                                    isDark
+                                        ? AppColors.darkTextMuted
+                                        : AppColors.lightTextMuted,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Link Button
+                        CustomPrimaryButton(
+                          text:
+                              isTr
+                                  ? 'Bağlan & Odayı Aç 🕊️✨'
+                                  : 'Connect & Unlock Sanctuary 🕊️✨',
+                          height: 52,
+                          borderRadius: 26,
+                          backgroundColor:
+                              isDark
+                                  ? AppColors.terracotta
+                                  : AppColors.inkCharcoal,
+                          textColor: Colors.white,
+                          onPressed: () => _onLinkPartnerPressed(isTr),
+                        ),
+                      ],
+
+                      const SizedBox(height: 20),
+
+                      // Live Simulation / Test Helper (Essential for Testing without 2 phones)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              isDark
+                                  ? AppColors.terracotta.withValues(alpha: 0.12)
+                                  : AppColors.terracotta.withValues(
+                                    alpha: 0.06,
+                                  ),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color:
+                                isDark
+                                    ? AppColors.terracotta.withValues(
+                                      alpha: 0.3,
+                                    )
+                                    : AppColors.terracotta.withValues(
+                                      alpha: 0.25,
+                                    ),
+                            style: BorderStyle.solid,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              isTr
+                                  ? 'Canlı Eşleşme Simülasyonu'
+                                  : 'Live Pairing Simulation',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.8,
+                                color:
+                                    isDark
+                                        ? AppColors.terracottaLight
+                                        : AppColors.terracotta,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(16),
+                                onTap: () => _onSimulatePartnerJoined(isTr),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isDark
+                                            ? AppColors.terracotta
+                                            : AppColors.deepBurgundy,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.favorite_rounded,
+                                        size: 14,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        isTr
+                                            ? 'Partnerin Girişini Simüle Et 💫'
+                                            : 'Simulate Partner Connection 💫',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
