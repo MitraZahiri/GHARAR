@@ -8,15 +8,6 @@ import 'app_colors.dart';
 class AppTextStyles {
   AppTextStyles._();
 
-  static TextStyle displayLarge({required bool isDark}) =>
-      GoogleFonts.playfairDisplay(
-        fontSize: 32,
-        fontWeight: FontWeight.w700,
-        letterSpacing: -0.5,
-        color: isDark ? AppColors.darkTextPrimary : AppColors.deepBurgundy,
-        height: 1.2,
-      );
-
   static TextStyle displayMedium({required bool isDark}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 26,

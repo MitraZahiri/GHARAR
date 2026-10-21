@@ -22,13 +22,10 @@ class AppColors {
   static const Color earthSlate = Color(0xFF48454D);
   static const Color earthSlateDeep = Color(0xFF2E2B33);
   static const Color earthSlateLight = Color(0xFFE3DFE6);
-  static const Color earthSlateSubtle = Color(0xFFF4F2F6);
 
   /// Radiant golden heart core & connecting soul bridge
   static const Color heartGold = Color(0xFFF5AC1F);
   static const Color heartGoldGlow = Color(0xFFFFCB52);
-  static const Color heartGoldDeep = Color(0xFFD68F0F);
-  static const Color heartGoldSubtle = Color(0xFFFDF5E3);
 
   /// Warm organic parchment & linen background
   static const Color warmParchment = Color(0xFFFAF4EB);
@@ -39,14 +36,12 @@ class AppColors {
   /// Deep organic ink for readable, expressive typography
   static const Color inkCharcoal = Color(0xFF252227);
   static const Color inkMuted = Color(0xFF6B656F);
-  static const Color inkSubtle = Color(0xFF9E96A2);
 
   // ==========================================
   // Light Mode Surfaces (Warm Parchment)
   // ==========================================
   static const Color lightBackground = Color(0xFFFAF4EB);
   static const Color lightCard = Color(0xFFFFFDF9);
-  static const Color lightCardElevated = Color(0xFFF7F0E4);
   static const Color lightTextPrimary = Color(0xFF252227);
   static const Color lightTextSecondary = Color(0xFF6B656F);
   static const Color lightTextMuted = Color(0xFF9A929E);
@@ -65,9 +60,7 @@ class AppColors {
 
   // Status & Connection Streaks
   static const Color streakFlame = Color(0xFFC85A32);
-  static const Color streakFlameGlow = Color(0xFFFFCB52);
   static const Color successGreen = Color(0xFF4C826A);
-  static const Color gentleIndigo = Color(0xFF48454D);
 
   // ==========================================
   // Backward-Compatible Aliases
@@ -78,9 +71,7 @@ class AppColors {
 
   static const Color warmCream = warmParchment;
   static const Color warmIvory = parchmentSand;
-  static const Color softAlabaster = Color(0xFFF5EFE6);
 
-  static const Color mutedLavender = earthSlateLight;
   static const Color lavenderAccent = earthSlate;
   static const Color lavenderDeep = earthSlateDeep;
 
@@ -88,12 +79,10 @@ class AppColors {
   static const Color burgundyWine = inkCharcoal;
   static const Color burgundyRose = terracotta;
 
-  static const Color subtlePeach = terracottaLight;
   static const Color warmPeach = Color(0xFFEAA07E);
   static const Color coralGold = heartGold;
 
   static const Color champagneGold = heartGold;
-  static const Color softGold = heartGoldGlow;
 
   // ==========================================
   // Organic Signature Gradients
@@ -104,38 +93,8 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient terracottaEarth = LinearGradient(
-    colors: [terracotta, terracottaDeep],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient soulBridgeGlow = LinearGradient(
-    colors: [heartGoldGlow, heartGold],
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
-  );
-
-  static const LinearGradient slateContour = LinearGradient(
-    colors: [earthSlate, earthSlateDeep],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient blushGlow = LinearGradient(
-    colors: [terracottaSubtle, terracottaLight],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  );
-
   static const LinearGradient sunsetGold = LinearGradient(
     colors: [terracotta, heartGold],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient lavenderDream = LinearGradient(
-    colors: [earthSlateLight, parchmentSand],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

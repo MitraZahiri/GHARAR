@@ -80,11 +80,6 @@ class AppStateProvider extends ChangeNotifier {
   String? get authProvider => _authProvider;
   String? get lastAuthError => _lastAuthError;
 
-  void clearAuthError() {
-    _lastAuthError = null;
-    notifyListeners();
-  }
-
   void setLanguageCode(String code) {
     setLocale(Locale(code));
   }
