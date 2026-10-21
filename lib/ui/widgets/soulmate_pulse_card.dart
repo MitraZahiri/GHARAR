@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/utils/partner_display_name.dart';
 import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
 import 'glass_card.dart';
@@ -377,8 +378,8 @@ class SoulmatePulseCard extends StatelessWidget {
                               ? '${otherPartner.name} için bir sevgi dokunuşu ilettiniz.'
                               : 'You sent a warm love pulse to ${otherPartner.name}.')
                           : (isTr
-                              ? '${otherPartner.name} şu an seni düşünüyor! 💓'
-                              : '${otherPartner.name} is thinking of you right now! 💓'),
+                              ? '${partnerDisplayName(otherPartner.name, isTurkish: isTr)} şu an seni düşünüyor! 💓'
+                              : '${partnerDisplayName(otherPartner.name, isTurkish: isTr)} is thinking of you right now! 💓'),
                       style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 11,

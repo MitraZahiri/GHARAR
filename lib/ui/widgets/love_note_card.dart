@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/utils/partner_display_name.dart';
 import '../../models/love_note_model.dart';
 import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
@@ -268,8 +269,8 @@ class _UnopenedWaxSealLetter extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: Text(
                 isTr
-                    ? '${note.senderName} Sana Bir Sevgi Notu Bıraktı! 💌'
-                    : '${note.senderName} Left You a Love Note! 💌',
+                    ? '${partnerDisplayName(note.senderName, isTurkish: isTr)} Sana Bir Sevgi Notu Bıraktı! 💌'
+                    : '${partnerDisplayName(note.senderName, isTurkish: isTr)} Left You a Love Note! 💌',
                 style: AppTextStyles.titleMedium(
                   isDark: isDark,
                 ).copyWith(fontWeight: FontWeight.w800, fontSize: 15),
@@ -343,8 +344,8 @@ class _OpenedPostItNote extends StatelessWidget {
                     Expanded(
                       child: Text(
                         isTr
-                            ? '${note.senderName}’den Not'
-                            : 'From ${note.senderName}',
+                            ? '${partnerDisplayName(note.senderName, isTurkish: isTr)}’den Not'
+                            : 'From ${partnerDisplayName(note.senderName, isTurkish: isTr)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
