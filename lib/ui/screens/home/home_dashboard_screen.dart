@@ -20,6 +20,7 @@ import '../daily_questions/daily_question_screen.dart';
 import '../activities/surprise_generator_modal.dart';
 import '../activities/weekly_challenges_screen.dart';
 import '../memories/special_dates_screen.dart';
+import '../../widgets/distance_mode_card.dart';
 import '../../widgets/soulmate_pulse_card.dart';
 import '../../widgets/love_note_card.dart';
 
@@ -167,6 +168,8 @@ class HomeDashboardScreen extends StatelessWidget {
               // Soulmate Presence & Mood Pulse Card
               if (isPartnerLinked) ...[
                 const SoulmatePulseCard(),
+                const SizedBox(height: 18),
+                const DistanceModeCard(),
                 const SizedBox(height: 18),
                 const LoveNoteCard(),
                 const SizedBox(height: 18),

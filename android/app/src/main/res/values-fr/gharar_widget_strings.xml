@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_empty">Pas encore de mot doux</string>
+    <string name="widget_description">Le dernier mot manuscrit ou la dernière photo de ton partenaire</string>
+    <string name="widget_image_description">Mot doux de ton partenaire</string>
+</resources>

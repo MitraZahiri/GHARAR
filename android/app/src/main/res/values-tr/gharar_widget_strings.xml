@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_empty">Henüz sevgi notu yok</string>
+    <string name="widget_description">Partnerinden gelen son el yazısı not ya da fotoğraf</string>
+    <string name="widget_image_description">Partnerinden sevgi notu</string>
+</resources>

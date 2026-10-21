@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mirrors AppColors dark theme: charcoal earth night mode -->
+    <color name="gharar_widget_background">#262329</color>
+    <color name="gharar_widget_border">#403B45</color>
+    <color name="gharar_widget_title">#EAA07E</color>
+    <color name="gharar_widget_text">#FAF4EB</color>
+</resources>

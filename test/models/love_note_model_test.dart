@@ -49,5 +49,40 @@ void main() {
       expect(revived.text, 'Bugün toplantın harika geçecek, aklımdasın! 💖');
       expect(revived.paperColor, 'rose');
     });
+
+    test('text notes default to text kind without an image', () {
+      expect(note1.kind, LoveNoteKind.text);
+      expect(note1.imagePath, isNull);
+      expect(note1.hasImage, isFalse);
+    });
+
+    test('drawing and photo notes survive a JSON round trip', () {
+      final drawing = note1.copyWith(
+        kind: LoveNoteKind.drawing,
+        imagePath: '/data/note_media/n1.png',
+        text: '',
+      );
+      final revived = LoveNoteModel.fromJson(drawing.toJson());
+      expect(revived, equals(drawing));
+      expect(revived.kind, LoveNoteKind.drawing);
+      expect(revived.imagePath, '/data/note_media/n1.png');
+      expect(revived.hasImage, isTrue);
+      expect(revived, isNot(equals(note1)));
+    });
+
+    test('legacy JSON without kind falls back to a text note', () {
+      final legacy =
+          note1.toJson()
+            ..remove('kind')
+            ..remove('imagePath');
+      final revived = LoveNoteModel.fromJson(legacy);
+      expect(revived.kind, LoveNoteKind.text);
+      expect(revived.imagePath, isNull);
+    });
+
+    test('unknown kind string falls back to text', () {
+      final json = note1.toJson()..['kind'] = 'hologram';
+      expect(LoveNoteModel.fromJson(json).kind, LoveNoteKind.text);
+    });
   });
 }

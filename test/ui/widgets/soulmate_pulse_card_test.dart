@@ -115,5 +115,43 @@ void main() {
 
       expect(provider.activePartnerMood, 'romantic');
     });
+
+    testWidgets(
+      'Partner view never renders the "You" placeholder as a sender name',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final unnamed = AppStateProvider(StorageService(prefs));
+        unnamed.completeOnboarding(
+          name: '',
+          avatar: '🌸',
+          relationshipStage: 'married',
+          goals: const ['deep_talks'],
+          languageCode: 'en',
+        );
+        unnamed.setLanguageCode('en');
+        unnamed.linkPartner(partnerName: 'Elif', avatar: '🌿');
+        unnamed.sendLoveNudge();
+        unnamed.switchActivePartner();
+
+        await tester.pumpWidget(
+          ChangeNotifierProvider<AppStateProvider>.value(
+            value: unnamed,
+            child: const MaterialApp(
+              home: Scaffold(
+                body: SingleChildScrollView(child: SoulmatePulseCard()),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.textContaining('You is thinking'), findsNothing);
+        expect(
+          find.textContaining('Your Soulmate is thinking of you right now!'),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_empty">No love note yet</string>
+    <string name="widget_description">The latest handwritten note or photo from your partner</string>
+    <string name="widget_image_description">Love note from your partner</string>
+</resources>

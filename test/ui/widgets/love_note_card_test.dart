@@ -98,5 +98,49 @@ void main() {
         expect(provider.latestNoteForActivePartner?.isRead, isTrue);
       },
     );
+
+    testWidgets(
+      'Sealed note from an unnamed sender shows a soulmate label, not "You"',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final unnamed = AppStateProvider(StorageService(prefs));
+        unnamed.completeOnboarding(
+          name: '',
+          avatar: '🌸',
+          relationshipStage: 'married',
+          goals: const ['deep_talks'],
+          languageCode: 'en',
+        );
+        unnamed.setLanguageCode('en');
+        unnamed.linkPartner(partnerName: 'Elif', avatar: '🌿');
+        unnamed.postLoveNote(text: 'Coffee at 8 this weekend?');
+        unnamed.switchActivePartner();
+
+        await tester.pumpWidget(
+          ChangeNotifierProvider<AppStateProvider>.value(
+            value: unnamed,
+            child: const MaterialApp(
+              home: Scaffold(
+                body: SingleChildScrollView(child: LoveNoteCard()),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.textContaining('You Left You'), findsNothing);
+        expect(
+          find.textContaining('Your Soulmate Left You a Love Note!'),
+          findsOneWidget,
+        );
+
+        await tester.tap(find.textContaining('Tap to break the seal'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('From You'), findsNothing);
+        expect(find.text('From Your Soulmate'), findsOneWidget);
+      },
+    );
   });
 }

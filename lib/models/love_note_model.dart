@@ -1,5 +1,15 @@
 import 'package:flutter/foundation.dart';
 
+/// What a love note carries: typed text, a finger-drawn note or a photo.
+enum LoveNoteKind {
+  text,
+  drawing,
+  photo;
+
+  static LoveNoteKind fromName(String? name) =>
+      values.where((k) => k.name == name).firstOrNull ?? text;
+}
+
 @immutable
 class LoveNoteModel {
   final String id;
@@ -12,6 +22,10 @@ class LoveNoteModel {
   final DateTime createdAt;
   final bool isRead;
   final DateTime? readAt;
+  final LoveNoteKind kind;
+
+  /// Local file path of the drawing/photo; null for text notes.
+  final String? imagePath;
 
   const LoveNoteModel({
     required this.id,
@@ -24,7 +38,11 @@ class LoveNoteModel {
     required this.createdAt,
     this.isRead = false,
     this.readAt,
+    this.kind = LoveNoteKind.text,
+    this.imagePath,
   });
+
+  bool get hasImage => imagePath != null && kind != LoveNoteKind.text;
 
   LoveNoteModel copyWith({
     String? id,
@@ -37,6 +55,8 @@ class LoveNoteModel {
     DateTime? createdAt,
     bool? isRead,
     DateTime? readAt,
+    LoveNoteKind? kind,
+    String? imagePath,
   }) {
     return LoveNoteModel(
       id: id ?? this.id,
@@ -49,6 +69,8 @@ class LoveNoteModel {
       createdAt: createdAt ?? this.createdAt,
       isRead: isRead ?? this.isRead,
       readAt: readAt ?? this.readAt,
+      kind: kind ?? this.kind,
+      imagePath: imagePath ?? this.imagePath,
     );
   }
 
@@ -63,6 +85,8 @@ class LoveNoteModel {
     'createdAt': createdAt.toIso8601String(),
     'isRead': isRead,
     'readAt': readAt?.toIso8601String(),
+    'kind': kind.name,
+    'imagePath': imagePath,
   };
 
   factory LoveNoteModel.fromJson(Map<String, dynamic> json) {
@@ -82,6 +106,8 @@ class LoveNoteModel {
           json['readAt'] != null
               ? DateTime.tryParse(json['readAt'] as String)
               : null,
+      kind: LoveNoteKind.fromName(json['kind'] as String?),
+      imagePath: json['imagePath'] as String?,
     );
   }
 
@@ -99,7 +125,9 @@ class LoveNoteModel {
           emoji == other.emoji &&
           createdAt == other.createdAt &&
           isRead == other.isRead &&
-          readAt == other.readAt;
+          readAt == other.readAt &&
+          kind == other.kind &&
+          imagePath == other.imagePath;
 
   @override
   int get hashCode =>
@@ -112,5 +140,7 @@ class LoveNoteModel {
       emoji.hashCode ^
       createdAt.hashCode ^
       isRead.hashCode ^
-      readAt.hashCode;
+      readAt.hashCode ^
+      kind.hashCode ^
+      imagePath.hashCode;
 }

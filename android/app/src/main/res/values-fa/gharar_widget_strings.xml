@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_empty">هنوز یادداشت عاشقانه‌ای نیست</string>
+    <string name="widget_description">آخرین یادداشت دست‌نویس یا عکس از همراهت</string>
+    <string name="widget_image_description">یادداشت عاشقانه از همراهت</string>
+</resources>

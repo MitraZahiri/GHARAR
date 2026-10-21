@@ -46,3 +46,6 @@ app.*.map.json
 
 # Test coverage
 coverage/
+
+# Local marketing material (LinkedIn post drafts, screenshots, demo videos)
+/linkedin/

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_empty">لا توجد رسالة حب بعد</string>
+    <string name="widget_description">أحدث رسالة بخط اليد أو صورة من شريكك</string>
+    <string name="widget_image_description">رسالة حب من شريكك</string>
+</resources>
