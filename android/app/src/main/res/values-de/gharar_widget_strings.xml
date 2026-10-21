@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_empty">Noch keine Liebesnotiz</string>
+    <string name="widget_description">Die neueste handschriftliche Notiz oder das neueste Foto deines Partners</string>
+    <string name="widget_image_description">Liebesnotiz von deinem Partner</string>
+</resources>

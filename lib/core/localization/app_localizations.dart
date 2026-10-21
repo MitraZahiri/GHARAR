@@ -104,6 +104,44 @@ class AppLocalizations {
       'needAccount': 'Need an account? ',
       'alreadyHaveAccount': 'Already have an account? ',
       'or': 'or',
+      // Distance mode, visual notes & home widget
+      'distanceTitle': 'OUR DISTANCE',
+      'distanceTogether': 'Close by',
+      'distanceLong': 'Long distance',
+      'togetherHeadline': 'Same city, same sky',
+      'togetherRitualLabel': 'Tonight\'s tiny ritual',
+      'togetherRitual1':
+          'Cook one new recipe together, phones left in another room.',
+      'togetherRitual2':
+          'Take a 20-minute walk and share one thing that made you smile today.',
+      'togetherRitual3':
+          'Slow-dance in the kitchen to the first song you both loved.',
+      'togetherRitual4':
+          'Write three things you appreciate about each other and swap notes.',
+      'togetherNextIdea': 'Another idea',
+      'ldrPartnerTime': '{name} right now',
+      'ldrSetTimezone': 'Set time zone',
+      'ldrUntilMeeting': 'Until we meet',
+      'ldrDaysLeft': '{days} days',
+      'ldrMeetingToday': 'Today! 🎉',
+      'ldrSetMeeting': 'Pick reunion date',
+      'noteModeText': 'Write',
+      'noteModeDraw': 'Handwrite',
+      'noteModePhoto': 'Photo',
+      'drawHint': 'Write or draw with your finger',
+      'drawUndo': 'Undo',
+      'drawClear': 'Clear',
+      'photoCamera': 'Camera',
+      'photoGallery': 'Gallery',
+      'photoCaptionHint': 'Add a short caption (optional)',
+      'visualNoteEmpty': 'Draw something or pick a photo first.',
+      'visualNoteSaveError': 'Couldn\'t save your note. Please try again.',
+      'photoPickError': 'Couldn\'t open the photo. Please try again.',
+      'visualNoteSend': 'Send to their home screen 📲',
+      'visualNoteSent':
+          'Sent! It will appear on {name}\'s home screen widget 📲',
+      'widgetFrom': 'From {name}',
+      'widgetAddToHome': 'Add widget to home screen',
     },
 
     // ==========================================
@@ -180,6 +218,43 @@ class AppLocalizations {
       'needAccount': 'Hesabınız yok mu? ',
       'alreadyHaveAccount': 'Zaten bir hesabınız var mı? ',
       'or': 'veya',
+      // Distance mode, visual notes & home widget
+      'distanceTitle': 'ARAMIZDAKİ MESAFE',
+      'distanceTogether': 'Yakın Mesafe',
+      'distanceLong': 'Uzak Mesafe',
+      'togetherHeadline': 'Aynı şehir, aynı gökyüzü',
+      'togetherRitualLabel': 'Bu akşamın küçük ritüeli',
+      'togetherRitual1':
+          'Telefonları başka odaya bırakıp birlikte yeni bir tarif deneyin.',
+      'togetherRitual2':
+          '20 dakikalık bir yürüyüşe çıkın, bugün sizi gülümseten bir şeyi paylaşın.',
+      'togetherRitual3':
+          'İkinizin de ilk sevdiği şarkıyla mutfakta ağır ağır dans edin.',
+      'togetherRitual4':
+          'Birbirinizde sevdiğiniz üç şeyi yazıp kâğıtları değişin.',
+      'togetherNextIdea': 'Başka fikir',
+      'ldrPartnerTime': '{name} şu an',
+      'ldrSetTimezone': 'Saat dilimini ayarla',
+      'ldrUntilMeeting': 'Kavuşmaya',
+      'ldrDaysLeft': '{days} gün',
+      'ldrMeetingToday': 'Bugün! 🎉',
+      'ldrSetMeeting': 'Buluşma tarihi seç',
+      'noteModeText': 'Yaz',
+      'noteModeDraw': 'El yazısı',
+      'noteModePhoto': 'Fotoğraf',
+      'drawHint': 'Parmağınla yaz ya da çiz',
+      'drawUndo': 'Geri al',
+      'drawClear': 'Temizle',
+      'photoCamera': 'Kamera',
+      'photoGallery': 'Galeri',
+      'photoCaptionHint': 'Kısa bir not ekle (isteğe bağlı)',
+      'visualNoteEmpty': 'Önce bir şey çiz ya da fotoğraf seç.',
+      'visualNoteSaveError': 'Not kaydedilemedi. Lütfen tekrar dene.',
+      'photoPickError': 'Fotoğraf açılamadı. Lütfen tekrar dene.',
+      'visualNoteSend': 'Ana ekranına gönder 📲',
+      'visualNoteSent': 'Gönderildi! {name} ana ekran widget’ında görecek 📲',
+      'widgetFrom': 'Kimden: {name}',
+      'widgetAddToHome': 'Widget’ı ana ekrana ekle',
     },
 
     // ==========================================
@@ -248,6 +323,41 @@ class AppLocalizations {
       'nameRequired': 'يرجى إدخال اسمك',
       'passwordRequired': 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل',
       'invalidEmail': 'يرجى إدخال بريد إلكتروني صالح',
+      // Distance mode, visual notes & home widget
+      'distanceTitle': 'المسافة بيننا',
+      'distanceTogether': 'قريبان',
+      'distanceLong': 'عن بُعد',
+      'togetherHeadline': 'المدينة نفسها، السماء نفسها',
+      'togetherRitualLabel': 'طقس صغير لهذه الليلة',
+      'togetherRitual1': 'اطبخا وصفة جديدة معاً واتركا الهواتف في غرفة أخرى.',
+      'togetherRitual2': 'تمشّيا عشرين دقيقة وشاركا شيئاً أسعدكما اليوم.',
+      'togetherRitual3': 'ارقصا ببطء في المطبخ على أول أغنية أحببتماها.',
+      'togetherRitual4':
+          'اكتبا ثلاثة أشياء تقدّرانها في بعضكما وتبادلا الأوراق.',
+      'togetherNextIdea': 'فكرة أخرى',
+      'ldrPartnerTime': '{name} الآن',
+      'ldrSetTimezone': 'اضبط المنطقة الزمنية',
+      'ldrUntilMeeting': 'حتى نلتقي',
+      'ldrDaysLeft': '{days} يوم',
+      'ldrMeetingToday': 'اليوم! 🎉',
+      'ldrSetMeeting': 'اختر موعد اللقاء',
+      'noteModeText': 'اكتب',
+      'noteModeDraw': 'بخط اليد',
+      'noteModePhoto': 'صورة',
+      'drawHint': 'اكتب أو ارسم بإصبعك',
+      'drawUndo': 'تراجع',
+      'drawClear': 'مسح',
+      'photoCamera': 'الكاميرا',
+      'photoGallery': 'المعرض',
+      'photoCaptionHint': 'أضف تعليقاً قصيراً (اختياري)',
+      'visualNoteEmpty': 'ارسم شيئاً أو اختر صورة أولاً.',
+      'visualNoteSaveError': 'تعذّر حفظ رسالتك. حاول مرة أخرى.',
+      'photoPickError': 'تعذّر فتح الصورة. حاول مرة أخرى.',
+      'visualNoteSend': 'أرسل إلى شاشته الرئيسية 📲',
+      'visualNoteSent':
+          'تم الإرسال! ستظهر في أداة {name} على الشاشة الرئيسية 📲',
+      'widgetFrom': 'من {name}',
+      'widgetAddToHome': 'أضف الأداة إلى الشاشة الرئيسية',
     },
 
     // ==========================================
@@ -316,6 +426,43 @@ class AppLocalizations {
       'nameRequired': 'لطفاً نام خود را وارد کنید',
       'passwordRequired': 'رمز عبور باید حداقل ۶ نویسه باشد',
       'invalidEmail': 'لطفاً یک آدرس ایمیل معتبر وارد کنید',
+      // Distance mode, visual notes & home widget
+      'distanceTitle': 'فاصله‌ی ما',
+      'distanceTogether': 'نزدیک',
+      'distanceLong': 'از راه دور',
+      'togetherHeadline': 'یک شهر، یک آسمان',
+      'togetherRitualLabel': 'آیین کوچک امشب',
+      'togetherRitual1':
+          'با هم یک دستور پخت تازه امتحان کنید و گوشی‌ها را در اتاق دیگری بگذارید.',
+      'togetherRitual2':
+          'بیست دقیقه قدم بزنید و از چیزی بگویید که امروز لبخندتان را ساخت.',
+      'togetherRitual3':
+          'با اولین آهنگی که هر دو دوستش داشتید، آرام در آشپزخانه برقصید.',
+      'togetherRitual4':
+          'سه چیزی را که در هم دوست دارید بنویسید و کاغذها را عوض کنید.',
+      'togetherNextIdea': 'ایده‌ی دیگر',
+      'ldrPartnerTime': '{name} همین حالا',
+      'ldrSetTimezone': 'تنظیم منطقه‌ی زمانی',
+      'ldrUntilMeeting': 'تا دیدار',
+      'ldrDaysLeft': '{days} روز',
+      'ldrMeetingToday': 'امروز! 🎉',
+      'ldrSetMeeting': 'انتخاب تاریخ دیدار',
+      'noteModeText': 'نوشتن',
+      'noteModeDraw': 'دست‌نویس',
+      'noteModePhoto': 'عکس',
+      'drawHint': 'با انگشتت بنویس یا نقاشی کن',
+      'drawUndo': 'برگرداندن',
+      'drawClear': 'پاک کردن',
+      'photoCamera': 'دوربین',
+      'photoGallery': 'گالری',
+      'photoCaptionHint': 'یک توضیح کوتاه اضافه کن (اختیاری)',
+      'visualNoteEmpty': 'اول چیزی بکش یا عکسی انتخاب کن.',
+      'visualNoteSaveError': 'یادداشتت ذخیره نشد. دوباره تلاش کن.',
+      'photoPickError': 'عکس باز نشد. دوباره تلاش کن.',
+      'visualNoteSend': 'ارسال به صفحه‌ی اصلی‌اش 📲',
+      'visualNoteSent': 'ارسال شد! در ویجت صفحه‌ی اصلی {name} دیده می‌شود 📲',
+      'widgetFrom': 'از طرف {name}',
+      'widgetAddToHome': 'افزودن ویجت به صفحه‌ی اصلی',
     },
 
     // ==========================================
@@ -384,6 +531,45 @@ class AppLocalizations {
       'nameRequired': 'Bitte gib deinen Namen ein',
       'passwordRequired': 'Passwort muss mindestens 6 Zeichen lang sein',
       'invalidEmail': 'Bitte gib eine gültige E-Mail-Adresse ein',
+      // Distance mode, visual notes & home widget
+      'distanceTitle': 'UNSERE DISTANZ',
+      'distanceTogether': 'Ganz nah',
+      'distanceLong': 'Fernbeziehung',
+      'togetherHeadline': 'Gleiche Stadt, gleicher Himmel',
+      'togetherRitualLabel': 'Kleines Ritual für heute Abend',
+      'togetherRitual1':
+          'Kocht gemeinsam ein neues Rezept – die Handys bleiben im anderen Zimmer.',
+      'togetherRitual2':
+          'Macht einen 20-minütigen Spaziergang und erzählt, was euch heute zum Lächeln gebracht hat.',
+      'togetherRitual3':
+          'Tanzt langsam in der Küche zu dem ersten Lied, das ihr beide geliebt habt.',
+      'togetherRitual4':
+          'Schreibt drei Dinge auf, die ihr aneinander schätzt, und tauscht die Zettel.',
+      'togetherNextIdea': 'Andere Idee',
+      'ldrPartnerTime': '{name} gerade',
+      'ldrSetTimezone': 'Zeitzone festlegen',
+      'ldrUntilMeeting': 'Bis wir uns sehen',
+      'ldrDaysLeft': '{days} Tage',
+      'ldrMeetingToday': 'Heute! 🎉',
+      'ldrSetMeeting': 'Wiedersehen planen',
+      'noteModeText': 'Schreiben',
+      'noteModeDraw': 'Handschrift',
+      'noteModePhoto': 'Foto',
+      'drawHint': 'Schreib oder zeichne mit dem Finger',
+      'drawUndo': 'Rückgängig',
+      'drawClear': 'Löschen',
+      'photoCamera': 'Kamera',
+      'photoGallery': 'Galerie',
+      'photoCaptionHint': 'Kurze Bildunterschrift (optional)',
+      'visualNoteEmpty': 'Zeichne zuerst etwas oder wähle ein Foto.',
+      'visualNoteSaveError':
+          'Deine Notiz konnte nicht gespeichert werden. Bitte versuche es erneut.',
+      'photoPickError':
+          'Das Foto konnte nicht geöffnet werden. Bitte versuche es erneut.',
+      'visualNoteSend': 'Auf den Startbildschirm senden 📲',
+      'visualNoteSent': 'Gesendet! Es erscheint im Widget von {name} 📲',
+      'widgetFrom': 'Von {name}',
+      'widgetAddToHome': 'Widget zum Startbildschirm hinzufügen',
     },
 
     // ==========================================
@@ -452,6 +638,43 @@ class AppLocalizations {
       'nameRequired': 'Por favor ingresa tu nombre',
       'passwordRequired': 'La contraseña debe tener al menos 6 caracteres',
       'invalidEmail': 'Por favor ingresa un correo válido',
+      // Distance mode, visual notes & home widget
+      'distanceTitle': 'NUESTRA DISTANCIA',
+      'distanceTogether': 'Cerca',
+      'distanceLong': 'A distancia',
+      'togetherHeadline': 'Misma ciudad, mismo cielo',
+      'togetherRitualLabel': 'El pequeño ritual de esta noche',
+      'togetherRitual1':
+          'Cocinad juntos una receta nueva, con los móviles en otra habitación.',
+      'togetherRitual2':
+          'Dad un paseo de 20 minutos y contad algo que os hizo sonreír hoy.',
+      'togetherRitual3':
+          'Bailad despacio en la cocina con la primera canción que os enamoró.',
+      'togetherRitual4':
+          'Escribid tres cosas que admiráis el uno del otro e intercambiad los papeles.',
+      'togetherNextIdea': 'Otra idea',
+      'ldrPartnerTime': '{name} ahora',
+      'ldrSetTimezone': 'Configurar zona horaria',
+      'ldrUntilMeeting': 'Hasta vernos',
+      'ldrDaysLeft': '{days} días',
+      'ldrMeetingToday': '¡Hoy! 🎉',
+      'ldrSetMeeting': 'Elegir fecha del reencuentro',
+      'noteModeText': 'Escribir',
+      'noteModeDraw': 'A mano',
+      'noteModePhoto': 'Foto',
+      'drawHint': 'Escribe o dibuja con el dedo',
+      'drawUndo': 'Deshacer',
+      'drawClear': 'Borrar',
+      'photoCamera': 'Cámara',
+      'photoGallery': 'Galería',
+      'photoCaptionHint': 'Añade un pie corto (opcional)',
+      'visualNoteEmpty': 'Dibuja algo o elige una foto primero.',
+      'visualNoteSaveError': 'No se pudo guardar tu nota. Inténtalo de nuevo.',
+      'photoPickError': 'No se pudo abrir la foto. Inténtalo de nuevo.',
+      'visualNoteSend': 'Enviar a su pantalla de inicio 📲',
+      'visualNoteSent': '¡Enviado! Aparecerá en el widget de {name} 📲',
+      'widgetFrom': 'De {name}',
+      'widgetAddToHome': 'Añadir widget a la pantalla de inicio',
     },
 
     // ==========================================
@@ -521,6 +744,43 @@ class AppLocalizations {
       'passwordRequired':
           'Le mot de passe doit comporter au moins 6 caractères',
       'invalidEmail': 'Veuillez saisir une adresse e-mail valide',
+      // Distance mode, visual notes & home widget
+      'distanceTitle': 'NOTRE DISTANCE',
+      'distanceTogether': 'Tout près',
+      'distanceLong': 'À distance',
+      'togetherHeadline': 'Même ville, même ciel',
+      'togetherRitualLabel': 'Le petit rituel de ce soir',
+      'togetherRitual1':
+          'Cuisinez ensemble une nouvelle recette, téléphones dans une autre pièce.',
+      'togetherRitual2':
+          'Faites une marche de 20 minutes et partagez ce qui vous a fait sourire aujourd\'hui.',
+      'togetherRitual3':
+          'Dansez lentement dans la cuisine sur la première chanson que vous avez aimée tous les deux.',
+      'togetherRitual4':
+          'Écrivez trois choses que vous appréciez l\'un chez l\'autre et échangez vos papiers.',
+      'togetherNextIdea': 'Autre idée',
+      'ldrPartnerTime': '{name} en ce moment',
+      'ldrSetTimezone': 'Définir le fuseau horaire',
+      'ldrUntilMeeting': 'Jusqu\'aux retrouvailles',
+      'ldrDaysLeft': '{days} jours',
+      'ldrMeetingToday': 'Aujourd\'hui ! 🎉',
+      'ldrSetMeeting': 'Choisir la date des retrouvailles',
+      'noteModeText': 'Écrire',
+      'noteModeDraw': 'Manuscrit',
+      'noteModePhoto': 'Photo',
+      'drawHint': 'Écris ou dessine avec ton doigt',
+      'drawUndo': 'Annuler',
+      'drawClear': 'Effacer',
+      'photoCamera': 'Appareil photo',
+      'photoGallery': 'Galerie',
+      'photoCaptionHint': 'Ajoute une courte légende (facultatif)',
+      'visualNoteEmpty': 'Dessine quelque chose ou choisis d\'abord une photo.',
+      'visualNoteSaveError': 'Impossible d\'enregistrer ta note. Réessaie.',
+      'photoPickError': 'Impossible d\'ouvrir la photo. Réessaie.',
+      'visualNoteSend': 'Envoyer sur son écran d\'accueil 📲',
+      'visualNoteSent': 'Envoyé ! Visible dans le widget de {name} 📲',
+      'widgetFrom': 'De {name}',
+      'widgetAddToHome': 'Ajouter le widget à l\'écran d\'accueil',
     },
 
     // ==========================================
@@ -589,6 +849,43 @@ class AppLocalizations {
       'nameRequired': 'Inserisci il tuo nome',
       'passwordRequired': 'La password deve contenere almeno 6 caratteri',
       'invalidEmail': 'Inserisci un indirizzo e-mail valido',
+      // Distance mode, visual notes & home widget
+      'distanceTitle': 'LA NOSTRA DISTANZA',
+      'distanceTogether': 'Vicini',
+      'distanceLong': 'A distanza',
+      'togetherHeadline': 'Stessa città, stesso cielo',
+      'togetherRitualLabel': 'Il piccolo rituale di stasera',
+      'togetherRitual1':
+          'Cucinate insieme una ricetta nuova, con i telefoni in un\'altra stanza.',
+      'togetherRitual2':
+          'Fate una passeggiata di 20 minuti e raccontatevi cosa vi ha fatto sorridere oggi.',
+      'togetherRitual3':
+          'Ballate lentamente in cucina sulla prima canzone che avete amato insieme.',
+      'togetherRitual4':
+          'Scrivete tre cose che apprezzate l\'uno dell\'altra e scambiatevi i bigliettini.',
+      'togetherNextIdea': 'Un\'altra idea',
+      'ldrPartnerTime': '{name} adesso',
+      'ldrSetTimezone': 'Imposta fuso orario',
+      'ldrUntilMeeting': 'Al prossimo incontro',
+      'ldrDaysLeft': '{days} giorni',
+      'ldrMeetingToday': 'Oggi! 🎉',
+      'ldrSetMeeting': 'Scegli la data dell\'incontro',
+      'noteModeText': 'Scrivi',
+      'noteModeDraw': 'A mano',
+      'noteModePhoto': 'Foto',
+      'drawHint': 'Scrivi o disegna con il dito',
+      'drawUndo': 'Annulla',
+      'drawClear': 'Cancella',
+      'photoCamera': 'Fotocamera',
+      'photoGallery': 'Galleria',
+      'photoCaptionHint': 'Aggiungi una breve didascalia (facoltativa)',
+      'visualNoteEmpty': 'Prima disegna qualcosa o scegli una foto.',
+      'visualNoteSaveError': 'Impossibile salvare la nota. Riprova.',
+      'photoPickError': 'Impossibile aprire la foto. Riprova.',
+      'visualNoteSend': 'Invia alla sua schermata Home 📲',
+      'visualNoteSent': 'Inviato! Comparirà nel widget di {name} 📲',
+      'widgetFrom': 'Da {name}',
+      'widgetAddToHome': 'Aggiungi il widget alla schermata Home',
     },
   };
 
@@ -599,6 +896,16 @@ class AppLocalizations {
   }
 
   String t(String key) => translate(key);
+
+  bool hasKey(String key) =>
+      _localizedValues[locale.languageCode]?.containsKey(key) ?? false;
+
+  /// Translates [key] and fills `{placeholder}` tokens from [args].
+  String format(String key, Map<String, String> args) {
+    var text = translate(key);
+    args.forEach((name, value) => text = text.replaceAll('{$name}', value));
+    return text;
+  }
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,14 @@
 import 'user_model.dart';
 
+/// Whether the couple lives close by or in a long-distance relationship.
+enum DistanceMode {
+  together,
+  longDistance;
+
+  static DistanceMode fromName(String? name) =>
+      values.where((m) => m.name == name).firstOrNull ?? together;
+}
+
 class CoupleModel {
   final String id;
   final UserModel partner1;
@@ -10,6 +19,11 @@ class CoupleModel {
   final DateTime? streakLastMaintained;
   final bool isLinked;
   final bool isPremium;
+  final DistanceMode distanceMode;
+  final DateTime? nextMeetingDate;
+
+  /// Partner's UTC offset in minutes, used for the long-distance clock.
+  final int? partnerUtcOffsetMinutes;
 
   const CoupleModel({
     required this.id,
@@ -21,6 +35,9 @@ class CoupleModel {
     this.streakLastMaintained,
     this.isLinked = true,
     this.isPremium = false,
+    this.distanceMode = DistanceMode.together,
+    this.nextMeetingDate,
+    this.partnerUtcOffsetMinutes,
   });
 
   String get partnerNames {
@@ -40,6 +57,10 @@ class CoupleModel {
     DateTime? streakLastMaintained,
     bool? isLinked,
     bool? isPremium,
+    DistanceMode? distanceMode,
+    DateTime? nextMeetingDate,
+    bool clearNextMeetingDate = false,
+    int? partnerUtcOffsetMinutes,
   }) {
     return CoupleModel(
       id: id ?? this.id,
@@ -51,6 +72,13 @@ class CoupleModel {
       streakLastMaintained: streakLastMaintained ?? this.streakLastMaintained,
       isLinked: isLinked ?? this.isLinked,
       isPremium: isPremium ?? this.isPremium,
+      distanceMode: distanceMode ?? this.distanceMode,
+      nextMeetingDate:
+          clearNextMeetingDate
+              ? null
+              : (nextMeetingDate ?? this.nextMeetingDate),
+      partnerUtcOffsetMinutes:
+          partnerUtcOffsetMinutes ?? this.partnerUtcOffsetMinutes,
     );
   }
 
@@ -64,6 +92,9 @@ class CoupleModel {
     'streakLastMaintained': streakLastMaintained?.toIso8601String(),
     'isLinked': isLinked,
     'isPremium': isPremium,
+    'distanceMode': distanceMode.name,
+    'nextMeetingDate': nextMeetingDate?.toIso8601String(),
+    'partnerUtcOffsetMinutes': partnerUtcOffsetMinutes,
   };
 
   factory CoupleModel.fromJson(Map<String, dynamic> json) {
@@ -85,6 +116,13 @@ class CoupleModel {
               : null,
       isLinked: json['isLinked'] as bool? ?? true,
       isPremium: json['isPremium'] as bool? ?? false,
+      distanceMode: DistanceMode.fromName(json['distanceMode'] as String?),
+      nextMeetingDate:
+          json['nextMeetingDate'] != null
+              ? DateTime.tryParse(json['nextMeetingDate'] as String)
+              : null,
+      partnerUtcOffsetMinutes:
+          (json['partnerUtcOffsetMinutes'] as num?)?.toInt(),
     );
   }
 
@@ -101,7 +139,10 @@ class CoupleModel {
           connectionStreak == other.connectionStreak &&
           streakLastMaintained == other.streakLastMaintained &&
           isLinked == other.isLinked &&
-          isPremium == other.isPremium;
+          isPremium == other.isPremium &&
+          distanceMode == other.distanceMode &&
+          nextMeetingDate == other.nextMeetingDate &&
+          partnerUtcOffsetMinutes == other.partnerUtcOffsetMinutes;
 
   @override
   int get hashCode =>
@@ -113,5 +154,8 @@ class CoupleModel {
       connectionStreak.hashCode ^
       streakLastMaintained.hashCode ^
       isLinked.hashCode ^
-      isPremium.hashCode;
+      isPremium.hashCode ^
+      distanceMode.hashCode ^
+      nextMeetingDate.hashCode ^
+      partnerUtcOffsetMinutes.hashCode;
 }

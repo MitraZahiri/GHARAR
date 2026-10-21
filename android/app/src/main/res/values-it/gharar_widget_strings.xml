@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_empty">Ancora nessun biglietto d\'amore</string>
+    <string name="widget_description">L\'ultimo biglietto scritto a mano o foto del tuo partner</string>
+    <string name="widget_image_description">Biglietto d\'amore dal tuo partner</string>
+</resources>

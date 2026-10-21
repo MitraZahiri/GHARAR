@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/utils/partner_display_name.dart';
@@ -9,6 +11,7 @@ import '../../models/love_note_model.dart';
 import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
 import 'glass_card.dart';
+import 'note_image.dart';
 import 'write_love_note_modal.dart';
 
 class LoveNoteCard extends StatelessWidget {
@@ -193,6 +196,30 @@ class LoveNoteCard extends StatelessWidget {
               },
             ),
           ],
+
+          if (defaultTargetPlatform == TargetPlatform.android)
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton.icon(
+                icon: const Icon(Icons.widgets_rounded, size: 16),
+                label: Text(
+                  AppLocalizations(
+                    context.select<AppStateProvider, Locale>((p) => p.locale),
+                  ).t('widgetAddToHome'),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.champagneGold,
+                  minimumSize: const Size(48, 48),
+                ),
+                onPressed:
+                    () =>
+                        context.read<AppStateProvider>().requestPinHomeWidget(),
+              ),
+            ),
         ],
       ),
     );
@@ -379,16 +406,26 @@ class _OpenedPostItNote extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // Note message text
-          Text(
-            note.text,
-            style: TextStyle(
-              color: paper.textColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              height: 1.45,
+          if (note.hasImage) ...[
+            NoteImage(
+              path: note.imagePath!,
+              isPhoto: note.kind == LoveNoteKind.photo,
+              semanticLabel: note.text.isEmpty ? note.emoji : note.text,
             ),
-          ),
+            if (note.text.isNotEmpty) const SizedBox(height: 10),
+          ],
+
+          // Note message text
+          if (note.text.isNotEmpty)
+            Text(
+              note.text,
+              style: TextStyle(
+                color: paper.textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                height: 1.45,
+              ),
+            ),
 
           const SizedBox(height: 14),
 
@@ -473,25 +510,35 @@ class _PendingSentNoteView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFBF0EF),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              '"${note.text}"',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Color(0xFF4A1E24),
-                fontStyle: FontStyle.italic,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+          if (note.hasImage)
+            SizedBox(
+              width: 120,
+              child: NoteImage(
+                path: note.imagePath!,
+                isPhoto: note.kind == LoveNoteKind.photo,
+                semanticLabel: note.text.isEmpty ? note.emoji : note.text,
+              ),
+            )
+          else
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFBF0EF),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '"${note.text}"',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Color(0xFF4A1E24),
+                  fontStyle: FontStyle.italic,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

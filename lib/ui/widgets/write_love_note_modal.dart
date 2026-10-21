@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/utils/partner_display_name.dart';
+import '../../models/love_note_model.dart';
 import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
 import 'gradient_button.dart';
+import 'handwriting_canvas.dart';
+import 'note_image.dart';
 
 class NotePaperOption {
   final String key;
@@ -95,8 +101,14 @@ class WriteLoveNoteModal extends StatefulWidget {
 
 class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
   final TextEditingController _controller = TextEditingController();
+  final HandwritingController _ink = HandwritingController();
   String _selectedPaperKey = 'rose';
   String _selectedEmoji = '💌';
+  LoveNoteKind _mode = LoveNoteKind.text;
+  int _inkIndex = 0;
+  Size _canvasSize = const Size(320, 220);
+  String? _photoPath;
+  bool _isSending = false;
 
   final List<String> _emojis = ['💌', '💖', '☕', '☀️', '🫂', '🕊️', '🍰', '✨'];
 
@@ -117,7 +129,100 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
   @override
   void dispose() {
     _controller.dispose();
+    _ink.dispose();
     super.dispose();
+  }
+
+  AppLocalizations get _loc =>
+      AppLocalizations(context.read<AppStateProvider>().locale);
+
+  List<Color> _inkPalette(NotePaperOption paper) => [
+    paper.textColor,
+    AppColors.terracotta,
+    AppColors.earthSlate,
+  ];
+
+  void _selectPaper(String key) {
+    setState(() => _selectedPaperKey = key);
+    _ink.inkColor = _inkPalette(getPaperOption(key))[_inkIndex];
+  }
+
+  void _showMessage(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        content: Text(text),
+      ),
+    );
+  }
+
+  Future<void> _pickPhoto(ImageSource source) async {
+    try {
+      final file = await ImagePicker().pickImage(
+        source: source,
+        maxWidth: 1600,
+        imageQuality: 85,
+      );
+      if (file != null && mounted) setState(() => _photoPath = file.path);
+    } on PlatformException {
+      if (mounted) _showMessage(_loc.t('photoPickError'));
+    }
+  }
+
+  Future<void> _onSend(UserModel partner) async {
+    if (_mode == LoveNoteKind.text) {
+      _onSaveNote(partner);
+      return;
+    }
+    final loc = _loc;
+    final provider = context.read<AppStateProvider>();
+    final paper = getPaperOption(_selectedPaperKey);
+    final photoPath = _photoPath;
+    if ((_mode == LoveNoteKind.drawing && _ink.isEmpty) ||
+        (_mode == LoveNoteKind.photo && photoPath == null)) {
+      _showMessage(loc.t('visualNoteEmpty'));
+      return;
+    }
+
+    setState(() => _isSending = true);
+    final posted = await provider.postVisualNote(
+      kind: _mode,
+      imageBytes:
+          _mode == LoveNoteKind.drawing
+              ? await _ink.toPngBytes(
+                _canvasSize,
+                background: paper.backgroundColor,
+              )
+              : null,
+      sourceImagePath: _mode == LoveNoteKind.photo ? photoPath : null,
+      caption: _controller.text,
+      paperColor: _selectedPaperKey,
+      emoji: _selectedEmoji,
+    );
+    if (!mounted) return;
+    if (!posted) {
+      setState(() => _isSending = false);
+      _showMessage(loc.t('visualNoteSaveError'));
+      return;
+    }
+
+    HapticFeedback.lightImpact();
+    final messenger = ScaffoldMessenger.of(context);
+    Navigator.of(context).pop();
+    messenger.showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.deepBurgundy,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        content: Text(
+          loc.format('visualNoteSent', {
+            'name': partnerDisplayName(partner.name, isTurkish: widget.isTr),
+          }),
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
   }
 
   void _onSaveNote(UserModel partner) {
@@ -178,6 +283,9 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
     );
     final selectedPaper = getPaperOption(_selectedPaperKey);
     final prompts = widget.isTr ? _quickPromptsTr : _quickPromptsEn;
+    final loc = AppLocalizations(
+      context.select<AppStateProvider, Locale>((p) => p.locale),
+    );
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -245,91 +353,135 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
 
             const SizedBox(height: 16),
 
-            // Interactive Note Canvas Preview
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: selectedPaper.backgroundColor,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: selectedPaper.borderColor,
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            _selectedEmoji,
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            widget.isTr
-                                ? 'Senden ${partner.name}’e Not'
-                                : 'From You to ${partner.name}',
-                            style: TextStyle(
-                              color: selectedPaper.textColor.withValues(
-                                alpha: 0.7,
-                              ),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Icon(
-                        Icons.push_pin_rounded,
-                        size: 16,
-                        color: AppColors.champagneGold,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: _controller,
-                    maxLines: 4,
-                    maxLength: 240,
-                    style: TextStyle(
-                      color: selectedPaper.textColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      height: 1.4,
-                    ),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      counterStyle: TextStyle(
-                        color: selectedPaper.textColor.withValues(alpha: 0.6),
-                        fontSize: 10,
-                      ),
-                      hintText:
-                          widget.isTr
-                              ? 'Gününün güzel geçmesi için sıcacık bir şeyler yaz...'
-                              : 'Write something heartfelt to make them smile today...',
-                      hintStyle: TextStyle(
-                        color: selectedPaper.textColor.withValues(alpha: 0.45),
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            _NoteModeSelector(
+              mode: _mode,
+              isDark: widget.isDark,
+              loc: loc,
+              onChanged: (mode) => setState(() => _mode = mode),
             ),
+
+            const SizedBox(height: 12),
+
+            // Interactive Note Canvas Preview
+            if (_mode == LoveNoteKind.text)
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: selectedPaper.backgroundColor,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: selectedPaper.borderColor,
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              _selectedEmoji,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              widget.isTr
+                                  ? 'Senden ${partner.name}’e Not'
+                                  : 'From You to ${partner.name}',
+                              style: TextStyle(
+                                color: selectedPaper.textColor.withValues(
+                                  alpha: 0.7,
+                                ),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Icon(
+                          Icons.push_pin_rounded,
+                          size: 16,
+                          color: AppColors.champagneGold,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _controller,
+                      maxLines: 4,
+                      maxLength: 240,
+                      style: TextStyle(
+                        color: selectedPaper.textColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                      ),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        counterStyle: TextStyle(
+                          color: selectedPaper.textColor.withValues(alpha: 0.6),
+                          fontSize: 10,
+                        ),
+                        hintText:
+                            widget.isTr
+                                ? 'Gününün güzel geçmesi için sıcacık bir şeyler yaz...'
+                                : 'Write something heartfelt to make them smile today...',
+                        hintStyle: TextStyle(
+                          color: selectedPaper.textColor.withValues(
+                            alpha: 0.45,
+                          ),
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else ...[
+              if (_mode == LoveNoteKind.drawing)
+                _DrawingPad(
+                  controller: _ink,
+                  paper: selectedPaper,
+                  palette: _inkPalette(selectedPaper),
+                  inkIndex: _inkIndex,
+                  loc: loc,
+                  onInkSelected: (index) {
+                    setState(() => _inkIndex = index);
+                    _ink.inkColor = _inkPalette(selectedPaper)[index];
+                  },
+                  onSizeChanged: (size) => _canvasSize = size,
+                )
+              else
+                _PhotoPad(
+                  photoPath: _photoPath,
+                  paper: selectedPaper,
+                  isDark: widget.isDark,
+                  loc: loc,
+                  onPick: _pickPhoto,
+                ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _controller,
+                maxLength: 120,
+                decoration: InputDecoration(
+                  hintText: loc.t('photoCaptionHint'),
+                  isDense: true,
+                ),
+              ),
+            ],
 
             const SizedBox(height: 12),
 
@@ -353,7 +505,7 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
 
                   return InkWell(
                     borderRadius: BorderRadius.circular(10),
-                    onTap: () => setState(() => _selectedPaperKey = paper.key),
+                    onTap: () => _selectPaper(paper.key),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -476,14 +628,309 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
             // Submit Button
             GradientButton(
               text:
-                  widget.isTr
+                  _mode != LoveNoteKind.text
+                      ? loc.t('visualNoteSend')
+                      : widget.isTr
                       ? 'Ana Sayfasına İliştir 📌 (Açtığında Görsün)'
                       : 'Pin to Main Page 📌 (Will see upon unlock)',
               gradient: AppColors.sunsetGold,
-              onPressed: () => _onSaveNote(partner),
+              isLoading: _isSending,
+              onPressed: _isSending ? null : () => _onSend(partner),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _NoteModeSelector extends StatelessWidget {
+  final LoveNoteKind mode;
+  final bool isDark;
+  final AppLocalizations loc;
+  final ValueChanged<LoveNoteKind> onChanged;
+
+  const _NoteModeSelector({
+    required this.mode,
+    required this.isDark,
+    required this.loc,
+    required this.onChanged,
+  });
+
+  static const _icons = {
+    LoveNoteKind.text: Icons.notes_rounded,
+    LoveNoteKind.drawing: Icons.gesture_rounded,
+    LoveNoteKind.photo: Icons.photo_camera_rounded,
+  };
+
+  static const _labelKeys = {
+    LoveNoteKind.text: 'noteModeText',
+    LoveNoteKind.drawing: 'noteModeDraw',
+    LoveNoteKind.photo: 'noteModePhoto',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (final kind in LoveNoteKind.values) ...[
+          if (kind != LoveNoteKind.values.first) const SizedBox(width: 8),
+          Expanded(
+            child: Semantics(
+              button: true,
+              selected: kind == mode,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(14),
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  onChanged(kind);
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  constraints: const BoxConstraints(minHeight: 48),
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    gradient: kind == mode ? AppColors.sunsetGold : null,
+                    color:
+                        kind == mode
+                            ? null
+                            : (isDark
+                                ? AppColors.darkCardElevated
+                                : AppColors.lightBackground),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color:
+                          kind == mode
+                              ? Colors.transparent
+                              : (isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        _icons[kind],
+                        size: 16,
+                        color:
+                            kind == mode
+                                ? Colors.white
+                                : AppColors.champagneGold,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          loc.t(_labelKeys[kind]!),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.bodySmall(
+                            isDark: isDark,
+                          ).copyWith(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                            color: kind == mode ? Colors.white : null,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _DrawingPad extends StatelessWidget {
+  final HandwritingController controller;
+  final NotePaperOption paper;
+  final List<Color> palette;
+  final int inkIndex;
+  final AppLocalizations loc;
+  final ValueChanged<int> onInkSelected;
+  final ValueChanged<Size> onSizeChanged;
+
+  const _DrawingPad({
+    required this.controller,
+    required this.paper,
+    required this.palette,
+    required this.inkIndex,
+    required this.loc,
+    required this.onInkSelected,
+    required this.onSizeChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: paper.backgroundColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: paper.borderColor, width: 1.5),
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 220,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                onSizeChanged(constraints.biggest);
+                return Stack(
+                  children: [
+                    Positioned.fill(
+                      child: ListenableBuilder(
+                        listenable: controller,
+                        builder:
+                            (context, _) =>
+                                controller.isEmpty
+                                    ? Center(
+                                      child: Text(
+                                        loc.t('drawHint'),
+                                        style: TextStyle(
+                                          color: paper.textColor.withValues(
+                                            alpha: 0.4,
+                                          ),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    )
+                                    : const SizedBox.shrink(),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: HandwritingCanvas(
+                        controller: controller,
+                        semanticLabel: loc.t('drawHint'),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          Divider(height: 1, color: paper.borderColor),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Row(
+              children: [
+                for (var i = 0; i < palette.length; i++)
+                  Semantics(
+                    button: true,
+                    selected: i == inkIndex,
+                    child: InkResponse(
+                      radius: 24,
+                      onTap: () => onInkSelected(i),
+                      child: SizedBox(
+                        width: 44,
+                        height: 48,
+                        child: Center(
+                          child: Container(
+                            width: i == inkIndex ? 24 : 18,
+                            height: i == inkIndex ? 24 : 18,
+                            decoration: BoxDecoration(
+                              color: palette[i],
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColors.champagneGold,
+                                width: i == inkIndex ? 2 : 0.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                const Spacer(),
+                IconButton(
+                  tooltip: loc.t('drawUndo'),
+                  icon: Icon(Icons.undo_rounded, color: paper.textColor),
+                  onPressed: controller.undo,
+                ),
+                IconButton(
+                  tooltip: loc.t('drawClear'),
+                  icon: Icon(
+                    Icons.delete_sweep_rounded,
+                    color: paper.textColor,
+                  ),
+                  onPressed: controller.clear,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PhotoPad extends StatelessWidget {
+  final String? photoPath;
+  final NotePaperOption paper;
+  final bool isDark;
+  final AppLocalizations loc;
+  final ValueChanged<ImageSource> onPick;
+
+  const _PhotoPad({
+    required this.photoPath,
+    required this.paper,
+    required this.isDark,
+    required this.loc,
+    required this.onPick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final path = photoPath;
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: paper.backgroundColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: paper.borderColor, width: 1.5),
+      ),
+      child: Column(
+        children: [
+          if (path != null) ...[
+            NoteImage(
+              path: path,
+              isPhoto: true,
+              semanticLabel: loc.t('noteModePhoto'),
+            ),
+            const SizedBox(height: 10),
+          ],
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.photo_camera_rounded, size: 18),
+                  label: Text(loc.t('photoCamera')),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: paper.textColor,
+                    minimumSize: const Size(0, 48),
+                  ),
+                  onPressed: () => onPick(ImageSource.camera),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.photo_library_rounded, size: 18),
+                  label: Text(loc.t('photoGallery')),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: paper.textColor,
+                    minimumSize: const Size(0, 48),
+                  ),
+                  onPressed: () => onPick(ImageSource.gallery),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

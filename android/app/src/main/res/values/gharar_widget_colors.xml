@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mirrors AppColors: warm parchment, terracotta and ink -->
+    <color name="gharar_widget_background">#FAF4EB</color>
+    <color name="gharar_widget_border">#E5DAC7</color>
+    <color name="gharar_widget_title">#A33D1A</color>
+    <color name="gharar_widget_text">#252227</color>
+</resources>

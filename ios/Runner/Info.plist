@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>GHARAR uses the camera so you can send a photo love note to your partner.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>GHARAR lets you pick a photo from your library to send as a love note.</string>
 </dict>
 </plist>

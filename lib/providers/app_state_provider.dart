@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/couple_model.dart';
@@ -12,6 +14,10 @@ import '../models/special_date_model.dart';
 import '../models/ai_message_model.dart';
 import '../models/love_note_model.dart';
 import '../core/localization/app_language.dart';
+import '../core/localization/app_localizations.dart';
+import '../core/utils/partner_display_name.dart';
+import '../services/home_widget_service.dart';
+import '../services/note_media_service.dart';
 import '../services/storage_service.dart';
 import '../services/seed_data_service.dart';
 import '../services/ai_companion_service.dart';
@@ -20,6 +26,8 @@ import '../services/auth_service.dart';
 class AppStateProvider extends ChangeNotifier {
   final StorageService _storage;
   final AuthService _authService;
+  final NoteMediaService _mediaService;
+  final HomeWidgetService _homeWidgetService;
 
   UserModel? _currentUser;
   CoupleModel? _couple;
@@ -54,8 +62,14 @@ class AppStateProvider extends ChangeNotifier {
 
   bool _isGeneratingAI = false;
 
-  AppStateProvider(this._storage, {AuthService? authService})
-    : _authService = authService ?? AuthService() {
+  AppStateProvider(
+    this._storage, {
+    AuthService? authService,
+    NoteMediaService? mediaService,
+    HomeWidgetService? homeWidgetService,
+  }) : _authService = authService ?? AuthService(),
+       _mediaService = mediaService ?? NoteMediaService(),
+       _homeWidgetService = homeWidgetService ?? HomeWidgetService() {
     _loadFromStorage();
   }
 
@@ -135,6 +149,52 @@ class AppStateProvider extends ChangeNotifier {
   }
 
   bool get isPartnerLinked => _couple?.isLinked ?? false;
+
+  // Distance Mode (close by vs. long distance)
+  DistanceMode get distanceMode =>
+      _couple?.distanceMode ?? DistanceMode.together;
+  int? get partnerUtcOffsetMinutes => _couple?.partnerUtcOffsetMinutes;
+  DateTime? get nextMeetingDate => _couple?.nextMeetingDate;
+
+  /// Calendar days until the reunion; null when unset or already past.
+  int? daysUntilNextMeeting({DateTime? now}) {
+    final meeting = _couple?.nextMeetingDate;
+    if (meeting == null) return null;
+    final today = DateUtils.dateOnly(now ?? DateTime.now());
+    final days = DateUtils.dateOnly(meeting).difference(today).inDays;
+    return days < 0 ? null : days;
+  }
+
+  /// The partner's wall-clock time, or null until their offset is set.
+  DateTime? partnerLocalTime({DateTime? nowUtc}) {
+    final offset = _couple?.partnerUtcOffsetMinutes;
+    if (offset == null) return null;
+    return (nowUtc ?? DateTime.now().toUtc()).add(Duration(minutes: offset));
+  }
+
+  void setDistanceMode(DistanceMode mode) {
+    _updateCouple((c) => c.copyWith(distanceMode: mode));
+  }
+
+  void setNextMeetingDate(DateTime? date) {
+    _updateCouple(
+      (c) =>
+          date == null
+              ? c.copyWith(clearNextMeetingDate: true)
+              : c.copyWith(nextMeetingDate: date),
+    );
+  }
+
+  void setPartnerUtcOffset(int minutes) {
+    _updateCouple((c) => c.copyWith(partnerUtcOffsetMinutes: minutes));
+  }
+
+  void _updateCouple(CoupleModel Function(CoupleModel) update) {
+    if (_couple == null) return;
+    _couple = update(_couple!);
+    _storage.saveCouple(_couple!);
+    notifyListeners();
+  }
 
   UserModel get activePartner {
     if (_couple == null) {
@@ -257,9 +317,79 @@ class AppStateProvider extends ChangeNotifier {
       isRead: false,
     );
 
+    _addLoveNote(note);
+  }
+
+  /// Posts a handwritten drawing ([imageBytes]) or a photo
+  /// ([sourceImagePath]) as a love note. Returns false when the image cannot
+  /// be stored; no note is added in that case.
+  Future<bool> postVisualNote({
+    required LoveNoteKind kind,
+    Uint8List? imageBytes,
+    String? sourceImagePath,
+    String caption = '',
+    String paperColor = 'rose',
+    String emoji = '💌',
+  }) async {
+    assert(kind != LoveNoteKind.text, 'Use postLoveNote for text notes');
+    if (imageBytes == null && sourceImagePath == null) return false;
+    final String imagePath;
+    try {
+      imagePath =
+          imageBytes != null
+              ? await _mediaService.saveBytes(imageBytes, extension: 'png')
+              : await _mediaService.importFile(sourceImagePath!);
+    } on NoteMediaException {
+      return false;
+    }
+
+    _addLoveNote(
+      LoveNoteModel(
+        id: 'note_${DateTime.now().millisecondsSinceEpoch}',
+        senderId: activePartner.id,
+        senderName: activePartner.name,
+        receiverId: otherPartner.id,
+        text: caption.trim(),
+        paperColor: paperColor,
+        emoji: emoji,
+        createdAt: DateTime.now(),
+        kind: kind,
+        imagePath: imagePath,
+      ),
+    );
+    return true;
+  }
+
+  /// Asks the launcher to pin the GHARAR note widget (Android only).
+  Future<bool> requestPinHomeWidget() => _homeWidgetService.requestPin();
+
+  void _addLoveNote(LoveNoteModel note) {
     _loveNotes.insert(0, note);
     _storage.saveLoveNotes(_loveNotes);
     notifyListeners();
+    unawaited(_syncHomeWidget());
+  }
+
+  /// Mirrors the newest note received by this device's owner to the
+  /// home-screen widget, or clears the widget when there is none.
+  Future<void> _syncHomeWidget() {
+    final ownerId = _currentUser?.id;
+    final received =
+        _loveNotes.where((n) => n.receiverId == ownerId).toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    if (received.isEmpty) return _homeWidgetService.clear();
+
+    final note = received.first;
+    final loc = AppLocalizations(_locale);
+    final sender = partnerDisplayName(note.senderName, isTurkish: isTurkish);
+    return _homeWidgetService.showNote(
+      HomeWidgetNote(
+        senderLine: loc.format('widgetFrom', {'name': sender}),
+        emoji: note.emoji,
+        caption: note.text.isEmpty ? null : note.text,
+        imagePath: note.hasImage ? note.imagePath : null,
+      ),
+    );
   }
 
   void markLoveNoteAsRead(String noteId) {
@@ -274,10 +404,15 @@ class AppStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteLoveNote(String noteId) {
+  Future<void> deleteLoveNote(String noteId) async {
+    final note = _loveNotes.where((n) => n.id == noteId).firstOrNull;
+    if (note == null) return;
     _loveNotes.removeWhere((n) => n.id == noteId);
     _storage.saveLoveNotes(_loveNotes);
     notifyListeners();
+    final imagePath = note.imagePath;
+    if (imagePath != null) await _mediaService.delete(imagePath);
+    await _syncHomeWidget();
   }
 
   void simulatePartnerLoveNote({
@@ -302,9 +437,7 @@ class AppStateProvider extends ChangeNotifier {
       isRead: false,
     );
 
-    _loveNotes.insert(0, note);
-    _storage.saveLoveNotes(_loveNotes);
-    notifyListeners();
+    _addLoveNote(note);
   }
 
   void setLocale(Locale loc) {
@@ -696,6 +829,7 @@ class AppStateProvider extends ChangeNotifier {
         streakLastMaintained: _couple!.streakLastMaintained,
         isLinked: false,
         isPremium: _couple!.isPremium,
+        distanceMode: _couple!.distanceMode,
       );
       _storage.saveCouple(_couple!);
       notifyListeners();
@@ -860,6 +994,7 @@ class AppStateProvider extends ChangeNotifier {
     _lastNudgeMessage = null;
     _loveNotes = [];
     _storage.setIsAuthenticated(false);
+    await _homeWidgetService.clear();
     await _authService.signOut();
     notifyListeners();
   }
