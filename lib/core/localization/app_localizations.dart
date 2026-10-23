@@ -142,6 +142,13 @@ class AppLocalizations {
           'Sent! It will appear on {name}\'s home screen widget 📲',
       'widgetFrom': 'From {name}',
       'widgetAddToHome': 'Add widget to home screen',
+      // Navigation (3 tabs)
+      'navToday': 'Today',
+      'navExplore': 'Explore',
+      'navUs': 'Us',
+      'exploreGames': 'Games',
+      'exploreDates': 'Dates',
+      'exploreMemories': 'Memories',
     },
 
     // ==========================================
@@ -255,6 +262,13 @@ class AppLocalizations {
       'visualNoteSent': 'Gönderildi! {name} ana ekran widget’ında görecek 📲',
       'widgetFrom': 'Kimden: {name}',
       'widgetAddToHome': 'Widget’ı ana ekrana ekle',
+      // Navigation (3 tabs)
+      'navToday': 'Bugün',
+      'navExplore': 'Keşfet',
+      'navUs': 'Biz',
+      'exploreGames': 'Oyunlar',
+      'exploreDates': 'Randevu',
+      'exploreMemories': 'Anılar',
     },
 
     // ==========================================
@@ -358,6 +372,13 @@ class AppLocalizations {
           'تم الإرسال! ستظهر في أداة {name} على الشاشة الرئيسية 📲',
       'widgetFrom': 'من {name}',
       'widgetAddToHome': 'أضف الأداة إلى الشاشة الرئيسية',
+      // Navigation (3 tabs)
+      'navToday': 'اليوم',
+      'navExplore': 'اكتشف',
+      'navUs': 'نحن',
+      'exploreGames': 'ألعاب',
+      'exploreDates': 'مواعيد',
+      'exploreMemories': 'ذكريات',
     },
 
     // ==========================================
@@ -463,6 +484,13 @@ class AppLocalizations {
       'visualNoteSent': 'ارسال شد! در ویجت صفحه‌ی اصلی {name} دیده می‌شود 📲',
       'widgetFrom': 'از طرف {name}',
       'widgetAddToHome': 'افزودن ویجت به صفحه‌ی اصلی',
+      // Navigation (3 tabs)
+      'navToday': 'امروز',
+      'navExplore': 'کاوش',
+      'navUs': 'ما',
+      'exploreGames': 'بازی‌ها',
+      'exploreDates': 'قرارها',
+      'exploreMemories': 'خاطره‌ها',
     },
 
     // ==========================================
@@ -570,6 +598,13 @@ class AppLocalizations {
       'visualNoteSent': 'Gesendet! Es erscheint im Widget von {name} 📲',
       'widgetFrom': 'Von {name}',
       'widgetAddToHome': 'Widget zum Startbildschirm hinzufügen',
+      // Navigation (3 tabs)
+      'navToday': 'Heute',
+      'navExplore': 'Entdecken',
+      'navUs': 'Wir',
+      'exploreGames': 'Spiele',
+      'exploreDates': 'Dates',
+      'exploreMemories': 'Erinnerungen',
     },
 
     // ==========================================
@@ -675,6 +710,13 @@ class AppLocalizations {
       'visualNoteSent': '¡Enviado! Aparecerá en el widget de {name} 📲',
       'widgetFrom': 'De {name}',
       'widgetAddToHome': 'Añadir widget a la pantalla de inicio',
+      // Navigation (3 tabs)
+      'navToday': 'Hoy',
+      'navExplore': 'Explorar',
+      'navUs': 'Nosotros',
+      'exploreGames': 'Juegos',
+      'exploreDates': 'Citas',
+      'exploreMemories': 'Recuerdos',
     },
 
     // ==========================================
@@ -781,6 +823,13 @@ class AppLocalizations {
       'visualNoteSent': 'Envoyé ! Visible dans le widget de {name} 📲',
       'widgetFrom': 'De {name}',
       'widgetAddToHome': 'Ajouter le widget à l\'écran d\'accueil',
+      // Navigation (3 tabs)
+      'navToday': 'Aujourd\'hui',
+      'navExplore': 'Explorer',
+      'navUs': 'Nous',
+      'exploreGames': 'Jeux',
+      'exploreDates': 'Sorties',
+      'exploreMemories': 'Souvenirs',
     },
 
     // ==========================================
@@ -886,6 +935,13 @@ class AppLocalizations {
       'visualNoteSent': 'Inviato! Comparirà nel widget di {name} 📲',
       'widgetFrom': 'Da {name}',
       'widgetAddToHome': 'Aggiungi il widget alla schermata Home',
+      // Navigation (3 tabs)
+      'navToday': 'Oggi',
+      'navExplore': 'Esplora',
+      'navUs': 'Noi',
+      'exploreGames': 'Giochi',
+      'exploreDates': 'Appuntamenti',
+      'exploreMemories': 'Ricordi',
     },
   };
 

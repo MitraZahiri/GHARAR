@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../widgets/responsive_wrapper.dart';
 import '../../providers/app_state_provider.dart';
 import 'home/home_dashboard_screen.dart';
-import 'discover/discover_hub_screen.dart';
-import 'activities/activities_explorer_screen.dart';
-import 'memories/memories_hub_screen.dart';
+import 'explore/explore_screen.dart';
 import 'profile/profile_settings_screen.dart';
 
 class MainNavigationShell extends StatefulWidget {
@@ -21,16 +20,16 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
 
   final List<Widget> _screens = const [
     HomeDashboardScreen(),
-    DiscoverHubScreen(),
-    ActivitiesExplorerScreen(),
-    MemoriesHubScreen(),
+    ExploreScreen(),
     ProfileSettingsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
-    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
+    final loc = AppLocalizations(
+      context.select<AppStateProvider, Locale>((p) => p.locale),
+    );
 
     return ResponsiveWrapper(
       child: Scaffold(
@@ -79,27 +78,17 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.favorite_border_rounded),
                   activeIcon: const Icon(Icons.favorite_rounded),
-                  label: isTr ? 'Bağlantı' : 'Home',
+                  label: loc.t('navToday'),
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.explore_outlined),
                   activeIcon: const Icon(Icons.explore_rounded),
-                  label: isTr ? 'Keşfet' : 'Discover',
+                  label: loc.t('navExplore'),
                 ),
                 BottomNavigationBarItem(
-                  icon: const Icon(Icons.celebration_outlined),
-                  activeIcon: const Icon(Icons.celebration_rounded),
-                  label: isTr ? 'Randevu' : 'Activities',
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.auto_stories_outlined),
-                  activeIcon: const Icon(Icons.auto_stories_rounded),
-                  label: isTr ? 'Anılar' : 'Memories',
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.person_outline_rounded),
-                  activeIcon: const Icon(Icons.person_rounded),
-                  label: isTr ? 'Çiftimiz' : 'Profile',
+                  icon: const Icon(Icons.people_outline_rounded),
+                  activeIcon: const Icon(Icons.people_rounded),
+                  label: loc.t('navUs'),
                 ),
               ],
             ),
