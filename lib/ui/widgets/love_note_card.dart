@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/utils/partner_display_name.dart';
 import '../../models/love_note_model.dart';
 import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
@@ -176,7 +175,9 @@ class LoveNoteCard extends StatelessWidget {
             // You sent a note, waiting on partner's main page
             _PendingSentNoteView(
               note: sentNote,
-              partnerName: otherPartner.name,
+              partnerName: context.read<AppStateProvider>().displayNameOf(
+                otherPartner,
+              ),
               isDark: isDark,
               isTr: isTr,
               onWriteNew: () => WriteLoveNoteModal.show(context),
@@ -187,7 +188,9 @@ class LoveNoteCard extends StatelessWidget {
           ] else ...[
             // Neither has sent a note yet
             _EmptyLoveNoteBoardView(
-              partnerName: otherPartner.name,
+              partnerName: context.read<AppStateProvider>().displayNameOf(
+                otherPartner,
+              ),
               isDark: isDark,
               isTr: isTr,
               onWrite: () => WriteLoveNoteModal.show(context),
@@ -296,8 +299,8 @@ class _UnopenedWaxSealLetter extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: Text(
                 isTr
-                    ? '${partnerDisplayName(note.senderName, isTurkish: isTr)} Sana Bir Sevgi Notu Bıraktı! 💌'
-                    : '${partnerDisplayName(note.senderName, isTurkish: isTr)} Left You a Love Note! 💌',
+                    ? '${context.read<AppStateProvider>().displayNameFor(id: note.senderId, name: note.senderName)} Sana Bir Sevgi Notu Bıraktı! 💌'
+                    : '${context.read<AppStateProvider>().displayNameFor(id: note.senderId, name: note.senderName)} Left You a Love Note! 💌',
                 style: AppTextStyles.titleMedium(
                   isDark: isDark,
                 ).copyWith(fontWeight: FontWeight.w800, fontSize: 15),
@@ -371,8 +374,8 @@ class _OpenedPostItNote extends StatelessWidget {
                     Expanded(
                       child: Text(
                         isTr
-                            ? '${partnerDisplayName(note.senderName, isTurkish: isTr)}’den Not'
-                            : 'From ${partnerDisplayName(note.senderName, isTurkish: isTr)}',
+                            ? '${context.read<AppStateProvider>().displayNameFor(id: note.senderId, name: note.senderName)}’den Not'
+                            : 'From ${context.read<AppStateProvider>().displayNameFor(id: note.senderId, name: note.senderName)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

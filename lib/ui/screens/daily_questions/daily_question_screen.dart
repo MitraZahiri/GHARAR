@@ -353,8 +353,8 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
             // Free-form Answer Input
             Text(
               isTr
-                  ? '${activePartner.name} olarak cevabınız:'
-                  : 'Your answer as ${activePartner.name}:',
+                  ? '${context.read<AppStateProvider>().displayNameOf(activePartner)} olarak cevabınız:'
+                  : 'Your answer as ${context.read<AppStateProvider>().displayNameOf(activePartner)}:',
               style: AppTextStyles.labelLarge(isDark: isDark),
             ),
             const SizedBox(height: 8),
@@ -460,8 +460,8 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                       ),
                       content: Text(
                         isTr
-                            ? 'Cevabınız kaydedildi! ${otherPartner.name} da cevaplayınca birlikte açılacak.'
-                            : 'Answer saved! Once ${otherPartner.name} answers, you can reveal together.',
+                            ? 'Cevabınız kaydedildi! ${context.read<AppStateProvider>().displayNameOf(otherPartner)} da cevaplayınca birlikte açılacak.'
+                            : 'Answer saved! Once ${context.read<AppStateProvider>().displayNameOf(otherPartner)} answers, you can reveal together.',
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -478,8 +478,8 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                 icon: const Icon(Icons.bolt_rounded, size: 18),
                 label: Text(
                   isTr
-                      ? '${otherPartner.name} Adına Cevap Simüle Et (Test)'
-                      : 'Simulate ${otherPartner.name}’s Answer (Demo)',
+                      ? '${context.read<AppStateProvider>().displayNameOf(otherPartner)} Adına Cevap Simüle Et (Test)'
+                      : 'Simulate ${context.read<AppStateProvider>().displayNameOf(otherPartner)}’s Answer (Demo)',
                 ),
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(48),
@@ -497,8 +497,8 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
                       ),
                       content: Text(
                         isTr
-                            ? '${otherPartner.name} cevabını verdi! Artık açabilirsiniz.'
-                            : '${otherPartner.name} just answered! You can now reveal.',
+                            ? '${context.read<AppStateProvider>().displayNameOf(otherPartner)} cevabını verdi! Artık açabilirsiniz.'
+                            : '${context.read<AppStateProvider>().displayNameOf(otherPartner)} just answered! You can now reveal.',
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -638,11 +638,11 @@ class PartnerStatusNoticeBox extends StatelessWidget {
             child: Text(
               hasOtherAnswered
                   ? (isTr
-                      ? '${otherPartner.name} cevabını yazdı bile! ✨ Karşılıklı okumak için şimdi yanıtlayın.'
-                      : '${otherPartner.name} has submitted their answer! ✨ Answer yours now to reveal together.')
+                      ? '${context.read<AppStateProvider>().displayNameOf(otherPartner)} cevabını yazdı bile! ✨ Karşılıklı okumak için şimdi yanıtlayın.'
+                      : '${context.read<AppStateProvider>().displayNameOf(otherPartner)} has submitted their answer! ✨ Answer yours now to reveal together.')
                   : (isTr
-                      ? '${otherPartner.name} henüz yanıtlamadı. Sizinkini hemen kaydedin, hazır olsun!'
-                      : '${otherPartner.name} is reflecting. Answer yours now so you are ready!'),
+                      ? '${context.read<AppStateProvider>().displayNameOf(otherPartner)} henüz yanıtlamadı. Sizinkini hemen kaydedin, hazır olsun!'
+                      : '${context.read<AppStateProvider>().displayNameOf(otherPartner)} is reflecting. Answer yours now so you are ready!'),
               style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                 fontWeight: FontWeight.w600,
                 color:

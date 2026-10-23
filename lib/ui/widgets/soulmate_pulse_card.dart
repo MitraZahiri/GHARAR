@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/utils/partner_display_name.dart';
 import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
 import 'glass_card.dart';
@@ -107,8 +106,8 @@ class SoulmatePulseCard extends StatelessWidget {
             Expanded(
               child: Text(
                 isTr
-                    ? '${partner.name} için sıcacık bir sevgi dokunuşu gönderildi!'
-                    : 'A warm love pulse was sent to ${partner.name}!',
+                    ? '${context.read<AppStateProvider>().displayNameOf(partner)} için sıcacık bir sevgi dokunuşu gönderildi!'
+                    : 'A warm love pulse was sent to ${context.read<AppStateProvider>().displayNameOf(partner)}!',
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
@@ -208,8 +207,8 @@ class SoulmatePulseCard extends StatelessWidget {
                         ),
                         content: Text(
                           isTr
-                              ? 'Görünüm: ${otherPartner.name} olarak değiştirildi ⇄'
-                              : 'View switched to: ${otherPartner.name} ⇄',
+                              ? 'Görünüm: ${context.read<AppStateProvider>().displayNameOf(otherPartner)} olarak değiştirildi ⇄'
+                              : 'View switched to: ${context.read<AppStateProvider>().displayNameOf(otherPartner)} ⇄',
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -269,7 +268,9 @@ class SoulmatePulseCard extends StatelessWidget {
               Expanded(
                 child: _PartnerPresenceTile(
                   isSelf: true,
-                  name: activePartner.name,
+                  name: context.read<AppStateProvider>().displayNameOf(
+                    activePartner,
+                  ),
                   avatar: activePartner.avatar,
                   moodDef: activeMood,
                   isDark: isDark,
@@ -325,7 +326,9 @@ class SoulmatePulseCard extends StatelessWidget {
               Expanded(
                 child: _PartnerPresenceTile(
                   isSelf: false,
-                  name: otherPartner.name,
+                  name: context.read<AppStateProvider>().displayNameOf(
+                    otherPartner,
+                  ),
                   avatar: otherPartner.avatar,
                   moodDef: otherMood,
                   isDark: isDark,
@@ -341,8 +344,8 @@ class SoulmatePulseCard extends StatelessWidget {
                         ),
                         content: Text(
                           isTr
-                              ? '${otherPartner.name} ruh halini güncellediğinde burada belirecek.'
-                              : '${otherPartner.name}’s mood updates will reflect here live.',
+                              ? '${context.read<AppStateProvider>().displayNameOf(otherPartner)} ruh halini güncellediğinde burada belirecek.'
+                              : '${context.read<AppStateProvider>().displayNameOf(otherPartner)}’s mood updates will reflect here live.',
                         ),
                       ),
                     );
@@ -375,11 +378,11 @@ class SoulmatePulseCard extends StatelessWidget {
                     child: Text(
                       lastNudgeSender == activePartner.id
                           ? (isTr
-                              ? '${otherPartner.name} için bir sevgi dokunuşu ilettiniz.'
-                              : 'You sent a warm love pulse to ${otherPartner.name}.')
+                              ? '${context.read<AppStateProvider>().displayNameOf(otherPartner)} için bir sevgi dokunuşu ilettiniz.'
+                              : 'You sent a warm love pulse to ${context.read<AppStateProvider>().displayNameOf(otherPartner)}.')
                           : (isTr
-                              ? '${partnerDisplayName(otherPartner.name, isTurkish: isTr)} şu an seni düşünüyor! 💓'
-                              : '${partnerDisplayName(otherPartner.name, isTurkish: isTr)} is thinking of you right now! 💓'),
+                              ? '${context.read<AppStateProvider>().displayNameOf(otherPartner)} şu an seni düşünüyor! 💓'
+                              : '${context.read<AppStateProvider>().displayNameOf(otherPartner)} is thinking of you right now! 💓'),
                       style: AppTextStyles.bodySmall(isDark: isDark).copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 11,
@@ -475,7 +478,7 @@ class _PartnerPresenceTile extends StatelessWidget {
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                isSelf ? (isTr ? '$name (Ben)' : '$name (You)') : name,
+                name,
                 maxLines: 1,
                 style: AppTextStyles.labelLarge(
                   isDark: isDark,

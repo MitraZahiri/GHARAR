@@ -170,6 +170,12 @@ class FutureAlignmentScreen extends StatelessWidget {
                 pillar: p,
                 partner1: partner1,
                 partner2: partner2,
+                partner1Name: context.read<AppStateProvider>().displayNameOf(
+                  partner1,
+                ),
+                partner2Name: context.read<AppStateProvider>().displayNameOf(
+                  partner2,
+                ),
                 isDark: isDark,
                 isTr: isTr,
               ),
@@ -187,6 +193,8 @@ class FuturePillarCard extends StatelessWidget {
   final Map<String, dynamic> pillar;
   final UserModel partner1;
   final UserModel partner2;
+  final String partner1Name;
+  final String partner2Name;
   final bool isDark;
   final bool isTr;
 
@@ -195,6 +203,8 @@ class FuturePillarCard extends StatelessWidget {
     required this.pillar,
     required this.partner1,
     required this.partner2,
+    required this.partner1Name,
+    required this.partner2Name,
     required this.isDark,
     required this.isTr,
   });
@@ -261,7 +271,7 @@ class FuturePillarCard extends StatelessWidget {
                     ).copyWith(fontSize: 13),
                     children: [
                       TextSpan(
-                        text: '${partner1.name}: ',
+                        text: '$partner1Name: ',
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextSpan(
@@ -293,7 +303,7 @@ class FuturePillarCard extends StatelessWidget {
                     ).copyWith(fontSize: 13),
                     children: [
                       TextSpan(
-                        text: '${partner2.name}: ',
+                        text: '$partner2Name: ',
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextSpan(

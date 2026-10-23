@@ -183,7 +183,7 @@ class PartnerSwitcherPill extends StatelessWidget {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 68),
               child: Text(
-                active.name,
+                context.read<AppStateProvider>().displayNameOf(active),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.bodySmall(isDark: isDark).copyWith(

@@ -48,7 +48,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('RUH HALİ & BAĞLANTI'), findsOneWidget);
-      expect(find.textContaining('Kerem (Ben)'), findsOneWidget);
+      expect(find.text('Kerem'), findsOneWidget);
       expect(find.text('Elif'), findsOneWidget);
       expect(find.text('Görünüm Değiştir'), findsOneWidget);
       expect(find.text('Dokunuş'), findsOneWidget);
@@ -67,7 +67,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(provider.activePartner.name, 'Elif');
-      expect(find.textContaining('Elif (Ben)'), findsOneWidget);
+      expect(find.text('Elif'), findsOneWidget);
       expect(find.text('Kerem'), findsOneWidget);
     });
 

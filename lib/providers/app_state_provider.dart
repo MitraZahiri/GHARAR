@@ -15,7 +15,7 @@ import '../models/ai_message_model.dart';
 import '../models/love_note_model.dart';
 import '../core/localization/app_language.dart';
 import '../core/localization/app_localizations.dart';
-import '../core/utils/partner_display_name.dart';
+import '../core/utils/person_name.dart';
 import '../services/home_widget_service.dart';
 import '../services/note_media_service.dart';
 import '../services/storage_service.dart';
@@ -201,7 +201,7 @@ class AppStateProvider extends ChangeNotifier {
       return _currentUser ??
           UserModel(
             id: 'user_1',
-            name: isTurkish ? 'Ben' : 'You',
+            name: '',
             avatar: '🌸',
             preferredLanguage: _locale.languageCode,
             relationshipStage: 'stageDating',
@@ -219,7 +219,7 @@ class AppStateProvider extends ChangeNotifier {
     if (_couple == null || _couple!.partner2 == null) {
       return UserModel(
         id: 'user_2',
-        name: isTurkish ? 'Partneriniz' : 'Partner',
+        name: '',
         avatar: '🌿',
         preferredLanguage: _locale.languageCode,
         relationshipStage: 'stageDating',
@@ -243,6 +243,7 @@ class AppStateProvider extends ChangeNotifier {
 
     _currentUser = _storage.getUser();
     _couple = _storage.getCouple();
+    _cleanStoredNames();
     _answersMap = _storage.getAnswers();
     _activities = _storage.getActivities() ?? SeedDataService.defaultActivities;
     _challenges = _storage.getChallenges() ?? SeedDataService.defaultChallenges;
@@ -266,6 +267,82 @@ class AppStateProvider extends ChangeNotifier {
       _activeViewingPartnerId = _currentUser!.id;
     }
 
+    notifyListeners();
+  }
+
+  /// Older builds saved words like "You" or "My Soulmate" as names.
+  void _cleanStoredNames() {
+    final user = _currentUser;
+    if (user != null && cleanPersonName(user.name) != user.name) {
+      _currentUser = user.copyWith(name: cleanPersonName(user.name));
+      _storage.saveUser(_currentUser!);
+    }
+    final couple = _couple;
+    if (couple == null) return;
+    final p1 = couple.partner1;
+    final p2 = couple.partner2;
+    final cleanP1 = p1.copyWith(name: cleanPersonName(p1.name));
+    final cleanP2 = p2?.copyWith(name: cleanPersonName(p2.name));
+    if (cleanP1 != p1 || cleanP2 != p2) {
+      _couple = couple.copyWith(partner1: cleanP1, partner2: cleanP2);
+      _storage.saveCouple(_couple!);
+    }
+  }
+
+  /// How a person is shown on screen. Looks the person up by [id] so a
+  /// rename also updates older notes and answers that stored [name].
+  String displayNameFor({required String id, String name = ''}) {
+    final couple = _couple;
+    final current =
+        couple == null
+            ? null
+            : [
+              couple.partner1,
+              couple.partner2,
+            ].whereType<UserModel>().where((u) => u.id == id).firstOrNull;
+    return displayPersonName(
+      current?.name ?? name,
+      isSelf: id == activePartner.id,
+      loc: AppLocalizations(_locale),
+    );
+  }
+
+  String displayNameOf(UserModel user) =>
+      displayNameFor(id: user.id, name: user.name);
+  String get activePartnerName => displayNameOf(activePartner);
+  String get otherPartnerName => displayNameOf(otherPartner);
+
+  /// "Kerem & Elif", or "You & Your Soulmate" when names are missing,
+  /// from the active partner's point of view.
+  String get coupleDisplayNames {
+    final loc = AppLocalizations(_locale);
+    final me = displayPersonName(activePartner.name, isSelf: true, loc: loc);
+    final partner = displayPersonName(
+      otherPartner.name,
+      isSelf: false,
+      loc: loc,
+    );
+    return '$me & $partner';
+  }
+
+  /// Renames the active partner and the other partner.
+  void renameCouple({required String myName, required String partnerName}) {
+    final couple = _couple;
+    if (couple == null) return;
+    final me = activePartner.copyWith(name: cleanPersonName(myName));
+    final other = otherPartner.copyWith(name: cleanPersonName(partnerName));
+    final meIsFirst = me.id == couple.partner1.id;
+    _couple = couple.copyWith(
+      partner1: meIsFirst ? me : other,
+      partner2: couple.partner2 == null ? null : (meIsFirst ? other : me),
+    );
+    _storage.saveCouple(_couple!);
+    for (final user in [me, other]) {
+      if (user.id == _currentUser?.id) {
+        _currentUser = user;
+        _storage.saveUser(user);
+      }
+    }
     notifyListeners();
   }
 
@@ -381,7 +458,7 @@ class AppStateProvider extends ChangeNotifier {
 
     final note = received.first;
     final loc = AppLocalizations(_locale);
-    final sender = partnerDisplayName(note.senderName, isTurkish: isTurkish);
+    final sender = displayPersonName(note.senderName, isSelf: false, loc: loc);
     return _homeWidgetService.showNote(
       HomeWidgetNote(
         senderLine: loc.format('widgetFrom', {'name': sender}),
@@ -463,7 +540,7 @@ class AppStateProvider extends ChangeNotifier {
     final effectiveEmail = email ?? _userEmail ?? 'user@gharar.love';
     final user = UserModel(
       id: 'user_1',
-      name: name.trim().isEmpty ? (isTurkish ? 'Ben' : 'You') : name.trim(),
+      name: cleanPersonName(name),
       avatar: avatar,
       preferredLanguage: languageCode,
       relationshipStage: relationshipStage,
@@ -498,7 +575,7 @@ class AppStateProvider extends ChangeNotifier {
     if (_couple == null) return;
     final partner = UserModel(
       id: 'user_2',
-      name: partnerName.trim().isEmpty ? 'Partner' : partnerName.trim(),
+      name: cleanPersonName(partnerName),
       avatar: avatar,
       preferredLanguage: _locale.languageCode,
       relationshipStage: _currentUser?.relationshipStage ?? 'stageDating',
@@ -848,7 +925,7 @@ class AppStateProvider extends ChangeNotifier {
                   _userEmail!.endsWith('@privaterelay.appleid.com'))
               ? _userEmail!
               : 'user.apple@privaterelay.appleid.com');
-      final name = result.displayName ?? (isTurkish ? 'Ben' : 'You');
+      final name = cleanPersonName(result.displayName);
       _setAuthenticatedUser(email: appleEmail, name: name, provider: 'apple');
       return true;
     } else if (result.isCancelled) {
@@ -863,11 +940,7 @@ class AppStateProvider extends ChangeNotifier {
                     _userEmail!.endsWith('@privaterelay.appleid.com'))
                 ? _userEmail!
                 : 'user.apple@privaterelay.appleid.com';
-        _setAuthenticatedUser(
-          email: appleEmail,
-          name: isTurkish ? 'Ben' : 'You',
-          provider: 'apple',
-        );
+        _setAuthenticatedUser(email: appleEmail, name: '', provider: 'apple');
         return true;
       }
       notifyListeners();
@@ -881,7 +954,7 @@ class AppStateProvider extends ChangeNotifier {
 
     if (result.success) {
       final googleEmail = result.email ?? 'user.google@gmail.com';
-      final name = result.displayName ?? (isTurkish ? 'Ben' : 'You');
+      final name = cleanPersonName(result.displayName);
       _setAuthenticatedUser(email: googleEmail, name: name, provider: 'google');
       return true;
     } else if (result.isCancelled) {
@@ -892,11 +965,7 @@ class AppStateProvider extends ChangeNotifier {
       if (result.errorMessage?.contains('MissingPluginException') == true ||
           result.errorMessage?.contains('channel-error') == true) {
         const googleEmail = 'user.google@gmail.com';
-        _setAuthenticatedUser(
-          email: googleEmail,
-          name: isTurkish ? 'Ben' : 'You',
-          provider: 'google',
-        );
+        _setAuthenticatedUser(email: googleEmail, name: '', provider: 'google');
         return true;
       }
       notifyListeners();
@@ -917,7 +986,7 @@ class AppStateProvider extends ChangeNotifier {
     if (_currentUser == null) {
       _currentUser = UserModel(
         id: 'user_guest_${DateTime.now().millisecondsSinceEpoch}',
-        name: isTurkish ? 'Misafir' : 'Guest',
+        name: '',
         avatar: '🌿',
         preferredLanguage: _locale.languageCode,
         relationshipStage: 'stageDating',
@@ -939,9 +1008,8 @@ class AppStateProvider extends ChangeNotifier {
     bool isRegister = true,
   }) async {
     _lastAuthError = null;
-    final defaultName = isTurkish ? 'Ben' : 'You';
-    final trimmedName =
-        name.trim().isEmpty ? (_currentUser?.name ?? defaultName) : name.trim();
+    final cleaned = cleanPersonName(name);
+    final trimmedName = cleaned.isEmpty ? (_currentUser?.name ?? '') : cleaned;
     final trimmedEmail = email.trim().toLowerCase();
     _setAuthenticatedUser(
       email: trimmedEmail,

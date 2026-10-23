@@ -149,6 +149,14 @@ class AppLocalizations {
       'exploreGames': 'Games',
       'exploreDates': 'Dates',
       'exploreMemories': 'Memories',
+      // Names
+      'nameYou': 'You',
+      'nameYourSoulmate': 'Your Soulmate',
+      'editNamesTitle': 'Our names',
+      'editNamesMine': 'Your name',
+      'editNamesPartner': 'Your partner\'s name',
+      'editNamesSave': 'Save',
+      'editNamesSaved': 'Names updated 💕',
     },
 
     // ==========================================
@@ -269,6 +277,14 @@ class AppLocalizations {
       'exploreGames': 'Oyunlar',
       'exploreDates': 'Randevu',
       'exploreMemories': 'Anılar',
+      // Names
+      'nameYou': 'Sen',
+      'nameYourSoulmate': 'Ruh Eşin',
+      'editNamesTitle': 'İsimlerimiz',
+      'editNamesMine': 'Senin adın',
+      'editNamesPartner': 'Partnerinin adı',
+      'editNamesSave': 'Kaydet',
+      'editNamesSaved': 'İsimler güncellendi 💕',
     },
 
     // ==========================================
@@ -379,6 +395,14 @@ class AppLocalizations {
       'exploreGames': 'ألعاب',
       'exploreDates': 'مواعيد',
       'exploreMemories': 'ذكريات',
+      // Names
+      'nameYou': 'أنت',
+      'nameYourSoulmate': 'توأم روحك',
+      'editNamesTitle': 'أسماؤنا',
+      'editNamesMine': 'اسمك',
+      'editNamesPartner': 'اسم شريكك',
+      'editNamesSave': 'حفظ',
+      'editNamesSaved': 'تم تحديث الأسماء 💕',
     },
 
     // ==========================================
@@ -491,6 +515,14 @@ class AppLocalizations {
       'exploreGames': 'بازی‌ها',
       'exploreDates': 'قرارها',
       'exploreMemories': 'خاطره‌ها',
+      // Names
+      'nameYou': 'تو',
+      'nameYourSoulmate': 'نیمه‌ی گمشده‌ات',
+      'editNamesTitle': 'نام‌های ما',
+      'editNamesMine': 'نام تو',
+      'editNamesPartner': 'نام همراهت',
+      'editNamesSave': 'ذخیره',
+      'editNamesSaved': 'نام‌ها به‌روز شد 💕',
     },
 
     // ==========================================
@@ -605,6 +637,14 @@ class AppLocalizations {
       'exploreGames': 'Spiele',
       'exploreDates': 'Dates',
       'exploreMemories': 'Erinnerungen',
+      // Names
+      'nameYou': 'Du',
+      'nameYourSoulmate': 'Dein Seelenverwandter',
+      'editNamesTitle': 'Unsere Namen',
+      'editNamesMine': 'Dein Name',
+      'editNamesPartner': 'Name deines Partners',
+      'editNamesSave': 'Speichern',
+      'editNamesSaved': 'Namen aktualisiert 💕',
     },
 
     // ==========================================
@@ -717,6 +757,14 @@ class AppLocalizations {
       'exploreGames': 'Juegos',
       'exploreDates': 'Citas',
       'exploreMemories': 'Recuerdos',
+      // Names
+      'nameYou': 'Tú',
+      'nameYourSoulmate': 'Tu alma gemela',
+      'editNamesTitle': 'Nuestros nombres',
+      'editNamesMine': 'Tu nombre',
+      'editNamesPartner': 'Nombre de tu pareja',
+      'editNamesSave': 'Guardar',
+      'editNamesSaved': 'Nombres actualizados 💕',
     },
 
     // ==========================================
@@ -830,6 +878,14 @@ class AppLocalizations {
       'exploreGames': 'Jeux',
       'exploreDates': 'Sorties',
       'exploreMemories': 'Souvenirs',
+      // Names
+      'nameYou': 'Toi',
+      'nameYourSoulmate': 'Ton âme sœur',
+      'editNamesTitle': 'Nos prénoms',
+      'editNamesMine': 'Ton prénom',
+      'editNamesPartner': 'Prénom de ton partenaire',
+      'editNamesSave': 'Enregistrer',
+      'editNamesSaved': 'Prénoms mis à jour 💕',
     },
 
     // ==========================================
@@ -942,6 +998,14 @@ class AppLocalizations {
       'exploreGames': 'Giochi',
       'exploreDates': 'Appuntamenti',
       'exploreMemories': 'Ricordi',
+      // Names
+      'nameYou': 'Tu',
+      'nameYourSoulmate': 'La tua anima gemella',
+      'editNamesTitle': 'I nostri nomi',
+      'editNamesMine': 'Il tuo nome',
+      'editNamesPartner': 'Nome del tuo partner',
+      'editNamesSave': 'Salva',
+      'editNamesSaved': 'Nomi aggiornati 💕',
     },
   };
 

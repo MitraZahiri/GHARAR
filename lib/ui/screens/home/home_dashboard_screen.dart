@@ -15,6 +15,7 @@ import '../onboarding/partner_invite_screen.dart';
 import '../daily_questions/answer_reveal_screen.dart';
 import '../daily_questions/daily_question_screen.dart';
 import '../../widgets/distance_mode_card.dart';
+import '../../widgets/edit_names_sheet.dart';
 import '../../widgets/soulmate_pulse_card.dart';
 import '../../widgets/love_note_card.dart';
 
@@ -85,23 +86,25 @@ class HomeDashboardScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          couple != null && couple.partner2 != null
-                              ? '${couple.partner1.name} & ${couple.partner2!.name}'
-                              : (couple != null
-                                  ? '${couple.partner1.name} & ${isTr ? "Partner Bekleniyor" : "Partner Pending"}'
-                                  : activePartner.name),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.displaySmall(
-                            isDark: isDark,
-                          ).copyWith(
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.3,
-                            fontSize:
-                                MediaQuery.sizeOf(context).width <= 360
-                                    ? 22
-                                    : 26,
+                        GestureDetector(
+                          key: const ValueKey('home-couple-names'),
+                          onTap: () => EditNamesSheet.show(context),
+                          child: Text(
+                            context.select<AppStateProvider, String>(
+                              (p) => p.coupleDisplayNames,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.displaySmall(
+                              isDark: isDark,
+                            ).copyWith(
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.3,
+                              fontSize:
+                                  MediaQuery.sizeOf(context).width <= 360
+                                      ? 22
+                                      : 26,
+                            ),
                           ),
                         ),
                         if (isPartnerLinked) const DistanceChip(),
@@ -312,7 +315,9 @@ class HomeDashboardScreen extends StatelessWidget {
                           Expanded(
                             child: MiniPartnerAvatarStatus(
                               avatar: activePartner.avatar,
-                              name: activePartner.name,
+                              name: context
+                                  .read<AppStateProvider>()
+                                  .displayNameOf(activePartner),
                               hasAnswered: activeAnswer != null,
                               isDark: isDark,
                               isTr: isTr,
@@ -322,7 +327,9 @@ class HomeDashboardScreen extends StatelessWidget {
                           Expanded(
                             child: MiniPartnerAvatarStatus(
                               avatar: otherPartner.avatar,
-                              name: otherPartner.name,
+                              name: context
+                                  .read<AppStateProvider>()
+                                  .displayNameOf(otherPartner),
                               hasAnswered: otherAnswer != null,
                               isDark: isDark,
                               isTr: isTr,
