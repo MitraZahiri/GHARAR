@@ -114,6 +114,101 @@ class DistanceModeCard extends StatelessWidget {
   }
 }
 
+/// One-line distance summary for the home header ("✈ 14:32 · 12 days").
+/// Tapping it opens the full [DistanceModeCard] in a bottom sheet.
+class DistanceChip extends StatelessWidget {
+  const DistanceChip({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
+    final loc = AppLocalizations(
+      context.select<AppStateProvider, Locale>((p) => p.locale),
+    );
+    final mode = context.select<AppStateProvider, DistanceMode>(
+      (p) => p.distanceMode,
+    );
+    final daysLeft = context.select<AppStateProvider, int?>(
+      (p) => p.daysUntilNextMeeting(),
+    );
+    final hasOffset = context.select<AppStateProvider, bool>(
+      (p) => p.partnerUtcOffsetMinutes != null,
+    );
+    final partnerTime = context.read<AppStateProvider>().partnerLocalTime();
+
+    final parts = <String>[];
+    if (mode == DistanceMode.longDistance) {
+      if (hasOffset && partnerTime != null) {
+        parts.add(DateFormat.Hm().format(partnerTime));
+      }
+      if (daysLeft != null) {
+        parts.add(
+          daysLeft == 0
+              ? loc.t('ldrMeetingToday')
+              : loc.format('ldrDaysLeft', {'days': '$daysLeft'}),
+        );
+      }
+    }
+    final label =
+        parts.isNotEmpty
+            ? parts.join(' · ')
+            : loc.t(
+              mode == DistanceMode.longDistance
+                  ? 'distanceLong'
+                  : 'distanceTogether',
+            );
+    final color = isDark ? AppColors.blushPinkDeep : AppColors.deepBurgundy;
+
+    return Semantics(
+      button: true,
+      child: InkWell(
+        key: const ValueKey('home-distance-chip'),
+        borderRadius: BorderRadius.circular(20),
+        onTap:
+            () => showModalBottomSheet<void>(
+              context: context,
+              isScrollControlled: true,
+              showDragHandle: true,
+              builder:
+                  (_) => const SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: DistanceModeCard(),
+                    ),
+                  ),
+            ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                mode == DistanceMode.longDistance
+                    ? Icons.flight_takeoff_rounded
+                    : Icons.home_rounded,
+                size: 16,
+                color: color,
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodySmall(
+                    isDark: isDark,
+                  ).copyWith(fontWeight: FontWeight.w700, color: color),
+                ),
+              ),
+              Icon(Icons.expand_more_rounded, size: 16, color: color),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _DistanceToggle extends StatelessWidget {
   final DistanceMode mode;
   final bool isDark;
