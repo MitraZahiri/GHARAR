@@ -155,7 +155,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(provider.isPartnerLinked, isTrue);
-      expect(provider.couple?.partner2?.name, equals('Ruh Eşim'));
+      // No name given yet: stored empty, shown as "Ruh Eşin".
+      expect(provider.couple?.partner2?.name, isEmpty);
+      expect(provider.otherPartnerName, 'Ruh Eşin');
     });
 
     testWidgets('Simulating partner connection immediately links couple', (

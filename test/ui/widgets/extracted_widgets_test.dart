@@ -234,6 +234,8 @@ void main() {
             pillar: pillar,
             partner1: p1,
             partner2: p2,
+            partner1Name: p1.name,
+            partner2Name: p2.name,
             isDark: false,
             isTr: true,
           ),

@@ -79,7 +79,9 @@ class ProfileSettingsScreen extends StatelessWidget {
                     children: [
                       AvatarBubble(
                         avatar: partner1.avatar,
-                        name: partner1.name,
+                        name: context.read<AppStateProvider>().displayNameOf(
+                          partner1,
+                        ),
                         isDark: isDark,
                       ),
                       Padding(
@@ -101,17 +103,30 @@ class ProfileSettingsScreen extends StatelessWidget {
                       ),
                       AvatarBubble(
                         avatar: partner2.avatar,
-                        name: partner2.name,
+                        name: context.read<AppStateProvider>().displayNameOf(
+                          partner2,
+                        ),
                         isDark: isDark,
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    '${partner1.name} & ${partner2.name}',
-                    style: AppTextStyles.displaySmall(
-                      isDark: isDark,
-                    ).copyWith(fontWeight: FontWeight.w800),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          context.select<AppStateProvider, String>(
+                            (p) => p.coupleDisplayNames,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.displaySmall(
+                            isDark: isDark,
+                          ).copyWith(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 4),
                   if (couple != null)
@@ -207,8 +222,8 @@ class ProfileSettingsScreen extends StatelessWidget {
                       children: [
                         Text(
                           isTr
-                              ? 'Şu anda ${active.name} olarak bakıyorsunuz'
-                              : 'Viewing as ${active.name}',
+                              ? 'Şu anda ${context.read<AppStateProvider>().displayNameOf(active)} olarak bakıyorsunuz'
+                              : 'Viewing as ${context.read<AppStateProvider>().displayNameOf(active)}',
                           style: AppTextStyles.titleMedium(
                             isDark: isDark,
                           ).copyWith(fontSize: 14, fontWeight: FontWeight.w700),
@@ -233,8 +248,8 @@ class ProfileSettingsScreen extends StatelessWidget {
                           duration: const Duration(milliseconds: 1000),
                           content: Text(
                             isTr
-                                ? 'Artık ${appState.activePartner.name} olarak bakıyorsunuz'
-                                : 'Now viewing as ${appState.activePartner.name}',
+                                ? 'Artık ${appState.activePartnerName} olarak bakıyorsunuz'
+                                : 'Now viewing as ${appState.activePartnerName}',
                           ),
                         ),
                       );
@@ -658,9 +673,7 @@ class ProfileSettingsScreen extends StatelessWidget {
     final provider = context.read<AppStateProvider>();
     final buffer = StringBuffer();
     buffer.writeln('=== GHARAR COUPLE JOURNAL & MEMORIES ===');
-    buffer.writeln(
-      'Couple: ${provider.couple?.partnerNames ?? (isTr ? "Siz & Partneriniz" : "You & Partner")}',
-    );
+    buffer.writeln('Couple: ${provider.coupleDisplayNames}');
     buffer.writeln('Date: ${DateTime.now()}\n');
 
     buffer.writeln('--- JOURNAL ENTRIES ---');

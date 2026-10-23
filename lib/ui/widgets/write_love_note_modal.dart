@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/utils/partner_display_name.dart';
 import '../../models/love_note_model.dart';
 import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
@@ -217,7 +216,7 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         content: Text(
           loc.format('visualNoteSent', {
-            'name': partnerDisplayName(partner.name, isTurkish: widget.isTr),
+            'name': context.read<AppStateProvider>().displayNameOf(partner),
           }),
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
@@ -265,8 +264,8 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
             Expanded(
               child: Text(
                 widget.isTr
-                    ? '${partner.name}’in ana sayfasına not iliştirildi! Telefonunu açtığında görecek 📌✨'
-                    : 'Note pinned to ${partner.name}’s main page! They’ll see it when unlocking 📌✨',
+                    ? '${context.read<AppStateProvider>().displayNameOf(partner)}’in ana sayfasına not iliştirildi! Telefonunu açtığında görecek 📌✨'
+                    : 'Note pinned to ${context.read<AppStateProvider>().displayNameOf(partner)}’s main page! They’ll see it when unlocking 📌✨',
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
@@ -331,8 +330,8 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
                     children: [
                       Text(
                         widget.isTr
-                            ? '${partner.name}’in Ana Sayfasına Not Bırak'
-                            : 'Pin a Note on ${partner.name}’s Main Page',
+                            ? '${context.read<AppStateProvider>().displayNameOf(partner)}’in Ana Sayfasına Not Bırak'
+                            : 'Pin a Note on ${context.read<AppStateProvider>().displayNameOf(partner)}’s Main Page',
                         style: AppTextStyles.titleMedium(
                           isDark: widget.isDark,
                         ).copyWith(fontWeight: FontWeight.w800),
@@ -397,8 +396,8 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
                             const SizedBox(width: 6),
                             Text(
                               widget.isTr
-                                  ? 'Senden ${partner.name}’e Not'
-                                  : 'From You to ${partner.name}',
+                                  ? 'Senden ${context.read<AppStateProvider>().displayNameOf(partner)}’e Not'
+                                  : 'From You to ${context.read<AppStateProvider>().displayNameOf(partner)}',
                               style: TextStyle(
                                 color: selectedPaper.textColor.withValues(
                                   alpha: 0.7,

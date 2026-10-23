@@ -86,11 +86,9 @@ class HomeDashboardScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          couple != null && couple.partner2 != null
-                              ? '${couple.partner1.name} & ${couple.partner2!.name}'
-                              : (couple != null
-                                  ? '${couple.partner1.name} & ${isTr ? "Partner Bekleniyor" : "Partner Pending"}'
-                                  : activePartner.name),
+                          context.select<AppStateProvider, String>(
+                            (p) => p.coupleDisplayNames,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.displaySmall(
@@ -312,7 +310,9 @@ class HomeDashboardScreen extends StatelessWidget {
                           Expanded(
                             child: MiniPartnerAvatarStatus(
                               avatar: activePartner.avatar,
-                              name: activePartner.name,
+                              name: context
+                                  .read<AppStateProvider>()
+                                  .displayNameOf(activePartner),
                               hasAnswered: activeAnswer != null,
                               isDark: isDark,
                               isTr: isTr,
@@ -322,7 +322,9 @@ class HomeDashboardScreen extends StatelessWidget {
                           Expanded(
                             child: MiniPartnerAvatarStatus(
                               avatar: otherPartner.avatar,
-                              name: otherPartner.name,
+                              name: context
+                                  .read<AppStateProvider>()
+                                  .displayNameOf(otherPartner),
                               hasAnswered: otherAnswer != null,
                               isDark: isDark,
                               isTr: isTr,

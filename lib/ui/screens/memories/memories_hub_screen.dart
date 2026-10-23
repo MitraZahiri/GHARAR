@@ -180,7 +180,7 @@ class JournalEntryCard extends StatelessWidget {
                       ).copyWith(fontWeight: FontWeight.w700),
                     ),
                     Text(
-                      '${entry.authorName} • ${DateFormat('MMMM d, yyyy').format(entry.date)}',
+                      '${context.read<AppStateProvider>().displayNameFor(id: entry.authorId, name: entry.authorName)} • ${DateFormat('MMMM d, yyyy').format(entry.date)}',
                       style: AppTextStyles.bodySmall(isDark: isDark),
                     ),
                   ],

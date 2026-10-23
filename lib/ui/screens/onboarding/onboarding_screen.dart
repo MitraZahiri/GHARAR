@@ -68,10 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } else {
       final appState = context.read<AppStateProvider>();
       appState.completeOnboarding(
-        name:
-            _nameController.text.trim().isEmpty
-                ? (isTr ? 'Ben' : 'You')
-                : _nameController.text.trim(),
+        name: _nameController.text,
         avatar: _selectedAvatar,
         relationshipStage: _selectedStage,
         goals: _selectedGoals,

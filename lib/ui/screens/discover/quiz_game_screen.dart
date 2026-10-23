@@ -215,8 +215,8 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
                         Flexible(
                           child: Text(
                             isTr
-                                ? '${otherPartner.name} Ne Seçecek?'
-                                : 'What would ${otherPartner.name} choose?',
+                                ? '${context.read<AppStateProvider>().displayNameOf(otherPartner)} Ne Seçecek?'
+                                : 'What would ${context.read<AppStateProvider>().displayNameOf(otherPartner)} choose?',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: AppTextStyles.bodySmall(

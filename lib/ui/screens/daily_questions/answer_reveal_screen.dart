@@ -251,7 +251,7 @@ class _AnswerRevealScreenState extends State<AnswerRevealScreen> {
                             ? '${widget.question.categoryName(isTr)} Sohbetimiz'
                             : 'Our Conversation: ${widget.question.categoryName(isTr)}',
                     notes:
-                        '${partner1.name}: "${ans1?.answerText ?? ''}"\n\n${partner2.name}: "${ans2?.answerText ?? ''}"',
+                        '${context.read<AppStateProvider>().displayNameOf(partner1)}: "${ans1?.answerText ?? ''}"\n\n${context.read<AppStateProvider>().displayNameOf(partner2)}: "${ans2?.answerText ?? ''}"',
                     moodEmoji: '💖',
                     questionSnippet: snippet,
                     tags: ['Daily Question', widget.question.category.name],
@@ -356,7 +356,7 @@ class RevealedAnswerCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      partner.name,
+                      context.read<AppStateProvider>().displayNameOf(partner),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.titleMedium(

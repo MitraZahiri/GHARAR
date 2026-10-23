@@ -55,7 +55,7 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
     }
 
     final provider = context.read<AppStateProvider>();
-    provider.linkPartner(partnerName: isTr ? 'Ruh Eşim' : 'My Soulmate');
+    provider.linkPartner(partnerName: '');
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -75,7 +75,7 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
 
   void _onSimulatePartnerJoined(bool isTr) {
     final provider = context.read<AppStateProvider>();
-    provider.linkPartner(partnerName: isTr ? 'Ruh Eşim' : 'My Soulmate');
+    provider.linkPartner(partnerName: '');
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

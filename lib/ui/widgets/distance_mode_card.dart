@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/utils/partner_display_name.dart';
 import '../../models/couple_model.dart';
 import '../../providers/app_state_provider.dart';
 import 'glass_card.dart';
@@ -477,9 +476,8 @@ class _LongDistanceViewState extends State<_LongDistanceView> {
   Widget build(BuildContext context) {
     final isDark = widget.isDark;
     final loc = widget.loc;
-    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
     final partnerName = context.select<AppStateProvider, String>(
-      (p) => p.otherPartner.name,
+      (p) => p.otherPartnerName,
     );
     final offset = context.select<AppStateProvider, int?>(
       (p) => p.partnerUtcOffsetMinutes,
@@ -506,9 +504,7 @@ class _LongDistanceViewState extends State<_LongDistanceView> {
             child: _InfoTile(
               isDark: isDark,
               icon: Icons.schedule_rounded,
-              label: loc.format('ldrPartnerTime', {
-                'name': partnerDisplayName(partnerName, isTurkish: isTr),
-              }),
+              label: loc.format('ldrPartnerTime', {'name': partnerName}),
               value:
                   partnerTime == null
                       ? '--:--'
