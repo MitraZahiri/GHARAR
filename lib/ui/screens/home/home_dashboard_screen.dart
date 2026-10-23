@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../models/challenge_model.dart';
 import '../../../models/couple_model.dart';
 import '../../../models/question_model.dart';
-import '../../../models/shared_interest_model.dart';
-import '../../../models/special_date_model.dart';
 import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
@@ -17,9 +14,6 @@ import '../../widgets/soul_connection_art.dart';
 import '../onboarding/partner_invite_screen.dart';
 import '../daily_questions/answer_reveal_screen.dart';
 import '../daily_questions/daily_question_screen.dart';
-import '../activities/surprise_generator_modal.dart';
-import '../activities/weekly_challenges_screen.dart';
-import '../memories/special_dates_screen.dart';
 import '../../widgets/distance_mode_card.dart';
 import '../../widgets/soulmate_pulse_card.dart';
 import '../../widgets/love_note_card.dart';
@@ -66,17 +60,6 @@ class HomeDashboardScreen extends StatelessWidget {
             )
             : null;
 
-    final activeChallenge = context.select<AppStateProvider, ChallengeModel?>(
-      (p) => p.challenges.firstOrNull,
-    );
-    final upcomingDate = context.select<AppStateProvider, SpecialDateModel?>(
-      (p) => p.specialDates.firstOrNull,
-    );
-    final featuredInterest = context
-        .select<AppStateProvider, SharedInterestModel?>(
-          (p) => p.sharedInterests.firstOrNull,
-        );
-
     return Scaffold(
       appBar: const RomanticAppBar(),
       body: RefreshIndicator(
@@ -103,21 +86,6 @@ class HomeDashboardScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _getGreeting(isTr),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodyMedium(
-                            isDark: isDark,
-                          ).copyWith(
-                            color:
-                                isDark
-                                    ? AppColors.lavenderAccent
-                                    : AppColors.burgundyRose,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
                           couple != null && couple.partner2 != null
                               ? '${couple.partner1.name} & ${couple.partner2!.name}'
                               : (couple != null
@@ -136,6 +104,7 @@ class HomeDashboardScreen extends StatelessWidget {
                                     : 26,
                           ),
                         ),
+                        if (isPartnerLinked) const DistanceChip(),
                       ],
                     ),
                   ),
@@ -168,10 +137,6 @@ class HomeDashboardScreen extends StatelessWidget {
               // Soulmate Presence & Mood Pulse Card
               if (isPartnerLinked) ...[
                 const SoulmatePulseCard(),
-                const SizedBox(height: 18),
-                const DistanceModeCard(),
-                const SizedBox(height: 18),
-                const LoveNoteCard(),
                 const SizedBox(height: 18),
               ],
 
@@ -243,6 +208,7 @@ class HomeDashboardScreen extends StatelessWidget {
               // Hero Daily Question Card (The Heart of GHARAR)
               if (currentQ != null)
                 GlassCard(
+                  key: const ValueKey('home-daily-question'),
                   padding: const EdgeInsets.all(22),
                   gradient:
                       isDark
@@ -410,274 +376,10 @@ class HomeDashboardScreen extends StatelessWidget {
                   ),
                 ),
 
-              const SizedBox(height: 18),
-
-              // Weekly Couple Challenge Banner
-              if (activeChallenge != null)
-                GlassCard(
-                  padding: const EdgeInsets.all(18),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const WeeklyChallengesScreen(),
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          gradient: AppColors.sunsetGold,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            activeChallenge.rewardBadge,
-                            style: const TextStyle(fontSize: 24),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    isTr
-                                        ? 'HAFTALIK ÇİFT GÖREVİ'
-                                        : 'WEEKLY COUPLE CHALLENGE',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.bodySmall(
-                                      isDark: isDark,
-                                    ).copyWith(
-                                      fontSize: 10,
-                                      letterSpacing: 1,
-                                      fontWeight: FontWeight.w700,
-                                      color:
-                                          isDark
-                                              ? AppColors.blushPinkDeep
-                                              : AppColors.burgundyRose,
-                                    ),
-                                  ),
-                                ),
-                                if (activeChallenge.isCompleted) ...[
-                                  const SizedBox(width: 6),
-                                  const Icon(
-                                    Icons.check_circle_rounded,
-                                    color: AppColors.successGreen,
-                                    size: 16,
-                                  ),
-                                ],
-                              ],
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              activeChallenge.title(isTr),
-                              style: AppTextStyles.titleMedium(
-                                isDark: isDark,
-                              ).copyWith(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 15,
-                              ),
-                            ),
-                            Text(
-                              activeChallenge.description(isTr),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.bodySmall(isDark: isDark),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                        color: AppColors.lightTextMuted,
-                      ),
-                    ],
-                  ),
-                ),
-
-              const SizedBox(height: 18),
-
-              // Two Column Cards: Romantic Surprise Generator & Upcoming Date
-              Row(
-                children: [
-                  // Romantic Surprise Card
-                  Expanded(
-                    child: GlassCard(
-                      padding: const EdgeInsets.all(16),
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (context) => const SurpriseGeneratorModal(),
-                        );
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('🎲', style: TextStyle(fontSize: 26)),
-                          const SizedBox(height: 10),
-                          Text(
-                            isTr ? 'Romantik Sürpriz' : 'Romantic Surprise',
-                            style: AppTextStyles.titleMedium(
-                              isDark: isDark,
-                            ).copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            isTr
-                                ? 'Tatlı bir jest çekin'
-                                : 'Roll spontaneous idea',
-                            style: AppTextStyles.bodySmall(
-                              isDark: isDark,
-                            ).copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  // Special Dates Countdown Card
-                  Expanded(
-                    child: GlassCard(
-                      padding: const EdgeInsets.all(16),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const SpecialDatesScreen(),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                upcomingDate?.icon ?? '💍',
-                                style: const TextStyle(fontSize: 24),
-                              ),
-                              const Spacer(),
-                              if (upcomingDate != null)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.champagneGold.withValues(
-                                      alpha: 0.18,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    '${upcomingDate.daysUntil}d',
-                                    style: const TextStyle(
-                                      color: AppColors.champagneGold,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            upcomingDate?.title(isTr) ??
-                                (isTr ? 'Özel Günler' : 'Special Dates'),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.titleMedium(
-                              isDark: isDark,
-                            ).copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            isTr ? 'Geri sayım & takvim' : 'Countdown & dates',
-                            style: AppTextStyles.bodySmall(
-                              isDark: isDark,
-                            ).copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 18),
-
-              // Mutual Spark Feature Card
-              if (featuredInterest != null)
-                GlassCard(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            featuredInterest.icon,
-                            style: const TextStyle(fontSize: 22),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  isTr
-                                      ? 'GÜNÜN ORTAK KIVILCIMI'
-                                      : 'MUTUAL SPARK OF THE DAY',
-                                  style: AppTextStyles.bodySmall(
-                                    isDark: isDark,
-                                  ).copyWith(
-                                    fontSize: 10,
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w700,
-                                    color:
-                                        isDark
-                                            ? AppColors.blushPinkDeep
-                                            : AppColors.burgundyRose,
-                                  ),
-                                ),
-                                Text(
-                                  featuredInterest.title(isTr),
-                                  style: AppTextStyles.titleMedium(
-                                    isDark: isDark,
-                                  ).copyWith(fontWeight: FontWeight.w700),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        featuredInterest.description(isTr),
-                        style: AppTextStyles.bodyMedium(isDark: isDark),
-                      ),
-                    ],
-                  ),
-                ),
+              if (isPartnerLinked) ...[
+                const SizedBox(height: 18),
+                const LoveNoteCard(),
+              ],
 
               const SizedBox(height: 24),
             ],
@@ -685,21 +387,6 @@ class HomeDashboardScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _getGreeting(bool isTr) {
-    final hour = DateTime.now().hour;
-    if (hour < 12) {
-      return isTr ? 'Günaydın sevgililer ✨' : 'Good morning, lovely souls ✨';
-    } else if (hour < 18) {
-      return isTr
-          ? 'Tünaydın güzel kalpler ☀️'
-          : 'Good afternoon, sweethearts ☀️';
-    } else {
-      return isTr
-          ? 'İyi akşamlar sevgililer 🌙'
-          : 'Good evening, beloved souls 🌙';
-    }
   }
 }
 
