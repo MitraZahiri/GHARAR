@@ -41,6 +41,8 @@ void main() {
 
     test('missing names fall back to you / your soulmate', () {
       expect(displayPersonName('', isSelf: true, loc: en), 'You');
+      // On your own screen you are always "You", even with a stored name.
+      expect(displayPersonName('Mitra', isSelf: true, loc: en), 'You');
       expect(displayPersonName('', isSelf: false, loc: en), 'Your Soulmate');
       expect(displayPersonName('Ben', isSelf: true, loc: tr), 'Sen');
       expect(displayPersonName('', isSelf: false, loc: tr), 'Ruh Eşin');

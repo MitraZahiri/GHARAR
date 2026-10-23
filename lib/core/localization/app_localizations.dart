@@ -152,11 +152,6 @@ class AppLocalizations {
       // Names
       'nameYou': 'You',
       'nameYourSoulmate': 'Your Soulmate',
-      'editNamesTitle': 'Our names',
-      'editNamesMine': 'Your name',
-      'editNamesPartner': 'Your partner\'s name',
-      'editNamesSave': 'Save',
-      'editNamesSaved': 'Names updated 💕',
     },
 
     // ==========================================
@@ -280,11 +275,6 @@ class AppLocalizations {
       // Names
       'nameYou': 'Sen',
       'nameYourSoulmate': 'Ruh Eşin',
-      'editNamesTitle': 'İsimlerimiz',
-      'editNamesMine': 'Senin adın',
-      'editNamesPartner': 'Partnerinin adı',
-      'editNamesSave': 'Kaydet',
-      'editNamesSaved': 'İsimler güncellendi 💕',
     },
 
     // ==========================================
@@ -398,11 +388,6 @@ class AppLocalizations {
       // Names
       'nameYou': 'أنت',
       'nameYourSoulmate': 'توأم روحك',
-      'editNamesTitle': 'أسماؤنا',
-      'editNamesMine': 'اسمك',
-      'editNamesPartner': 'اسم شريكك',
-      'editNamesSave': 'حفظ',
-      'editNamesSaved': 'تم تحديث الأسماء 💕',
     },
 
     // ==========================================
@@ -518,11 +503,6 @@ class AppLocalizations {
       // Names
       'nameYou': 'تو',
       'nameYourSoulmate': 'نیمه‌ی گمشده‌ات',
-      'editNamesTitle': 'نام‌های ما',
-      'editNamesMine': 'نام تو',
-      'editNamesPartner': 'نام همراهت',
-      'editNamesSave': 'ذخیره',
-      'editNamesSaved': 'نام‌ها به‌روز شد 💕',
     },
 
     // ==========================================
@@ -640,11 +620,6 @@ class AppLocalizations {
       // Names
       'nameYou': 'Du',
       'nameYourSoulmate': 'Dein Seelenverwandter',
-      'editNamesTitle': 'Unsere Namen',
-      'editNamesMine': 'Dein Name',
-      'editNamesPartner': 'Name deines Partners',
-      'editNamesSave': 'Speichern',
-      'editNamesSaved': 'Namen aktualisiert 💕',
     },
 
     // ==========================================
@@ -760,11 +735,6 @@ class AppLocalizations {
       // Names
       'nameYou': 'Tú',
       'nameYourSoulmate': 'Tu alma gemela',
-      'editNamesTitle': 'Nuestros nombres',
-      'editNamesMine': 'Tu nombre',
-      'editNamesPartner': 'Nombre de tu pareja',
-      'editNamesSave': 'Guardar',
-      'editNamesSaved': 'Nombres actualizados 💕',
     },
 
     // ==========================================
@@ -881,11 +851,6 @@ class AppLocalizations {
       // Names
       'nameYou': 'Toi',
       'nameYourSoulmate': 'Ton âme sœur',
-      'editNamesTitle': 'Nos prénoms',
-      'editNamesMine': 'Ton prénom',
-      'editNamesPartner': 'Prénom de ton partenaire',
-      'editNamesSave': 'Enregistrer',
-      'editNamesSaved': 'Prénoms mis à jour 💕',
     },
 
     // ==========================================
@@ -1001,11 +966,6 @@ class AppLocalizations {
       // Names
       'nameYou': 'Tu',
       'nameYourSoulmate': 'La tua anima gemella',
-      'editNamesTitle': 'I nostri nomi',
-      'editNamesMine': 'Il tuo nome',
-      'editNamesPartner': 'Nome del tuo partner',
-      'editNamesSave': 'Salva',
-      'editNamesSaved': 'Nomi aggiornati 💕',
     },
   };
 

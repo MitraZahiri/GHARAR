@@ -325,27 +325,6 @@ class AppStateProvider extends ChangeNotifier {
     return '$me & $partner';
   }
 
-  /// Renames the active partner and the other partner.
-  void renameCouple({required String myName, required String partnerName}) {
-    final couple = _couple;
-    if (couple == null) return;
-    final me = activePartner.copyWith(name: cleanPersonName(myName));
-    final other = otherPartner.copyWith(name: cleanPersonName(partnerName));
-    final meIsFirst = me.id == couple.partner1.id;
-    _couple = couple.copyWith(
-      partner1: meIsFirst ? me : other,
-      partner2: couple.partner2 == null ? null : (meIsFirst ? other : me),
-    );
-    _storage.saveCouple(_couple!);
-    for (final user in [me, other]) {
-      if (user.id == _currentUser?.id) {
-        _currentUser = user;
-        _storage.saveUser(user);
-      }
-    }
-    notifyListeners();
-  }
-
   // Partner Switcher (Interactive Demo & Simulation)
   void switchActivePartner() {
     if (_couple == null || _couple!.partner2 == null) return;
@@ -540,7 +519,11 @@ class AppStateProvider extends ChangeNotifier {
     final effectiveEmail = email ?? _userEmail ?? 'user@gharar.love';
     final user = UserModel(
       id: 'user_1',
-      name: cleanPersonName(name),
+      // Falls back to the name given at sign-in (Google, Apple or email).
+      name:
+          cleanPersonName(name).isNotEmpty
+              ? cleanPersonName(name)
+              : cleanPersonName(_currentUser?.name),
       avatar: avatar,
       preferredLanguage: languageCode,
       relationshipStage: relationshipStage,

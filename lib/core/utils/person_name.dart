@@ -29,14 +29,16 @@ String cleanPersonName(String? raw) {
       : collapsed;
 }
 
-/// The name to show on screen: the real name, or "You" / "Your Soulmate"
-/// in the current language when none was given.
+/// The name to show on screen. You always see yourself as "You"; your
+/// partner appears with the name from their own sign-in, or as
+/// "Your Soulmate" until they have joined.
 String displayPersonName(
   String? name, {
   required bool isSelf,
   required AppLocalizations loc,
 }) {
+  if (isSelf) return loc.t('nameYou');
   final clean = cleanPersonName(name);
   if (clean.isNotEmpty) return clean;
-  return loc.t(isSelf ? 'nameYou' : 'nameYourSoulmate');
+  return loc.t('nameYourSoulmate');
 }

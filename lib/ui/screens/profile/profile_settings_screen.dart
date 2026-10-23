@@ -9,7 +9,6 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../models/couple_model.dart';
 import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
-import '../../widgets/edit_names_sheet.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/soul_connection_art.dart';
 import 'subscription_screen.dart';
@@ -126,20 +125,6 @@ class ProfileSettingsScreen extends StatelessWidget {
                             isDark: isDark,
                           ).copyWith(fontWeight: FontWeight.w800),
                         ),
-                      ),
-                      IconButton(
-                        key: const ValueKey('edit-names'),
-                        tooltip: AppLocalizations(
-                          context.select<AppStateProvider, Locale>(
-                            (p) => p.locale,
-                          ),
-                        ).t('editNamesTitle'),
-                        icon: const Icon(
-                          Icons.edit_rounded,
-                          size: 20,
-                          color: AppColors.champagneGold,
-                        ),
-                        onPressed: () => EditNamesSheet.show(context),
                       ),
                     ],
                   ),

@@ -32,7 +32,7 @@ void main() {
     expect(provider.coupleDisplayNames, 'You & Your Soulmate');
   });
 
-  test('real names are trimmed and shown in the couple title', () async {
+  test('I am You; the partner shows the name from their own sign-in', () async {
     final provider = await freshProvider();
     provider.completeOnboarding(
       name: ' Kerem ',
@@ -41,13 +41,21 @@ void main() {
       goals: const [],
       languageCode: 'en',
     );
-    provider.linkPartner(partnerName: 'Elif');
+    expect(provider.currentUser?.name, 'Kerem');
+    expect(provider.coupleDisplayNames, 'You & Your Soulmate');
 
-    expect(provider.coupleDisplayNames, 'Kerem & Elif');
+    // The partner joins with the name they entered at sign-in.
+    provider.linkPartner(partnerName: 'Elif');
+    expect(provider.coupleDisplayNames, 'You & Elif');
   });
 
-  test('both partners can be renamed and the change persists', () async {
+  test('onboarding keeps the name from sign-in when left empty', () async {
     final provider = await freshProvider();
+    await provider.authenticateWithEmail(
+      name: 'Mitra',
+      email: 'mitra@example.com',
+      password: 'secret1',
+    );
     provider.completeOnboarding(
       name: '',
       avatar: '🌸',
@@ -55,19 +63,7 @@ void main() {
       goals: const [],
       languageCode: 'en',
     );
-    provider.linkPartner(partnerName: '');
 
-    provider.renameCouple(myName: 'Mitra', partnerName: '  Arda ');
-
-    expect(provider.coupleDisplayNames, 'Mitra & Arda');
-    final saved =
-        jsonDecode(
-              (await SharedPreferences.getInstance()).getString(
-                'gharar_couple',
-              )!,
-            )
-            as Map<String, dynamic>;
-    expect((saved['partner2'] as Map)['name'], 'Arda');
     expect(provider.currentUser?.name, 'Mitra');
   });
 
