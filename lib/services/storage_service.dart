@@ -22,6 +22,7 @@ class StorageService {
   static const _keyLegacyDarkTheme = 'gharar_theme_dark';
   static const _keyThemeMode = 'gharar_theme_mode';
   static const _keyLocale = 'gharar_locale';
+  static const _keyCloudUploadedUid = 'gharar_cloud_uploaded_uid';
   static const _keyHasOnboarded = 'gharar_has_onboarded';
   static const _keyIsAuthenticated = 'gharar_is_authenticated';
   static const _keyUserEmail = 'gharar_user_email';
@@ -76,6 +77,11 @@ class StorageService {
 
   Future<void> setThemeMode(ThemeMode mode) =>
       _prefs.setString(_keyThemeMode, mode.name);
+
+  /// Firebase uid whose first full upload from this device succeeded.
+  String? get cloudUploadedUid => _prefs.getString(_keyCloudUploadedUid);
+  Future<void> setCloudUploadedUid(String uid) =>
+      _prefs.setString(_keyCloudUploadedUid, uid);
 
   String get localeCode => _prefs.getString(_keyLocale) ?? 'en';
   Future<void> setLocaleCode(String code) => _prefs.setString(_keyLocale, code);

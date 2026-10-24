@@ -9,10 +9,13 @@ import {
 } from '@firebase/rules-unit-testing';
 import {
   arrayUnion,
+  collection,
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 
 let env;
@@ -141,6 +144,92 @@ describe('couples/{coupleId}/{collection}', () => {
     await seedCouple(['kerem']);
     await assertFails(setDoc(doc(as('kerem'), 'couples/c1/secrets/z'), { a: 1 }));
     await assertFails(setDoc(doc(as('kerem'), 'couples/nope/loveNotes/n'), { a: 1 }));
+  });
+});
+
+describe('invites and joining', () => {
+  /** couples/c1 owned by kerem with invite code CODE1, as the app sets up. */
+  async function seedInvite() {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'couples/c1'), {
+        id: 'c1',
+        inviteCode: 'GHARAR-CODE01',
+        memberUids: ['kerem'],
+        isLinked: false,
+      });
+      await setDoc(doc(db, 'invites/GHARAR-CODE01'), {
+        coupleId: 'c1',
+        ownerUid: 'kerem',
+      });
+    });
+  }
+
+  const joinAs = (uid, overrides = {}) =>
+    updateDoc(doc(as(uid), 'couples/c1'), {
+      memberUids: arrayUnion(uid),
+      joinCode: 'GHARAR-CODE01',
+      partner2: { id: uid, name: 'Elif' },
+      isLinked: true,
+      ...overrides,
+    });
+
+  test('a member publishes and re-publishes their invite', async () => {
+    await seedCouple(['kerem']);
+    const invite = { coupleId: 'c1', ownerUid: 'kerem' };
+    await assertSucceeds(setDoc(doc(as('kerem'), 'invites/GHARAR-NEW001'), invite));
+    await assertSucceeds(setDoc(doc(as('kerem'), 'invites/GHARAR-NEW001'), invite));
+  });
+
+  test('nobody can publish an invite for a couple they are not in', async () => {
+    await seedCouple(['kerem']);
+    await assertFails(
+      setDoc(doc(as('mallory'), 'invites/GHARAR-EVIL01'), {
+        coupleId: 'c1',
+        ownerUid: 'mallory',
+      }),
+    );
+  });
+
+  test('anyone signed in can look up one code, but not list them', async () => {
+    await seedInvite();
+    await assertSucceeds(getDoc(doc(as('elif'), 'invites/GHARAR-CODE01')));
+    await assertFails(getDocs(collection(as('elif'), 'invites')));
+    await assertFails(getDoc(doc(signedOut(), 'invites/GHARAR-CODE01')));
+  });
+
+  test('a partner joins with the right code, then removes the invite', async () => {
+    await seedInvite();
+    await assertSucceeds(joinAs('elif'));
+    await assertSucceeds(getDoc(doc(as('elif'), 'couples/c1')));
+    await assertSucceeds(deleteDoc(doc(as('elif'), 'invites/GHARAR-CODE01')));
+  });
+
+  test('joining needs the couple invite code', async () => {
+    await seedInvite();
+    await assertFails(joinAs('elif', { joinCode: 'GHARAR-WRONG1' }));
+  });
+
+  test('a joiner cannot change anything else', async () => {
+    await seedInvite();
+    await assertFails(joinAs('elif', { inviteCode: 'GHARAR-MINE01' }));
+    await assertFails(joinAs('elif', { isPremium: true }));
+  });
+
+  test('a joiner can only add themselves', async () => {
+    await seedInvite();
+    await assertFails(joinAs('elif', { memberUids: arrayUnion('elif', 'mallory') }));
+  });
+
+  test('a full couple refuses a third person', async () => {
+    await seedInvite();
+    await assertSucceeds(joinAs('elif'));
+    await assertFails(joinAs('mallory'));
+  });
+
+  test('strangers cannot delete an invite', async () => {
+    await seedInvite();
+    await assertFails(deleteDoc(doc(as('mallory'), 'invites/GHARAR-CODE01')));
   });
 });
 

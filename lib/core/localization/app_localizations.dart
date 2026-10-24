@@ -151,6 +151,16 @@ class AppLocalizations {
       'themeLight': 'Light',
       'themeDark': 'Dark',
       'themeToggle': 'Switch light/dark theme',
+      'pairNeedsSignIn': 'Sign in with Google to connect with your partner.',
+      'pairInvalidCode':
+          "That code doesn't match any couple. Check it and try again.",
+      'pairOwnCode':
+          "That's your own code. Share it with your partner instead.",
+      'pairCoupleFull': 'This couple already has two partners.',
+      'pairFailed':
+          "Couldn't connect right now. Check your internet and try again.",
+      'pairOfflineHint':
+          'Your partner can use this code once you sign in with Google.',
       'exploreGames': 'Games',
       'exploreDates': 'Dates',
       'exploreMemories': 'Memories',
@@ -279,6 +289,15 @@ class AppLocalizations {
       'themeLight': 'Açık',
       'themeDark': 'Koyu',
       'themeToggle': 'Açık/koyu temaya geç',
+      'pairNeedsSignIn': 'Partnerinle bağlanmak için Google ile giriş yap.',
+      'pairInvalidCode':
+          'Bu kod hiçbir çifte ait değil. Kontrol edip tekrar dene.',
+      'pairOwnCode': 'Bu senin kendi kodun. Onun yerine partnerinle paylaş.',
+      'pairCoupleFull': 'Bu çiftte zaten iki partner var.',
+      'pairFailed':
+          'Şu an bağlanılamadı. İnternetini kontrol edip tekrar dene.',
+      'pairOfflineHint':
+          'Google ile giriş yaptığında partnerin bu kodu kullanabilir.',
       'exploreGames': 'Oyunlar',
       'exploreDates': 'Randevu',
       'exploreMemories': 'Anılar',
@@ -397,6 +416,14 @@ class AppLocalizations {
       'themeLight': 'فاتح',
       'themeDark': 'داكن',
       'themeToggle': 'التبديل بين الوضع الفاتح والداكن',
+      'pairNeedsSignIn': 'سجّل الدخول باستخدام Google للتواصل مع شريكك.',
+      'pairInvalidCode':
+          'هذا الرمز لا يطابق أي ثنائي. تحقق منه وحاول مرة أخرى.',
+      'pairOwnCode': 'هذا رمزك الخاص. شاركه مع شريكك بدلاً من ذلك.',
+      'pairCoupleFull': 'هذا الثنائي لديه شريكان بالفعل.',
+      'pairFailed': 'تعذّر الاتصال الآن. تحقق من الإنترنت وحاول مرة أخرى.',
+      'pairOfflineHint':
+          'يمكن لشريكك استخدام هذا الرمز بعد تسجيل دخولك باستخدام Google.',
       'exploreGames': 'ألعاب',
       'exploreDates': 'مواعيد',
       'exploreMemories': 'ذكريات',
@@ -517,6 +544,15 @@ class AppLocalizations {
       'themeLight': 'روشن',
       'themeDark': 'تیره',
       'themeToggle': 'تغییر پوسته روشن/تیره',
+      'pairNeedsSignIn': 'برای اتصال به همراهت با Google وارد شو.',
+      'pairInvalidCode':
+          'این کد به هیچ زوجی تعلق ندارد. بررسی کن و دوباره امتحان کن.',
+      'pairOwnCode': 'این کد خودت است. آن را با همراهت به اشتراک بگذار.',
+      'pairCoupleFull': 'این زوج از قبل دو همراه دارد.',
+      'pairFailed':
+          'الان اتصال ممکن نشد. اینترنتت را بررسی کن و دوباره امتحان کن.',
+      'pairOfflineHint':
+          'وقتی با Google وارد شوی، همراهت می\u200cتواند از این کد استفاده کند.',
       'exploreGames': 'بازی‌ها',
       'exploreDates': 'قرارها',
       'exploreMemories': 'خاطره‌ها',
@@ -639,6 +675,17 @@ class AppLocalizations {
       'themeLight': 'Hell',
       'themeDark': 'Dunkel',
       'themeToggle': 'Hell/Dunkel wechseln',
+      'pairNeedsSignIn':
+          'Melde dich mit Google an, um dich mit deinem Partner zu verbinden.',
+      'pairInvalidCode':
+          'Dieser Code gehört zu keinem Paar. Prüfe ihn und versuche es erneut.',
+      'pairOwnCode':
+          'Das ist dein eigener Code. Teile ihn stattdessen mit deinem Partner.',
+      'pairCoupleFull': 'Dieses Paar hat bereits zwei Partner.',
+      'pairFailed':
+          'Verbindung gerade nicht möglich. Prüfe dein Internet und versuche es erneut.',
+      'pairOfflineHint':
+          'Dein Partner kann diesen Code nutzen, sobald du dich mit Google anmeldest.',
       'exploreGames': 'Spiele',
       'exploreDates': 'Dates',
       'exploreMemories': 'Erinnerungen',
@@ -759,6 +806,16 @@ class AppLocalizations {
       'themeLight': 'Claro',
       'themeDark': 'Oscuro',
       'themeToggle': 'Cambiar tema claro/oscuro',
+      'pairNeedsSignIn':
+          'Inicia sesión con Google para conectar con tu pareja.',
+      'pairInvalidCode':
+          'Ese código no corresponde a ninguna pareja. Revísalo e inténtalo de nuevo.',
+      'pairOwnCode': 'Ese es tu propio código. Compártelo con tu pareja.',
+      'pairCoupleFull': 'Esta pareja ya tiene dos miembros.',
+      'pairFailed':
+          'No se pudo conectar ahora. Revisa tu internet e inténtalo de nuevo.',
+      'pairOfflineHint':
+          'Tu pareja podrá usar este código cuando inicies sesión con Google.',
       'exploreGames': 'Juegos',
       'exploreDates': 'Citas',
       'exploreMemories': 'Recuerdos',
@@ -880,6 +937,17 @@ class AppLocalizations {
       'themeLight': 'Clair',
       'themeDark': 'Sombre',
       'themeToggle': 'Basculer thème clair/sombre',
+      'pairNeedsSignIn':
+          'Connecte-toi avec Google pour te relier à ton partenaire.',
+      'pairInvalidCode':
+          'Ce code ne correspond à aucun couple. Vérifie-le et réessaie.',
+      'pairOwnCode':
+          "C'est ton propre code. Partage-le plutôt avec ton partenaire.",
+      'pairCoupleFull': 'Ce couple a déjà deux partenaires.',
+      'pairFailed':
+          'Connexion impossible pour le moment. Vérifie ta connexion et réessaie.',
+      'pairOfflineHint':
+          'Ton partenaire pourra utiliser ce code une fois que tu seras connecté avec Google.',
       'exploreGames': 'Jeux',
       'exploreDates': 'Sorties',
       'exploreMemories': 'Souvenirs',
@@ -1000,6 +1068,16 @@ class AppLocalizations {
       'themeLight': 'Chiaro',
       'themeDark': 'Scuro',
       'themeToggle': 'Cambia tema chiaro/scuro',
+      'pairNeedsSignIn': 'Accedi con Google per collegarti al tuo partner.',
+      'pairInvalidCode':
+          'Questo codice non corrisponde a nessuna coppia. Controllalo e riprova.',
+      'pairOwnCode':
+          'Questo è il tuo codice. Condividilo invece con il tuo partner.',
+      'pairCoupleFull': 'Questa coppia ha già due partner.',
+      'pairFailed':
+          'Impossibile collegarsi ora. Controlla la connessione e riprova.',
+      'pairOfflineHint':
+          'Il tuo partner potrà usare questo codice quando accedi con Google.',
       'exploreGames': 'Giochi',
       'exploreDates': 'Appuntamenti',
       'exploreMemories': 'Ricordi',

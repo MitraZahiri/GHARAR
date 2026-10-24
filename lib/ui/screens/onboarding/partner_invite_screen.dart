@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state_provider.dart';
@@ -21,6 +22,7 @@ class PartnerInviteScreen extends StatefulWidget {
 class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
   final TextEditingController _partnerCodeController = TextEditingController();
   int _activeTabIndex = 0; // 0: My QR & Code, 1: Enter Partner's Code
+  bool _isJoining = false;
 
   @override
   void dispose() {
@@ -35,42 +37,55 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
     );
   }
 
-  void _onLinkPartnerPressed(bool isTr) {
+  Future<void> _onLinkPartnerPressed(bool isTr) async {
     final code = _partnerCodeController.text.trim();
     if (code.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          content: Text(
-            isTr
-                ? 'Lütfen partnerinizin davet kodunu girin.'
-                : 'Please enter your partner’s invite code.',
-          ),
-        ),
+      _showMessage(
+        isTr
+            ? 'Lütfen partnerinizin davet kodunu girin.'
+            : 'Please enter your partner’s invite code.',
       );
       return;
     }
 
     final provider = context.read<AppStateProvider>();
-    provider.linkPartner(partnerName: '');
+    final loc = AppLocalizations(provider.locale);
+    setState(() => _isJoining = true);
+    final result = await provider.joinPartnerWithCode(code);
+    if (!mounted) return;
+    setState(() => _isJoining = false);
 
+    switch (result) {
+      case PairingResult.joined:
+        _showMessage(
+          isTr
+              ? 'Ruh Eşinizle Bağlantı Kuruldu! Masalsı Alanınız Açılıyor... ✨'
+              : 'Soulmate Connected! Opening Your Sacred Sanctuary... ✨',
+          success: true,
+        );
+        _navigateToMain();
+      case PairingResult.invalidCode:
+        _showMessage(loc.t('pairInvalidCode'));
+      case PairingResult.ownCode:
+        _showMessage(loc.t('pairOwnCode'));
+      case PairingResult.coupleFull:
+        _showMessage(loc.t('pairCoupleFull'));
+      case PairingResult.needsSignIn:
+        _showMessage(loc.t('pairNeedsSignIn'));
+      case PairingResult.failed:
+        _showMessage(loc.t('pairFailed'));
+    }
+  }
+
+  void _showMessage(String text, {bool success = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        backgroundColor: AppColors.terracotta,
-        content: Text(
-          isTr
-              ? 'Ruh Eşinizle Bağlantı Kuruldu! Masalsı Alanınız Açılıyor... ✨'
-              : 'Soulmate Connected! Opening Your Sacred Sanctuary... ✨',
-        ),
+        backgroundColor: success ? AppColors.terracotta : null,
+        content: Text(text),
       ),
     );
-
-    _navigateToMain();
   }
 
   void _onSimulatePartnerJoined(bool isTr) {
@@ -99,6 +114,12 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
     final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
     final inviteCode = context.select<AppStateProvider, String>(
       (p) => p.couple?.inviteCode ?? 'GHARAR-7842-LOVE',
+    );
+    final canPairOnline = context.select<AppStateProvider, bool>(
+      (p) => p.canPairOnline,
+    );
+    final loc = AppLocalizations(
+      context.select<AppStateProvider, Locale>((p) => p.locale),
     );
 
     return Scaffold(
@@ -425,6 +446,16 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                           isDark: isDark,
                           isTr: isTr,
                         ),
+                        if (!canPairOnline) ...[
+                          const SizedBox(height: 10),
+                          Text(
+                            loc.t('pairOfflineHint'),
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ],
                         const SizedBox(height: 14),
                         Text(
                           isTr
@@ -496,7 +527,7 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              hintText: 'GHARAR-XXXX-LOVE',
+                              hintText: 'GHARAR-XXXXXX',
                               hintStyle: TextStyle(
                                 letterSpacing: 1.0,
                                 fontWeight: FontWeight.w500,
@@ -525,7 +556,11 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
                                   ? AppColors.terracotta
                                   : AppColors.inkCharcoal,
                           textColor: Colors.white,
-                          onPressed: () => _onLinkPartnerPressed(isTr),
+                          isLoading: _isJoining,
+                          onPressed:
+                              _isJoining
+                                  ? null
+                                  : () => _onLinkPartnerPressed(isTr),
                         ),
                       ],
 

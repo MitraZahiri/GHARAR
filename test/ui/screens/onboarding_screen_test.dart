@@ -1,9 +1,12 @@
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gharar/core/theme/app_theme.dart';
 import 'package:gharar/providers/app_state_provider.dart';
+import 'package:gharar/services/cloud_sync_service.dart';
 import 'package:gharar/services/storage_service.dart';
 import 'package:gharar/ui/screens/onboarding/onboarding_screen.dart';
 import 'package:gharar/ui/screens/onboarding/partner_invite_screen.dart';
@@ -117,7 +120,16 @@ void main() {
       expect(find.textContaining('QR Kodu Okutun'), findsOneWidget);
     });
 
-    testWidgets('Entering partner code links the couple sanctuary', (
+    Future<void> enterCodeAndConnect(WidgetTester tester, String code) async {
+      await tester.tap(find.textContaining('Partnerimin Kodu'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), code);
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Bağlan & Odayı Aç'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('Without Google sign-in a code asks the user to sign in', (
       WidgetTester tester,
     ) async {
       provider.completeOnboarding(
@@ -127,7 +139,6 @@ void main() {
         goals: ['goalDeeperConversations'],
         languageCode: 'tr',
       );
-
       await tester.pumpWidget(
         ChangeNotifierProvider<AppStateProvider>.value(
           value: provider,
@@ -136,28 +147,81 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Switch to Enter Code tab
-      final enterCodeTab = find.textContaining('Partnerimin Kodu');
-      expect(enterCodeTab, findsOneWidget);
-      await tester.tap(enterCodeTab);
+      // The own code tab explains that sharing needs a sign-in.
+      expect(
+        find.text(
+          'Google ile giriş yaptığında partnerin bu kodu kullanabilir.',
+        ),
+        findsOneWidget,
+      );
+
+      await enterCodeAndConnect(tester, 'GHARAR-5555-SOUL');
+
+      expect(provider.isPartnerLinked, isFalse);
+      expect(
+        find.text('Partnerinle bağlanmak için Google ile giriş yap.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('Entering the partner code joins their couple', (
+      WidgetTester tester,
+    ) async {
+      final db = FakeFirebaseFirestore();
+      CloudSyncService cloudFor(String uid) => CloudSyncService(
+        firestore: db,
+        auth: MockFirebaseAuth(signedIn: true, mockUser: MockUser(uid: uid)),
+      );
+      final kerem = AppStateProvider(
+        StorageService(await SharedPreferences.getInstance()),
+        cloudSync: cloudFor('uid_kerem'),
+      );
+      addTearDown(kerem.dispose);
+      kerem.completeOnboarding(
+        name: 'Kerem',
+        avatar: '🕊️',
+        relationshipStage: 'stageMarried',
+        goals: const [],
+        languageCode: 'tr',
+      );
+      final elif = AppStateProvider(
+        StorageService(await SharedPreferences.getInstance()),
+        cloudSync: cloudFor('uid_elif'),
+      );
+      addTearDown(elif.dispose);
+      elif.setLanguageCode('tr');
+      elif.completeOnboarding(
+        name: 'Elif',
+        avatar: '🌸',
+        relationshipStage: 'stageMarried',
+        goals: const [],
+        languageCode: 'tr',
+      );
+      await tester.pumpWidget(
+        ChangeNotifierProvider<AppStateProvider>.value(
+          value: elif,
+          child: const MaterialApp(home: PartnerInviteScreen()),
+        ),
+      );
       await tester.pumpAndSettle();
 
-      // Enter partner's code
-      final inputField = find.byType(TextField);
-      expect(inputField, findsOneWidget);
-      await tester.enterText(inputField, 'GHARAR-5555-SOUL');
+      await enterCodeAndConnect(tester, 'GHARAR-ZZZZZZ');
+      expect(
+        find.text('Bu kod hiçbir çifte ait değil. Kontrol edip tekrar dene.'),
+        findsOneWidget,
+      );
+      expect(elif.isPartnerLinked, isFalse);
+      // Let the error message slide away before trying again.
+      await tester.pump(const Duration(seconds: 5));
       await tester.pumpAndSettle();
 
-      // Tap Link button
-      final linkButton = find.textContaining('Bağlan & Odayı Aç');
-      expect(linkButton, findsOneWidget);
-      await tester.tap(linkButton);
+      await tester.enterText(find.byType(TextField), kerem.couple!.inviteCode);
+      await tester.tap(find.textContaining('Bağlan & Odayı Aç'));
       await tester.pumpAndSettle();
 
-      expect(provider.isPartnerLinked, isTrue);
-      // No name given yet: stored empty, shown as "Ruh Eşin".
-      expect(provider.couple?.partner2?.name, isEmpty);
-      expect(provider.otherPartnerName, 'Ruh Eşin');
+      expect(elif.isPartnerLinked, isTrue);
+      expect(elif.couple?.id, kerem.couple?.id);
+      expect(elif.otherPartnerName, 'Kerem');
     });
 
     testWidgets('Simulating partner connection immediately links couple', (
