@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../models/couple_model.dart';
@@ -18,7 +19,8 @@ class StorageService {
   static const _keyChallenges = 'gharar_challenges';
   static const _keyJournal = 'gharar_journal';
   static const _keySpecialDates = 'gharar_special_dates';
-  static const _keyTheme = 'gharar_theme_dark';
+  static const _keyLegacyDarkTheme = 'gharar_theme_dark';
+  static const _keyThemeMode = 'gharar_theme_mode';
   static const _keyLocale = 'gharar_locale';
   static const _keyHasOnboarded = 'gharar_has_onboarded';
   static const _keyIsAuthenticated = 'gharar_is_authenticated';
@@ -61,8 +63,19 @@ class StorageService {
       _prefs.setBool(_keyHasOnboarded, val);
 
   // Theme & Locale
-  bool get isDarkMode => _prefs.getBool(_keyTheme) ?? false;
-  Future<void> setIsDarkMode(bool val) => _prefs.setBool(_keyTheme, val);
+  ThemeMode get themeMode {
+    final stored = _prefs.getString(_keyThemeMode);
+    for (final mode in ThemeMode.values) {
+      if (mode.name == stored) return mode;
+    }
+    // Migrate the old on/off switch; no value at all means follow the system.
+    final legacyDark = _prefs.getBool(_keyLegacyDarkTheme);
+    if (legacyDark == null) return ThemeMode.system;
+    return legacyDark ? ThemeMode.dark : ThemeMode.light;
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) =>
+      _prefs.setString(_keyThemeMode, mode.name);
 
   String get localeCode => _prefs.getString(_keyLocale) ?? 'en';
   Future<void> setLocaleCode(String code) => _prefs.setString(_keyLocale, code);

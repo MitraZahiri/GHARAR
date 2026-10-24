@@ -24,8 +24,33 @@ void main() async {
   );
 }
 
-class GhararApp extends StatelessWidget {
+class GhararApp extends StatefulWidget {
   const GhararApp({super.key});
+
+  @override
+  State<GhararApp> createState() => _GhararAppState();
+}
+
+class _GhararAppState extends State<GhararApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // Keeps ThemeMode.system in step with the device's light/dark setting.
+  @override
+  void didChangePlatformBrightness() {
+    context.read<AppStateProvider>().setPlatformBrightness(
+      WidgetsBinding.instance.platformDispatcher.platformBrightness,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

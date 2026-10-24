@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gharar/services/storage_service.dart';
@@ -110,13 +111,13 @@ void main() {
     });
 
     test('Theme and locale preferences persistence', () async {
-      expect(storage.isDarkMode, isFalse);
+      expect(storage.themeMode, ThemeMode.system);
       expect(storage.localeCode, 'en');
 
-      await storage.setIsDarkMode(true);
+      await storage.setThemeMode(ThemeMode.dark);
       await storage.setLocaleCode('tr');
 
-      expect(storage.isDarkMode, isTrue);
+      expect(storage.themeMode, ThemeMode.dark);
       expect(storage.localeCode, 'tr');
     });
 
