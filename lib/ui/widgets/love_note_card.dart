@@ -43,6 +43,9 @@ class LoveNoteCard extends StatelessWidget {
     final otherPartner = context.select<AppStateProvider, UserModel>(
       (p) => p.otherPartner,
     );
+    final demoTools = context.select<AppStateProvider, bool>(
+      (p) => p.demoToolsEnabled,
+    );
 
     final receivedNote = context.select<AppStateProvider, LoveNoteModel?>(
       (p) => p.latestNoteForActivePartner,
@@ -181,9 +184,13 @@ class LoveNoteCard extends StatelessWidget {
               isDark: isDark,
               isTr: isTr,
               onWriteNew: () => WriteLoveNoteModal.show(context),
-              onSimulateReceive: () {
-                context.read<AppStateProvider>().simulatePartnerLoveNote();
-              },
+              onSimulateReceive:
+                  demoTools
+                      ? () =>
+                          context
+                              .read<AppStateProvider>()
+                              .simulatePartnerLoveNote()
+                      : null,
             ),
           ] else ...[
             // Neither has sent a note yet
@@ -194,9 +201,13 @@ class LoveNoteCard extends StatelessWidget {
               isDark: isDark,
               isTr: isTr,
               onWrite: () => WriteLoveNoteModal.show(context),
-              onSimulate: () {
-                context.read<AppStateProvider>().simulatePartnerLoveNote();
-              },
+              onSimulate:
+                  demoTools
+                      ? () =>
+                          context
+                              .read<AppStateProvider>()
+                              .simulatePartnerLoveNote()
+                      : null,
             ),
           ],
 
@@ -465,7 +476,7 @@ class _PendingSentNoteView extends StatelessWidget {
   final bool isDark;
   final bool isTr;
   final VoidCallback onWriteNew;
-  final VoidCallback onSimulateReceive;
+  final VoidCallback? onSimulateReceive; // demo builds only
 
   const _PendingSentNoteView({
     required this.note,
@@ -473,7 +484,7 @@ class _PendingSentNoteView extends StatelessWidget {
     required this.isDark,
     required this.isTr,
     required this.onWriteNew,
-    required this.onSimulateReceive,
+    this.onSimulateReceive,
   });
 
   @override
@@ -577,17 +588,18 @@ class _PendingSentNoteView extends StatelessWidget {
                   ),
                 ],
               ),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.bolt_rounded, size: 14),
-                label: Text(
-                  isTr ? 'Partnerden Not Simüle Et' : 'Simulate Partner Note',
-                  style: const TextStyle(fontSize: 10),
+              if (onSimulateReceive != null)
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.bolt_rounded, size: 14),
+                  label: Text(
+                    isTr ? 'Partnerden Not Simüle Et' : 'Simulate Partner Note',
+                    style: const TextStyle(fontSize: 10),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  onPressed: onSimulateReceive,
                 ),
-                style: OutlinedButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                ),
-                onPressed: onSimulateReceive,
-              ),
             ],
           ),
         ],
@@ -601,14 +613,14 @@ class _EmptyLoveNoteBoardView extends StatelessWidget {
   final bool isDark;
   final bool isTr;
   final VoidCallback onWrite;
-  final VoidCallback onSimulate;
+  final VoidCallback? onSimulate; // demo builds only
 
   const _EmptyLoveNoteBoardView({
     required this.partnerName,
     required this.isDark,
     required this.isTr,
     required this.onWrite,
-    required this.onSimulate,
+    this.onSimulate,
   });
 
   @override
@@ -672,16 +684,17 @@ class _EmptyLoveNoteBoardView extends StatelessWidget {
                 ),
                 onPressed: onWrite,
               ),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.bolt_rounded, size: 14),
-                label: Text(
-                  isTr
-                      ? 'Partnerden Not Simüle Et (Test)'
-                      : 'Simulate Note (Demo)',
-                  style: const TextStyle(fontSize: 11),
+              if (onSimulate != null)
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.bolt_rounded, size: 14),
+                  label: Text(
+                    isTr
+                        ? 'Partnerden Not Simüle Et (Test)'
+                        : 'Simulate Note (Demo)',
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  onPressed: onSimulate,
                 ),
-                onPressed: onSimulate,
-              ),
             ],
           ),
         ],

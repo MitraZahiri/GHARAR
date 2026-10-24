@@ -26,14 +26,16 @@ class CloudSyncException implements Exception {
 /// The couple document as stored in Firestore.
 class RemoteCouple {
   final CoupleModel couple;
-  final int memberCount;
+  final List<String> memberUids;
   final Map<String, String> moods;
 
   const RemoteCouple({
     required this.couple,
-    required this.memberCount,
+    required this.memberUids,
     required this.moods,
   });
+
+  int get memberCount => memberUids.length;
 }
 
 /// Mirrors local data to Cloud Firestore for the signed-in Firebase user.
@@ -193,6 +195,43 @@ class CloudSyncService {
     }
   }
 
+  /// Removes the other partner: afterwards only the caller is a member and
+  /// [updated] (caller as partner1, a fresh invite code) is the couple.
+  Future<void> removePartner(CoupleModel updated) async {
+    final uid = _uid;
+    if (uid == null) return;
+    await _write(
+      () => _couple(updated.id).update({
+        ...updated.toJson(),
+        'memberUids': [uid],
+        'updatedAt': FieldValue.serverTimestamp(),
+      }),
+    );
+  }
+
+  /// Deletes a couple only the caller belongs to, with its data and invite,
+  /// e.g. the single-person couple left behind after joining a partner.
+  Future<void> deleteSoloCouple(String coupleId, String inviteCode) async {
+    if (!isActive) return;
+    await _write(() async {
+      final couple = _couple(coupleId);
+      for (final collection in _coupleCollections) {
+        final docs = await couple.collection(collection).get();
+        await Future.wait(docs.docs.map((doc) => doc.reference.delete()));
+      }
+      final invite = _db.collection('invites').doc(inviteCode);
+      if ((await invite.get()).exists) await invite.delete();
+      await couple.delete();
+    });
+  }
+
+  static const _coupleCollections = [
+    'answers',
+    'loveNotes',
+    'journal',
+    'specialDates',
+  ];
+
   Stream<RemoteCouple?> watchCouple(String coupleId) => _couple(coupleId)
       .snapshots()
       .map((snapshot) {
@@ -200,7 +239,9 @@ class CloudSyncService {
         if (data == null) return null;
         return RemoteCouple(
           couple: CoupleModel.fromJson(data),
-          memberCount: (data['memberUids'] as List?)?.length ?? 0,
+          memberUids: List<String>.from(
+            data['memberUids'] as List? ?? const [],
+          ),
           moods: Map<String, String>.from(data['moods'] as Map? ?? const {}),
         );
       })

@@ -151,6 +151,12 @@ class AppLocalizations {
       'themeLight': 'Light',
       'themeDark': 'Dark',
       'themeToggle': 'Switch light/dark theme',
+      'unlinkBtn': 'Disconnect from partner',
+      'unlinkConfirm':
+          'Your partner will be removed from your shared space. You both keep the memories you have so far, and you get a new invite code.',
+      'unlinkAction': 'Disconnect',
+      'unlinkCancel': 'Cancel',
+      'unlinkDone': 'Disconnected. Share your new code whenever you are ready.',
       'pairNeedsSignIn': 'Sign in with Google to connect with your partner.',
       'pairInvalidCode':
           "That code doesn't match any couple. Check it and try again.",
@@ -289,6 +295,13 @@ class AppLocalizations {
       'themeLight': 'Açık',
       'themeDark': 'Koyu',
       'themeToggle': 'Açık/koyu temaya geç',
+      'unlinkBtn': 'Partnerle bağlantıyı kopar',
+      'unlinkConfirm':
+          'Partnerin ortak alanınızdan çıkarılacak. İkiniz de şimdiye kadarki anılarınızı saklarsınız ve sana yeni bir davet kodu verilir.',
+      'unlinkAction': 'Bağlantıyı kopar',
+      'unlinkCancel': 'Vazgeç',
+      'unlinkDone':
+          'Bağlantı koparıldı. Hazır olduğunda yeni kodunu paylaşabilirsin.',
       'pairNeedsSignIn': 'Partnerinle bağlanmak için Google ile giriş yap.',
       'pairInvalidCode':
           'Bu kod hiçbir çifte ait değil. Kontrol edip tekrar dene.',
@@ -416,6 +429,12 @@ class AppLocalizations {
       'themeLight': 'فاتح',
       'themeDark': 'داكن',
       'themeToggle': 'التبديل بين الوضع الفاتح والداكن',
+      'unlinkBtn': 'قطع الاتصال بالشريك',
+      'unlinkConfirm':
+          'ستتم إزالة شريكك من مساحتكما المشتركة. يحتفظ كل منكما بالذكريات حتى الآن، وستحصل على رمز دعوة جديد.',
+      'unlinkAction': 'قطع الاتصال',
+      'unlinkCancel': 'إلغاء',
+      'unlinkDone': 'تم قطع الاتصال. شارك رمزك الجديد متى كنت مستعداً.',
       'pairNeedsSignIn': 'سجّل الدخول باستخدام Google للتواصل مع شريكك.',
       'pairInvalidCode':
           'هذا الرمز لا يطابق أي ثنائي. تحقق منه وحاول مرة أخرى.',
@@ -544,6 +563,13 @@ class AppLocalizations {
       'themeLight': 'روشن',
       'themeDark': 'تیره',
       'themeToggle': 'تغییر پوسته روشن/تیره',
+      'unlinkBtn': 'قطع ارتباط با همراه',
+      'unlinkConfirm':
+          'همراهت از فضای مشترک‌تان حذف می‌شود. هر دو خاطرات تا امروز را نگه می‌دارید و یک کد دعوت جدید می‌گیری.',
+      'unlinkAction': 'قطع ارتباط',
+      'unlinkCancel': 'انصراف',
+      'unlinkDone':
+          'ارتباط قطع شد. هر وقت آماده بودی کد جدیدت را به اشتراک بگذار.',
       'pairNeedsSignIn': 'برای اتصال به همراهت با Google وارد شو.',
       'pairInvalidCode':
           'این کد به هیچ زوجی تعلق ندارد. بررسی کن و دوباره امتحان کن.',
@@ -675,6 +701,13 @@ class AppLocalizations {
       'themeLight': 'Hell',
       'themeDark': 'Dunkel',
       'themeToggle': 'Hell/Dunkel wechseln',
+      'unlinkBtn': 'Verbindung zum Partner trennen',
+      'unlinkConfirm':
+          'Dein Partner wird aus eurem gemeinsamen Bereich entfernt. Ihr behaltet beide eure bisherigen Erinnerungen, und du bekommst einen neuen Einladungscode.',
+      'unlinkAction': 'Trennen',
+      'unlinkCancel': 'Abbrechen',
+      'unlinkDone':
+          'Getrennt. Teile deinen neuen Code, wann immer du bereit bist.',
       'pairNeedsSignIn':
           'Melde dich mit Google an, um dich mit deinem Partner zu verbinden.',
       'pairInvalidCode':
@@ -806,6 +839,12 @@ class AppLocalizations {
       'themeLight': 'Claro',
       'themeDark': 'Oscuro',
       'themeToggle': 'Cambiar tema claro/oscuro',
+      'unlinkBtn': 'Desconectar de tu pareja',
+      'unlinkConfirm':
+          'Tu pareja será eliminada de vuestro espacio compartido. Ambos conserváis los recuerdos hasta ahora y recibes un nuevo código de invitación.',
+      'unlinkAction': 'Desconectar',
+      'unlinkCancel': 'Cancelar',
+      'unlinkDone': 'Desconectado. Comparte tu nuevo código cuando quieras.',
       'pairNeedsSignIn':
           'Inicia sesión con Google para conectar con tu pareja.',
       'pairInvalidCode':
@@ -937,6 +976,12 @@ class AppLocalizations {
       'themeLight': 'Clair',
       'themeDark': 'Sombre',
       'themeToggle': 'Basculer thème clair/sombre',
+      'unlinkBtn': 'Se déconnecter de ton partenaire',
+      'unlinkConfirm':
+          'Ton partenaire sera retiré de votre espace partagé. Vous gardez tous les deux vos souvenirs, et tu reçois un nouveau code d’invitation.',
+      'unlinkAction': 'Déconnecter',
+      'unlinkCancel': 'Annuler',
+      'unlinkDone': 'Déconnecté. Partage ton nouveau code quand tu es prêt.',
       'pairNeedsSignIn':
           'Connecte-toi avec Google pour te relier à ton partenaire.',
       'pairInvalidCode':
@@ -1068,6 +1113,12 @@ class AppLocalizations {
       'themeLight': 'Chiaro',
       'themeDark': 'Scuro',
       'themeToggle': 'Cambia tema chiaro/scuro',
+      'unlinkBtn': 'Disconnetti dal partner',
+      'unlinkConfirm':
+          'Il tuo partner verrà rimosso dal vostro spazio condiviso. Entrambi conservate i ricordi finora e ricevi un nuovo codice di invito.',
+      'unlinkAction': 'Disconnetti',
+      'unlinkCancel': 'Annulla',
+      'unlinkDone': 'Disconnesso. Condividi il nuovo codice quando sei pronto.',
       'pairNeedsSignIn': 'Accedi con Google per collegarti al tuo partner.',
       'pairInvalidCode':
           'Questo codice non corrisponde a nessuna coppia. Controllalo e riprova.',

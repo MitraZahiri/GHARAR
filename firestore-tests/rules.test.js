@@ -95,30 +95,39 @@ describe('couples/{coupleId}', () => {
     );
   });
 
-  test('membership stays between one and two people', async () => {
+  test('members cannot add anyone or leave themselves out', async () => {
     await seedCouple(['kerem']);
     await assertFails(
       setDoc(doc(as('kerem'), 'couples/c1'), { memberUids: [] }, { merge: true }),
     );
-    await assertSucceeds(
+    await assertFails(
       setDoc(
         doc(as('kerem'), 'couples/c1'),
         { memberUids: arrayUnion('elif') },
         { merge: true },
       ),
     );
+    await seedCouple(['kerem', 'elif']);
     await assertFails(
-      setDoc(
-        doc(as('kerem'), 'couples/c1'),
-        { memberUids: arrayUnion('mallory') },
-        { merge: true },
-      ),
+      updateDoc(doc(as('kerem'), 'couples/c1'), { memberUids: ['kerem', 'mallory'] }),
     );
   });
 
-  test('couples cannot be deleted', async () => {
-    await seedCouple(['kerem']);
+  test('either member can remove the other', async () => {
+    await seedCouple(['kerem', 'elif']);
+    await assertSucceeds(
+      updateDoc(doc(as('elif'), 'couples/c1'), { memberUids: ['elif'], partner2: null }),
+    );
+    // Kerem is out now.
+    await assertFails(getDoc(doc(as('kerem'), 'couples/c1')));
+  });
+
+  test('only a single-member couple can be deleted, by that member', async () => {
+    await seedCouple(['kerem', 'elif']);
     await assertFails(deleteDoc(doc(as('kerem'), 'couples/c1')));
+    await seedCouple(['kerem']);
+    await assertFails(deleteDoc(doc(as('mallory'), 'couples/c1')));
+    await assertSucceeds(deleteDoc(doc(as('kerem'), 'couples/c1')));
   });
 });
 

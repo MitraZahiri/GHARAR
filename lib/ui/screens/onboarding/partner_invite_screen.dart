@@ -118,6 +118,9 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
     final canPairOnline = context.select<AppStateProvider, bool>(
       (p) => p.canPairOnline,
     );
+    final demoTools = context.select<AppStateProvider, bool>(
+      (p) => p.demoToolsEnabled,
+    );
     final loc = AppLocalizations(
       context.select<AppStateProvider, Locale>((p) => p.locale),
     );
@@ -566,95 +569,98 @@ class _PartnerInviteScreenState extends State<PartnerInviteScreen> {
 
                       const SizedBox(height: 20),
 
-                      // Live Simulation / Test Helper (Essential for Testing without 2 phones)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              isDark
-                                  ? AppColors.terracotta.withValues(alpha: 0.12)
-                                  : AppColors.terracotta.withValues(
-                                    alpha: 0.06,
-                                  ),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
+                      // Live Simulation / Test Helper (debug builds only)
+                      if (demoTools)
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
                             color:
                                 isDark
                                     ? AppColors.terracotta.withValues(
-                                      alpha: 0.3,
+                                      alpha: 0.12,
                                     )
                                     : AppColors.terracotta.withValues(
-                                      alpha: 0.25,
+                                      alpha: 0.06,
                                     ),
-                            style: BorderStyle.solid,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              isTr
-                                  ? 'Canlı Eşleşme Simülasyonu'
-                                  : 'Live Pairing Simulation',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.8,
-                                color:
-                                    isDark
-                                        ? AppColors.terracottaLight
-                                        : AppColors.terracotta,
-                              ),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color:
+                                  isDark
+                                      ? AppColors.terracotta.withValues(
+                                        alpha: 0.3,
+                                      )
+                                      : AppColors.terracotta.withValues(
+                                        alpha: 0.25,
+                                      ),
+                              style: BorderStyle.solid,
                             ),
-                            const SizedBox(height: 8),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(16),
-                                onTap: () => _onSimulatePartnerJoined(isTr),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        isDark
-                                            ? AppColors.terracotta
-                                            : AppColors.deepBurgundy,
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(
-                                        Icons.favorite_rounded,
-                                        size: 14,
-                                        color: Colors.white,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        isTr
-                                            ? 'Partnerin Girişini Simüle Et 💫'
-                                            : 'Simulate Partner Connection 💫',
-                                        style: const TextStyle(
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                isTr
+                                    ? 'Canlı Eşleşme Simülasyonu'
+                                    : 'Live Pairing Simulation',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.8,
+                                  color:
+                                      isDark
+                                          ? AppColors.terracottaLight
+                                          : AppColors.terracotta,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(16),
+                                  onTap: () => _onSimulatePartnerJoined(isTr),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          isDark
+                                              ? AppColors.terracotta
+                                              : AppColors.deepBurgundy,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.favorite_rounded,
+                                          size: 14,
                                           color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          isTr
+                                              ? 'Partnerin Girişini Simüle Et 💫'
+                                              : 'Simulate Partner Connection 💫',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
 
                       const SizedBox(height: 20),
                     ],

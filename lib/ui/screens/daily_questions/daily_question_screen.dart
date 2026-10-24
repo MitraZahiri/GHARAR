@@ -473,7 +473,10 @@ class _DailyQuestionScreenState extends State<DailyQuestionScreen> {
             const SizedBox(height: 16),
 
             // Helper Simulation Button (for interactive demo testing!)
-            if (otherAnswer == null)
+            if (otherAnswer == null &&
+                context.select<AppStateProvider, bool>(
+                  (p) => p.demoToolsEnabled,
+                ))
               OutlinedButton.icon(
                 icon: const Icon(Icons.bolt_rounded, size: 18),
                 label: Text(

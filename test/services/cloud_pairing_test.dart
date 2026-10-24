@@ -214,4 +214,64 @@ void main() {
       expect(await owner.watchSpecialDates('couple_1').first, isEmpty);
     });
   });
+
+  group('leaving and cleanup', () {
+    test('watchCouple lists the member uids', () async {
+      await owner.registerInvite(couple);
+      await joiner.joinCouple('GHARAR-7K3QX9', person('uid_elif', 'Elif'));
+
+      final remote = await owner.watchCouple('couple_1').first;
+
+      expect(remote?.memberUids, ['uid_kerem', 'uid_elif']);
+    });
+
+    test('removePartner leaves only the caller in the couple', () async {
+      await owner.registerInvite(couple);
+      await joiner.joinCouple('GHARAR-7K3QX9', person('uid_elif', 'Elif'));
+
+      await joiner.removePartner(
+        CoupleModel(
+          id: 'couple_1',
+          partner1: person('uid_elif', 'Elif'),
+          inviteCode: 'GHARAR-NEW222',
+          anniversaryDate: DateTime(2020, 5, 1),
+          connectionStreak: 1,
+          isLinked: false,
+        ),
+      );
+
+      final doc = (await db.doc('couples/couple_1').get()).data();
+      expect(doc?['memberUids'], ['uid_elif']);
+      expect(doc?['partner1']['id'], 'uid_elif');
+      expect(doc?['partner2'], isNull);
+      expect(doc?['isLinked'], isFalse);
+      expect(doc?['inviteCode'], 'GHARAR-NEW222');
+    });
+
+    test('deleteSoloCouple removes the couple, its data and invite', () async {
+      await owner.registerInvite(couple);
+      await owner.saveLoveNote(
+        'couple_1',
+        LoveNoteModel(
+          id: 'note_1',
+          senderId: 'uid_kerem',
+          senderName: 'Kerem',
+          receiverId: 'user_2',
+          text: 'Hi',
+          paperColor: 'rose',
+          emoji: '💌',
+          createdAt: DateTime(2026, 10, 24),
+        ),
+      );
+
+      await owner.deleteSoloCouple('couple_1', 'GHARAR-7K3QX9');
+
+      expect((await db.doc('couples/couple_1').get()).exists, isFalse);
+      expect(
+        (await db.collection('couples/couple_1/loveNotes').get()).docs,
+        isEmpty,
+      );
+      expect((await db.doc('invites/GHARAR-7K3QX9').get()).exists, isFalse);
+    });
+  });
 }
