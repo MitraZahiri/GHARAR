@@ -1,11 +1,11 @@
 {
-    "name": "gharar",
-    "short_name": "gharar",
+    "name": "GHARAR",
+    "short_name": "GHARAR",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FAF4EB",
+    "theme_color": "#C85A32",
+    "description": "A private sanctuary for couples, near or far.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/localization/app_language.dart';
@@ -575,22 +576,25 @@ class _AuthScreenState extends State<AuthScreen> {
 
                           const SizedBox(height: 12),
 
-                          // Social Pill 2: Continue with Apple (Featured Pill)
-                          AppleSignInButton(
-                            isDark: isDark,
-                            isLoading: _isLoading,
-                            label:
-                                loc?.translate('signInWithApple') ??
-                                (isTr
-                                    ? 'Apple ile Giriş Yap'
-                                    : 'Sign in with Apple'),
-                            onPressed:
-                                _isLoading
-                                    ? null
-                                    : () => _submitAppleAuth(context),
-                          ),
+                          // Social Pill 2: Continue with Apple (Featured Pill).
+                          // Not configured for browsers, so apps only.
+                          if (!kIsWeb) ...[
+                            AppleSignInButton(
+                              isDark: isDark,
+                              isLoading: _isLoading,
+                              label:
+                                  loc?.translate('signInWithApple') ??
+                                  (isTr
+                                      ? 'Apple ile Giriş Yap'
+                                      : 'Sign in with Apple'),
+                              onPressed:
+                                  _isLoading
+                                      ? null
+                                      : () => _submitAppleAuth(context),
+                            ),
 
-                          const SizedBox(height: 12),
+                            const SizedBox(height: 12),
+                          ],
 
                           // Social Pill 3: Continue As Guest
                           SocialPillButton(

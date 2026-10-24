@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:mock_exceptions/mock_exceptions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -106,6 +108,51 @@ void main() {
 
       expect(google.signedOut, isTrue);
       expect(auth.currentUser, isNull);
+    });
+
+    test('on the web Google sign-in uses the Firebase popup', () async {
+      final auth = MockFirebaseAuth(
+        mockUser: MockUser(uid: 'uid_web', email: 'web@gmail.com'),
+      );
+      final google = _FakeGoogleSignIn(error: Exception('native SDK unused'));
+      final service = AuthService(
+        googleSignIn: google,
+        firebaseAuth: auth,
+        isWeb: true,
+      );
+
+      final result = await service.signInWithGoogle();
+
+      expect(result.success, isTrue);
+      expect(result.uid, 'uid_web');
+      expect(result.email, 'web@gmail.com');
+    });
+
+    test('closing the web popup is a cancellation', () async {
+      final auth = MockFirebaseAuth();
+      whenCalling(
+        Invocation.method(#signInWithPopup, null),
+      ).on(auth).thenThrow(FirebaseAuthException(code: 'popup-closed-by-user'));
+      final service = AuthService(firebaseAuth: auth, isWeb: true);
+
+      final result = await service.signInWithGoogle();
+
+      expect(result.isCancelled, isTrue);
+    });
+
+    test('on the web signOut leaves the native Google SDK alone', () async {
+      final google = _FakeGoogleSignIn(account: _FakeAccount());
+      final auth = MockFirebaseAuth(signedIn: true);
+      final service = AuthService(
+        googleSignIn: google,
+        firebaseAuth: auth,
+        isWeb: true,
+      );
+
+      await service.signOut();
+
+      expect(auth.currentUser, isNull);
+      expect(google.signedOut, isFalse);
     });
   });
 }
