@@ -11,6 +11,7 @@ import '../../../models/user_model.dart';
 import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/soul_connection_art.dart';
+import '../../widgets/theme_mode_card.dart';
 import 'subscription_screen.dart';
 
 class ProfileSettingsScreen extends StatelessWidget {
@@ -429,52 +430,7 @@ class ProfileSettingsScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 10),
-
-            // Theme Toggle
-            GlassCard(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  Icon(
-                    isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-                    size: 22,
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          isTr ? 'Romantik Tema Modu' : 'Romantic Theme',
-                          style: AppTextStyles.titleMedium(
-                            isDark: isDark,
-                          ).copyWith(fontSize: 14),
-                        ),
-                        Text(
-                          isDark
-                              ? (isTr
-                                  ? 'Kadife Bordo (Karanlık)'
-                                  : 'Velvet Burgundy (Dark)')
-                              : (isTr
-                                  ? 'Krem & Pudra Pembe (Aydınlık)'
-                                  : 'Cream & Blush Pink (Light)'),
-                          style: AppTextStyles.bodySmall(
-                            isDark: isDark,
-                          ).copyWith(fontSize: 11),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Switch.adaptive(
-                    value: isDark,
-                    activeColor: AppColors.blushPinkDeep,
-                    onChanged: (val) {
-                      context.read<AppStateProvider>().toggleTheme();
-                    },
-                  ),
-                ],
-              ),
-            ),
+            const ThemeModeCard(),
 
             const SizedBox(height: 10),
 

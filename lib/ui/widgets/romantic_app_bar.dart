@@ -5,6 +5,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../models/user_model.dart';
 import '../../providers/app_state_provider.dart';
 import '../screens/ai_companion/ai_companion_screen.dart';
+import 'theme_toggle_button.dart';
 
 class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -78,7 +79,7 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
           // Interactive Partner Switcher Pill
           if (showPartnerSwitcher) const PartnerSwitcherPill(),
 
-          const SizedBox(width: 4),
+          const ThemeToggleButton(),
 
           // AI Companion "Noor" Shortcut
           if (showAIButton)

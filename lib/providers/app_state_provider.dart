@@ -34,7 +34,8 @@ class AppStateProvider extends ChangeNotifier {
   String _activeViewingPartnerId = 'user_1'; // Supports interactive switching
 
   Locale _locale = const Locale('en');
-  bool _isDarkMode = false;
+  ThemeMode _themeMode = ThemeMode.system;
+  Brightness _platformBrightness = Brightness.light;
   bool _hasOnboarded = false;
   bool _isAuthenticated = false;
   String? _userEmail;
@@ -87,7 +88,15 @@ class AppStateProvider extends ChangeNotifier {
   bool get isFrench => _locale.languageCode == 'fr';
   bool get isItalian => _locale.languageCode == 'it';
   bool get isRtl => currentLanguage.isRtl;
-  bool get isDarkMode => _isDarkMode;
+  ThemeMode get themeMode => _themeMode;
+
+  /// Whether the dark palette is visible right now, resolving
+  /// [ThemeMode.system] against the device brightness.
+  bool get isDarkMode => switch (_themeMode) {
+    ThemeMode.dark => true,
+    ThemeMode.light => false,
+    ThemeMode.system => _platformBrightness == Brightness.dark,
+  };
   bool get hasOnboarded => _hasOnboarded;
   bool get isAuthenticated => _isAuthenticated;
   String? get userEmail => _userEmail;
@@ -237,7 +246,9 @@ class AppStateProvider extends ChangeNotifier {
     _isAuthenticated = _storage.isAuthenticated;
     _userEmail = _storage.userEmail;
     _authProvider = _storage.authProvider;
-    _isDarkMode = _storage.isDarkMode;
+    _themeMode = _storage.themeMode;
+    _platformBrightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
     _locale = Locale(_storage.localeCode);
     _hasOnboarded = _storage.hasOnboarded;
 
@@ -502,10 +513,24 @@ class AppStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleTheme() {
-    _isDarkMode = !_isDarkMode;
-    _storage.setIsDarkMode(_isDarkMode);
+  void setThemeMode(ThemeMode mode) {
+    if (mode == _themeMode) return;
+    _themeMode = mode;
+    _storage.setThemeMode(mode);
     notifyListeners();
+  }
+
+  /// Switches to the opposite of what is visible now, as an explicit choice.
+  void toggleTheme() {
+    setThemeMode(isDarkMode ? ThemeMode.light : ThemeMode.dark);
+  }
+
+  /// Called by the app when the device switches between light and dark.
+  void setPlatformBrightness(Brightness brightness) {
+    if (brightness == _platformBrightness) return;
+    final wasDark = isDarkMode;
+    _platformBrightness = brightness;
+    if (isDarkMode != wasDark) notifyListeners();
   }
 
   void completeOnboarding({
