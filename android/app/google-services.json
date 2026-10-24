@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "925195708674",
+    "project_id": "gharar-aead2",
+    "storage_bucket": "gharar-aead2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925195708674:android:bd240b20389551ba91fa1b",
+        "android_client_info": {
+          "package_name": "com.gharar.gharar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "925195708674-rjtur6sm68rvhbu49phklmmiei8o1f2j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gharar.gharar",
+            "certificate_hash": "efb570411f8bd5e6d7527e2751dad47b5c7c877d"
+          }
+        },
+        {
+          "client_id": "925195708674-73hbnlmbgq80hrg0gacvdfcd8ab1tknt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZW9A9h9mqKuFnd9mktFqYhUsrNFFiibk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "925195708674-73hbnlmbgq80hrg0gacvdfcd8ab1tknt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "925195708674-2ibu6e6dqfrmdck5grmnva7tioapoao2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gharar.gharar"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

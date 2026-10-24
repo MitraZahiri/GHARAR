@@ -1,0 +1,38 @@
+rules_version = '2';
+
+// GHARAR: a user's profile is visible only to them; a couple's data only to
+// the (at most two) Firebase users listed in the couple's memberUids.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isCoupleMember(coupleId) {
+      let couple = get(/databases/$(database)/documents/couples/$(coupleId));
+      return signedIn() && couple != null
+        && request.auth.uid in couple.data.memberUids;
+    }
+
+    match /users/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /couples/{coupleId} {
+      allow read: if signedIn() && request.auth.uid in resource.data.memberUids;
+      allow create: if signedIn()
+        && request.resource.data.memberUids == [request.auth.uid];
+      // Members may edit, but cannot remove themselves or add a third person.
+      allow update: if signedIn()
+        && request.auth.uid in resource.data.memberUids
+        && request.auth.uid in request.resource.data.memberUids
+        && request.resource.data.memberUids.size() <= 2;
+      allow delete: if false;
+
+      match /{collection}/{docId} {
+        allow read, write: if isCoupleMember(coupleId)
+          && collection in ['answers', 'loveNotes', 'journal', 'specialDates'];
+      }
+    }
+  }
+}
