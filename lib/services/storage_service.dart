@@ -22,6 +22,8 @@ class StorageService {
   static const _keyLegacyDarkTheme = 'gharar_theme_dark';
   static const _keyThemeMode = 'gharar_theme_mode';
   static const _keyLocale = 'gharar_locale';
+  static const _keyCloudUploadedFor = 'gharar_cloud_uploaded_for';
+  static const _keyPairedOnline = 'gharar_paired_online';
   static const _keyHasOnboarded = 'gharar_has_onboarded';
   static const _keyIsAuthenticated = 'gharar_is_authenticated';
   static const _keyUserEmail = 'gharar_user_email';
@@ -76,6 +78,16 @@ class StorageService {
 
   Future<void> setThemeMode(ThemeMode mode) =>
       _prefs.setString(_keyThemeMode, mode.name);
+
+  /// `uid/coupleId` whose first full upload from this device succeeded.
+  String? get cloudUploadedFor => _prefs.getString(_keyCloudUploadedFor);
+  Future<void> setCloudUploadedFor(String key) =>
+      _prefs.setString(_keyCloudUploadedFor, key);
+
+  /// Whether a real partner shares the couple through Firestore.
+  bool get isPairedOnline => _prefs.getBool(_keyPairedOnline) ?? false;
+  Future<void> setPairedOnline(bool value) =>
+      _prefs.setBool(_keyPairedOnline, value);
 
   String get localeCode => _prefs.getString(_keyLocale) ?? 'en';
   Future<void> setLocaleCode(String code) => _prefs.setString(_keyLocale, code);

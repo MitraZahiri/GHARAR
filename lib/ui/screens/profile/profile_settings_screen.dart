@@ -12,6 +12,7 @@ import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/soul_connection_art.dart';
 import '../../widgets/theme_mode_card.dart';
+import '../../widgets/unlink_partner_button.dart';
 import 'subscription_screen.dart';
 
 class ProfileSettingsScreen extends StatelessWidget {
@@ -205,63 +206,73 @@ class ProfileSettingsScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Active Partner Switcher (Interactive Simulation Mode)
-            Text(
-              isTr ? 'Aktif Partner Görünümü' : 'Active Partner Perspective',
-              style: AppTextStyles.labelLarge(isDark: isDark),
-            ),
-            const SizedBox(height: 8),
-            GlassCard(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  Text(active.avatar, style: const TextStyle(fontSize: 22)),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          isTr
-                              ? 'Şu anda ${context.read<AppStateProvider>().displayNameOf(active)} olarak bakıyorsunuz'
-                              : 'Viewing as ${context.read<AppStateProvider>().displayNameOf(active)}',
-                          style: AppTextStyles.titleMedium(
-                            isDark: isDark,
-                          ).copyWith(fontSize: 14, fontWeight: FontWeight.w700),
-                        ),
-                        Text(
-                          isTr
-                              ? 'Karşılıklı cevapları test etmek için partnerinizi değiştirin.'
-                              : 'Switch partner to simulate answers & test mutual reveal.',
-                          style: AppTextStyles.bodySmall(
-                            isDark: isDark,
-                          ).copyWith(fontSize: 11),
-                        ),
-                      ],
-                    ),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      final appState = context.read<AppStateProvider>();
-                      appState.switchActivePartner();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: const Duration(milliseconds: 1000),
-                          content: Text(
-                            isTr
-                                ? 'Artık ${appState.activePartnerName} olarak bakıyorsunuz'
-                                : 'Now viewing as ${appState.activePartnerName}',
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text(isTr ? 'Değiştir' : 'Switch'),
-                  ),
-                ],
+            // Active Partner Switcher (debug builds without a real partner)
+            if (context.select<AppStateProvider, bool>(
+              (p) => p.demoToolsEnabled,
+            )) ...[
+              Text(
+                isTr ? 'Aktif Partner Görünümü' : 'Active Partner Perspective',
+                style: AppTextStyles.labelLarge(isDark: isDark),
               ),
-            ),
+              const SizedBox(height: 8),
+              GlassCard(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    Text(active.avatar, style: const TextStyle(fontSize: 22)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isTr
+                                ? 'Şu anda ${context.read<AppStateProvider>().displayNameOf(active)} olarak bakıyorsunuz'
+                                : 'Viewing as ${context.read<AppStateProvider>().displayNameOf(active)}',
+                            style: AppTextStyles.titleMedium(
+                              isDark: isDark,
+                            ).copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            isTr
+                                ? 'Karşılıklı cevapları test etmek için partnerinizi değiştirin.'
+                                : 'Switch partner to simulate answers & test mutual reveal.',
+                            style: AppTextStyles.bodySmall(
+                              isDark: isDark,
+                            ).copyWith(fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        final appState = context.read<AppStateProvider>();
+                        appState.switchActivePartner();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(milliseconds: 1000),
+                            content: Text(
+                              isTr
+                                  ? 'Artık ${appState.activePartnerName} olarak bakıyorsunuz'
+                                  : 'Now viewing as ${appState.activePartnerName}',
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(isTr ? 'Değiştir' : 'Switch'),
+                    ),
+                  ],
+                ),
+              ),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
+            ],
 
             // Premium Banner
             GlassCard(
@@ -592,6 +603,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                         isDark ? AppColors.darkBorder : AppColors.lightBorder,
                   ),
                   const SizedBox(height: 10),
+                  const UnlinkPartnerButton(),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(

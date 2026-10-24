@@ -49,3 +49,7 @@ coverage/
 
 # Local marketing material (LinkedIn post drafts, screenshots, demo videos)
 /linkedin/
+
+# Firestore rules tests
+firestore-tests/node_modules/
+*-debug.log

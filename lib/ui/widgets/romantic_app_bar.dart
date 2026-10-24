@@ -30,6 +30,9 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
     final tagline = context.select<AppStateProvider, String>(
       (p) => p.currentLanguage.tagline,
     );
+    final demoTools = context.select<AppStateProvider, bool>(
+      (p) => p.demoToolsEnabled,
+    );
 
     return AppBar(
       toolbarHeight: 68,
@@ -77,7 +80,7 @@ class RomanticAppBar extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: 8),
 
           // Interactive Partner Switcher Pill
-          if (showPartnerSwitcher) const PartnerSwitcherPill(),
+          if (showPartnerSwitcher && demoTools) const PartnerSwitcherPill(),
 
           const ThemeToggleButton(),
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/couple_model.dart';
@@ -26,6 +27,16 @@ import '../services/cloud_sync_service.dart';
 
 const _simulatedNotePrefix = 'note_sim_';
 const _simulatedAnswerPrefix = 'ans_sim_';
+
+/// Outcome of entering a partner's invite code.
+enum PairingResult {
+  joined,
+  invalidCode,
+  ownCode,
+  coupleFull,
+  needsSignIn,
+  failed,
+}
 
 class AppStateProvider extends ChangeNotifier {
   final StorageService _storage;
@@ -69,6 +80,15 @@ class AppStateProvider extends ChangeNotifier {
 
   bool _isGeneratingAI = false;
 
+  final List<StreamSubscription<Object?>> _cloudSubscriptions = [];
+  String? _listeningCoupleId;
+  String? _publishedInviteCode;
+  bool _isPairedOnline = false;
+  // Set once this phone has read the shared couple, so a later
+  // permission-denied means the partner removed us.
+  bool _hadCoupleAccess = false;
+  Future<void>? _cloudStartup;
+
   AppStateProvider(
     this._storage, {
     AuthService? authService,
@@ -80,6 +100,13 @@ class AppStateProvider extends ChangeNotifier {
        _mediaService = mediaService ?? NoteMediaService(),
        _homeWidgetService = homeWidgetService ?? HomeWidgetService() {
     _loadFromStorage();
+    unawaited(_startCloud());
+  }
+
+  @override
+  void dispose() {
+    _stopListening();
+    super.dispose();
   }
 
   // Getters
@@ -170,6 +197,16 @@ class AppStateProvider extends ChangeNotifier {
 
   bool get isPartnerLinked => _couple?.isLinked ?? false;
 
+  /// True when signed in with Firebase, so invite codes work across phones.
+  bool get canPairOnline => _cloud?.isActive ?? false;
+
+  /// A real partner shares this couple from their own phone.
+  bool get isPairedOnline => _isPairedOnline;
+
+  /// Partner switching and simulated partner replies: debug builds only,
+  /// and never once a real partner is connected.
+  bool get demoToolsEnabled => kDebugMode && !_isPairedOnline;
+
   // Distance Mode (close by vs. long distance)
   DistanceMode get distanceMode =>
       _couple?.distanceMode ?? DistanceMode.together;
@@ -248,31 +285,328 @@ class AppStateProvider extends ChangeNotifier {
     if (user != null) _cloudWrite((cloud) => cloud.saveUser(user));
   }
 
-  /// Uploads everything the couple created on this device, e.g. right after
-  /// signing in. Demo simulations and seed templates are left out.
-  void _syncAll() {
-    _syncUser();
-    _syncCouple();
+  /// Uploads local data once per Firebase account, then follows the couple
+  /// live. Listening never starts before that upload succeeded, so an empty
+  /// or unreachable cloud copy can't replace what is on this phone.
+  Future<void> _startCloud() {
+    // Runs one at a time; a later call sees what the earlier one did.
+    final previous = _cloudStartup ?? Future<void>.value();
+    return _cloudStartup = previous.then((_) => _runCloudStartup());
+  }
+
+  Future<void> _runCloudStartup() async {
+    final cloud = _cloud;
+    final uid = cloud?.uid;
+    final couple = _couple;
+    if (cloud == null || uid == null || couple == null) return;
+    final uploadKey = '$uid/${couple.id}';
+    if (_storage.cloudUploadedFor != uploadKey) {
+      if (!await _uploadAll(cloud)) return;
+      await _storage.setCloudUploadedFor(uploadKey);
+    }
+    _listenToCouple();
+  }
+
+  /// Uploads everything the couple created on this device. Demo simulations
+  /// and seed templates are left out.
+  Future<bool> _uploadAll(CloudSyncService cloud) async {
+    final couple = _couple;
+    if (couple == null) return false;
+    final user = _currentUser;
     final seedDateIds =
         SeedDataService.defaultSpecialDates.map((d) => d.id).toSet();
-    final notes = _loveNotes.where(
-      (n) => !n.id.startsWith(_simulatedNotePrefix),
+    try {
+      if (user != null) await cloud.saveUser(user);
+      await cloud.saveCouple(couple);
+      await Future.wait([
+        for (final note in _loveNotes)
+          if (!note.id.startsWith(_simulatedNotePrefix))
+            cloud.saveLoveNote(couple.id, note),
+        for (final answer in _answersMap.values.expand((list) => list))
+          if (!answer.id.startsWith(_simulatedAnswerPrefix))
+            cloud.saveAnswer(couple.id, answer),
+        for (final entry in _journalEntries)
+          cloud.saveJournalEntry(couple.id, entry),
+        for (final date in _specialDates)
+          if (!seedDateIds.contains(date.id))
+            cloud.saveSpecialDate(couple.id, date),
+        if (_partnerMoods.isNotEmpty) cloud.saveMoods(couple.id, _partnerMoods),
+      ]);
+      return true;
+    } on CloudSyncException catch (e) {
+      _cloudSyncError = e.code;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  void _listenToCouple() {
+    final cloud = _cloud;
+    final coupleId = _couple?.id;
+    if (cloud == null || !cloud.isActive || coupleId == null) return;
+    if (_listeningCoupleId == coupleId) return;
+    _stopListening();
+    _listeningCoupleId = coupleId;
+    void onError(Object error) {
+      final code = error is CloudSyncException ? error.code : error.toString();
+      if (code == 'permission-denied' && _hadCoupleAccess) {
+        _startOwnCoupleAfterRemoval(coupleId);
+        return;
+      }
+      _cloudSyncError = code;
+      notifyListeners();
+    }
+
+    _cloudSubscriptions.addAll([
+      cloud
+          .watchCouple(coupleId)
+          .listen(
+            (remote) => _applyRemoteCouple(coupleId, remote),
+            onError: onError,
+          ),
+      cloud
+          .watchLoveNotes(coupleId)
+          .listen(_applyRemoteLoveNotes, onError: onError),
+      cloud
+          .watchAnswers(coupleId)
+          .listen(_applyRemoteAnswers, onError: onError),
+      cloud
+          .watchJournal(coupleId)
+          .listen(_applyRemoteJournal, onError: onError),
+      cloud
+          .watchSpecialDates(coupleId)
+          .listen(_applyRemoteSpecialDates, onError: onError),
+    ]);
+  }
+
+  void _stopListening() {
+    for (final subscription in _cloudSubscriptions) {
+      unawaited(subscription.cancel());
+    }
+    _cloudSubscriptions.clear();
+    _listeningCoupleId = null;
+    _hadCoupleAccess = false;
+  }
+
+  void _setPairedOnline(bool value) {
+    if (value == _isPairedOnline) return;
+    _isPairedOnline = value;
+    _storage.setPairedOnline(value);
+  }
+
+  void _applyRemoteCouple(String coupleId, RemoteCouple? remote) {
+    if (remote == null) return;
+    final uid = _cloud?.uid;
+    if (uid != null && !remote.memberUids.contains(uid)) {
+      _startOwnCoupleAfterRemoval(coupleId);
+      return;
+    }
+    _hadCoupleAccess = true;
+    _setPairedOnline(remote.memberCount >= 2);
+    _couple = remote.couple;
+    _partnerMoods = Map.of(remote.moods);
+    _storage.saveCouple(remote.couple);
+    _storage.savePartnerMoods(_partnerMoods);
+    notifyListeners();
+    if (remote.memberCount < 2) unawaited(_publishInvite());
+  }
+
+  /// Lets a partner find this couple by its code; replaces the old
+  /// guessable `GHARAR-1234-LOVE` codes first.
+  Future<void> _publishInvite() async {
+    final cloud = _cloud;
+    var couple = _couple;
+    if (cloud == null || couple == null) return;
+    if (!CloudSyncService.isStrongInviteCode(couple.inviteCode)) {
+      couple = couple.copyWith(inviteCode: CloudSyncService.newInviteCode());
+      _couple = couple;
+      _storage.saveCouple(couple);
+      notifyListeners();
+    }
+    if (_publishedInviteCode == couple.inviteCode) return;
+    _publishedInviteCode = couple.inviteCode;
+    try {
+      await cloud.registerInvite(couple);
+    } on CloudSyncException catch (e) {
+      _publishedInviteCode = null;
+      _cloudSyncError = e.code;
+      notifyListeners();
+    }
+  }
+
+  void _applyRemoteLoveNotes(List<LoveNoteModel> remote) {
+    // Images stay on the phone that has them; keep their local paths.
+    final localImages = {
+      for (final note in _loveNotes)
+        if (note.imagePath != null) note.id: note.imagePath!,
+    };
+    _loveNotes = [
+      for (final note in remote)
+        note.imagePath == null && localImages.containsKey(note.id)
+            ? note.copyWith(imagePath: localImages[note.id])
+            : note,
+    ]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    _storage.saveLoveNotes(_loveNotes);
+    notifyListeners();
+    unawaited(_syncHomeWidget());
+  }
+
+  void _applyRemoteAnswers(List<AnswerModel> remote) {
+    final byQuestion = <String, List<AnswerModel>>{};
+    for (final answer in remote) {
+      (byQuestion[answer.questionId] ??= []).add(answer);
+    }
+    _answersMap = byQuestion;
+    _storage.saveAnswers(_answersMap);
+    notifyListeners();
+  }
+
+  void _applyRemoteJournal(List<JournalEntryModel> remote) {
+    _journalEntries = [...remote]..sort((a, b) => b.date.compareTo(a.date));
+    _storage.saveJournal(_journalEntries);
+    notifyListeners();
+  }
+
+  void _applyRemoteSpecialDates(List<SpecialDateModel> remote) {
+    final seedIds =
+        SeedDataService.defaultSpecialDates.map((d) => d.id).toSet();
+    final remoteIds = remote.map((d) => d.id).toSet();
+    _specialDates = [
+      ..._specialDates.where(
+        (d) => seedIds.contains(d.id) && !remoteIds.contains(d.id),
+      ),
+      ...remote,
+    ]..sort((a, b) => a.daysUntil.compareTo(b.daysUntil));
+    _storage.saveSpecialDates(_specialDates);
+    notifyListeners();
+  }
+
+  /// The partner removed this phone from the shared couple. Everything this
+  /// phone already has stays; it becomes a new couple with a fresh code.
+  void _startOwnCoupleAfterRemoval(String coupleId) {
+    final old = _couple;
+    if (old == null || old.id != coupleId) return;
+    _stopListening();
+    _setPairedOnline(false);
+    final me = _currentUser ?? activePartner;
+    _couple = _withoutPartner(
+      old,
+      id: 'couple_${DateTime.now().millisecondsSinceEpoch}',
+      me: me,
     );
-    final answers = _answersMap.values
-        .expand((list) => list)
-        .where((a) => !a.id.startsWith(_simulatedAnswerPrefix));
-    final dates = _specialDates.where((d) => !seedDateIds.contains(d.id));
-    final journal = List.of(_journalEntries);
-    final moods = Map<String, String>.of(_partnerMoods);
-    _cloudCoupleWrite(
-      (cloud, coupleId) => Future.wait([
-        for (final note in notes) cloud.saveLoveNote(coupleId, note),
-        for (final answer in answers) cloud.saveAnswer(coupleId, answer),
-        for (final entry in journal) cloud.saveJournalEntry(coupleId, entry),
-        for (final date in dates) cloud.saveSpecialDate(coupleId, date),
-        if (moods.isNotEmpty) cloud.saveMoods(coupleId, moods),
-      ]),
+    _activeViewingPartnerId = me.id;
+    _storage.saveCouple(_couple!);
+    notifyListeners();
+    unawaited(_startCloud());
+  }
+
+  /// [old] with [me] alone in it and a fresh invite code. Shared history
+  /// such as the anniversary and streak is kept.
+  CoupleModel _withoutPartner(
+    CoupleModel old, {
+    required String id,
+    required UserModel me,
+  }) {
+    return CoupleModel(
+      id: id,
+      partner1: me,
+      partner2: null,
+      inviteCode: CloudSyncService.newInviteCode(),
+      anniversaryDate: old.anniversaryDate,
+      connectionStreak: old.connectionStreak,
+      streakLastMaintained: old.streakLastMaintained,
+      isLinked: false,
+      isPremium: old.isPremium,
+      distanceMode: old.distanceMode,
     );
+  }
+
+  /// Joins the partner's couple behind [code]. What this phone created on
+  /// its own (notes, answers, journal, dates, mood) moves into the shared
+  /// couple, and its single-person couple is deleted from the cloud.
+  Future<PairingResult> joinPartnerWithCode(String code) async {
+    final cloud = _cloud;
+    final uid = cloud?.uid;
+    if (cloud == null || uid == null) return PairingResult.needsSignIn;
+    final normalized = CloudSyncService.normalizeInviteCode(code);
+    if (normalized == _couple?.inviteCode) return PairingResult.ownCode;
+
+    final previousCouple = _couple;
+    final previousId = activePartner.id;
+    final me = activePartner.copyWith(id: uid);
+    final CoupleModel shared;
+    try {
+      shared = await cloud.joinCouple(normalized, me);
+    } on CloudSyncException catch (e) {
+      return switch (e.code) {
+        CloudSyncException.inviteNotFound => PairingResult.invalidCode,
+        CloudSyncException.ownInvite => PairingResult.ownCode,
+        CloudSyncException.coupleFull => PairingResult.coupleFull,
+        CloudSyncException.notSignedIn => PairingResult.needsSignIn,
+        _ => PairingResult.failed,
+      };
+    }
+
+    // What this phone created by itself, re-addressed to the real partner.
+    final partnerId = shared.partner1.id;
+    final seedDateIds =
+        SeedDataService.defaultSpecialDates.map((d) => d.id).toSet();
+    final myNotes = [
+      for (final note in _loveNotes)
+        if (note.senderId == previousId &&
+            !note.id.startsWith(_simulatedNotePrefix))
+          note.copyWith(senderId: uid, receiverId: partnerId),
+    ];
+    final myAnswers = [
+      for (final answer in _answersMap.values.expand((list) => list))
+        if (answer.authorId == previousId &&
+            !answer.id.startsWith(_simulatedAnswerPrefix))
+          answer.copyWith(authorId: uid),
+    ];
+    final myJournal = [
+      for (final entry in _journalEntries)
+        if (entry.authorId == previousId) entry.copyWith(authorId: uid),
+    ];
+    final myDates = _specialDates.where((d) => !seedDateIds.contains(d.id));
+    final myMood = _partnerMoods[previousId];
+
+    _stopListening();
+    _setPairedOnline(true);
+    _currentUser = me;
+    _activeViewingPartnerId = uid;
+    _couple = shared;
+    _loveNotes = [];
+    _answersMap = {};
+    _journalEntries = [];
+    _partnerMoods = {};
+    _storage.saveUser(me);
+    _storage.saveCouple(shared);
+    _storage.saveLoveNotes(_loveNotes);
+    _storage.saveAnswers(_answersMap);
+    _storage.saveJournal(_journalEntries);
+    _storage.savePartnerMoods(_partnerMoods);
+    await _storage.setCloudUploadedFor('$uid/${shared.id}');
+    _syncUser();
+    try {
+      await Future.wait([
+        for (final note in myNotes) cloud.saveLoveNote(shared.id, note),
+        for (final answer in myAnswers) cloud.saveAnswer(shared.id, answer),
+        for (final entry in myJournal) cloud.saveJournalEntry(shared.id, entry),
+        for (final date in myDates) cloud.saveSpecialDate(shared.id, date),
+        if (myMood != null) cloud.saveMoods(shared.id, {uid: myMood}),
+      ]);
+      if (previousCouple != null && previousCouple.id != shared.id) {
+        await cloud.deleteSoloCouple(
+          previousCouple.id,
+          previousCouple.inviteCode,
+        );
+      }
+    } on CloudSyncException catch (e) {
+      _cloudSyncError = e.code;
+    }
+    _listenToCouple();
+    notifyListeners();
+    return PairingResult.joined;
   }
 
   UserModel get activePartner {
@@ -321,6 +655,7 @@ class AppStateProvider extends ChangeNotifier {
         WidgetsBinding.instance.platformDispatcher.platformBrightness;
     _locale = Locale(_storage.localeCode);
     _hasOnboarded = _storage.hasOnboarded;
+    _isPairedOnline = _storage.isPairedOnline;
 
     _currentUser = _storage.getUser();
     _couple = _storage.getCouple();
@@ -408,6 +743,8 @@ class AppStateProvider extends ChangeNotifier {
 
   // Partner Switcher (Interactive Demo & Simulation)
   void switchActivePartner() {
+    // With a real partner, nobody may act on the other's behalf.
+    if (_isPairedOnline) return;
     if (_couple == null || _couple!.partner2 == null) return;
     if (_activeViewingPartnerId == _couple!.partner1.id) {
       _activeViewingPartnerId = _couple!.partner2!.id;
@@ -567,6 +904,7 @@ class AppStateProvider extends ChangeNotifier {
     String paperColor = 'rose',
     String emoji = '💌',
   }) {
+    if (_isPairedOnline) return;
     final defaultMsg =
         isTurkish
             ? 'Telefonun kapalıyken ana sayfana bu tatlı notu iliştirdim. Günün harika geçsin sevgilim! ☀️💖'
@@ -623,7 +961,8 @@ class AppStateProvider extends ChangeNotifier {
   }) {
     final effectiveEmail = email ?? _userEmail ?? 'user@gharar.love';
     final user = UserModel(
-      id: 'user_1',
+      // A Firebase uid keeps ids unique once two phones share a couple.
+      id: _cloud?.uid ?? 'user_1',
       // Falls back to the name given at sign-in (Google, Apple or email).
       name:
           cleanPersonName(name).isNotEmpty
@@ -648,15 +987,14 @@ class AppStateProvider extends ChangeNotifier {
       id: 'couple_${DateTime.now().millisecondsSinceEpoch}',
       partner1: user,
       partner2: null,
-      inviteCode: 'GHARAR-${1000 + Random().nextInt(8999)}-LOVE',
+      inviteCode: CloudSyncService.newInviteCode(),
       anniversaryDate: DateTime.now(),
       connectionStreak: 1,
       streakLastMaintained: DateTime.now(),
       isLinked: false,
     );
     _storage.saveCouple(_couple!);
-    _syncUser();
-    _syncCouple();
+    unawaited(_startCloud());
 
     notifyListeners();
   }
@@ -772,6 +1110,7 @@ class AppStateProvider extends ChangeNotifier {
 
   // Simulate Partner Answer (Demo helper so single user can see mutual reveal immediately!)
   void simulatePartnerAnswer(String questionId) {
+    if (_isPairedOnline) return;
     final partner = otherPartner;
     final String simulatedText;
     switch (_locale.languageCode) {
@@ -993,25 +1332,43 @@ class AppStateProvider extends ChangeNotifier {
     }
   }
 
-  // Unlink / Reset
-  void unlinkPartner() {
-    if (_couple != null) {
-      _couple = CoupleModel(
-        id: _couple!.id,
-        partner1: _couple!.partner1,
-        partner2: null,
-        inviteCode: _couple!.inviteCode,
-        anniversaryDate: _couple!.anniversaryDate,
-        connectionStreak: _couple!.connectionStreak,
-        streakLastMaintained: _couple!.streakLastMaintained,
-        isLinked: false,
-        isPremium: _couple!.isPremium,
-        distanceMode: _couple!.distanceMode,
-      );
+  /// Ends the connection. With a real partner, they are removed from the
+  /// couple in the cloud (their phone keeps its copy and starts over) and
+  /// this couple gets a new invite code, so the old one can't be reused.
+  Future<void> unlinkPartner() async {
+    final old = _couple;
+    if (old == null) return;
+    final cloud = _cloud;
+    if (_isPairedOnline && cloud != null && cloud.isActive) {
+      final me = _currentUser ?? activePartner;
+      _couple = _withoutPartner(old, id: old.id, me: me);
+      _activeViewingPartnerId = me.id;
+      _setPairedOnline(false);
       _storage.saveCouple(_couple!);
-      _syncCouple();
       notifyListeners();
+      try {
+        await cloud.removePartner(_couple!);
+      } on CloudSyncException catch (e) {
+        _cloudSyncError = e.code;
+        notifyListeners();
+      }
+      return;
     }
+    _couple = CoupleModel(
+      id: old.id,
+      partner1: old.partner1,
+      partner2: null,
+      inviteCode: old.inviteCode,
+      anniversaryDate: old.anniversaryDate,
+      connectionStreak: old.connectionStreak,
+      streakLastMaintained: old.streakLastMaintained,
+      isLinked: false,
+      isPremium: old.isPremium,
+      distanceMode: old.distanceMode,
+    );
+    _storage.saveCouple(_couple!);
+    _syncCouple();
+    notifyListeners();
   }
 
   // Authentication Methods (Apple ID, Google, Email, Guest)
@@ -1057,7 +1414,7 @@ class AppStateProvider extends ChangeNotifier {
       final googleEmail = result.email ?? 'user.google@gmail.com';
       final name = cleanPersonName(result.displayName);
       _setAuthenticatedUser(email: googleEmail, name: name, provider: 'google');
-      _syncAll();
+      unawaited(_startCloud());
       return true;
     } else if (result.isCancelled) {
       return false;
@@ -1157,6 +1514,7 @@ class AppStateProvider extends ChangeNotifier {
   }
 
   Future<void> signOut() async {
+    _stopListening();
     _isAuthenticated = false;
     _partnerMoods = {};
     _lastNudgeTime = null;
