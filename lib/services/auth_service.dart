@@ -12,18 +12,25 @@ typedef AppleSignInFunction = Future<AuthResult> Function();
 /// Service responsible for orchestrating third-party OAuth (Google, Apple)
 /// and guest authentication with robust error and fallback handling.
 class AuthService {
-  final GoogleSignIn _googleSignIn;
+  final GoogleSignIn? _injectedGoogleSignIn;
+  // Created on first use: on the web the plugin starts up in its constructor
+  // and throws without a client ID, and browsers use the Firebase popup.
+  late final GoogleSignIn _googleSignIn =
+      _injectedGoogleSignIn ?? GoogleSignIn();
   final FirebaseAuth? _firebaseAuth;
+  final bool _isWeb;
   final GoogleSignInFunction? _googleSignInOverride;
   final AppleSignInFunction? _appleSignInOverride;
 
   AuthService({
     GoogleSignIn? googleSignIn,
     FirebaseAuth? firebaseAuth,
+    bool isWeb = kIsWeb,
     GoogleSignInFunction? googleSignInOverride,
     AppleSignInFunction? appleSignInOverride,
-  }) : _googleSignIn = googleSignIn ?? GoogleSignIn(),
+  }) : _injectedGoogleSignIn = googleSignIn,
        _firebaseAuth = firebaseAuth,
+       _isWeb = isWeb,
        _googleSignInOverride = googleSignInOverride,
        _appleSignInOverride = appleSignInOverride;
 
@@ -43,6 +50,10 @@ class AuthService {
   Future<AuthResult> signInWithGoogle() async {
     if (_googleSignInOverride != null) {
       return _googleSignInOverride();
+    }
+    final firebaseAuth = _firebaseAuth;
+    if (_isWeb && firebaseAuth != null) {
+      return _signInWithGooglePopup(firebaseAuth);
     }
     if (_isTestEnvironment && _firebaseAuth == null) {
       return AuthResult.success(
@@ -86,6 +97,29 @@ class AuthService {
         authProvider: 'google',
       );
     } on FirebaseAuthException catch (e) {
+      return AuthResult.failure(
+        errorMessage: 'Google sign-in failed (${e.code})',
+        authProvider: 'google',
+      );
+    }
+  }
+
+  /// Browsers (including Safari on iPhone) sign in through Firebase's own
+  /// Google popup; the native SDK flow is for Android and iOS apps.
+  Future<AuthResult> _signInWithGooglePopup(FirebaseAuth auth) async {
+    try {
+      final user = (await auth.signInWithPopup(GoogleAuthProvider())).user;
+      return AuthResult.success(
+        uid: user?.uid,
+        email: user?.email,
+        displayName: user?.displayName,
+        authProvider: 'google',
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'popup-closed-by-user' ||
+          e.code == 'cancelled-popup-request') {
+        return AuthResult.cancelled(authProvider: 'google');
+      }
       return AuthResult.failure(
         errorMessage: 'Google sign-in failed (${e.code})',
         authProvider: 'google',
@@ -159,6 +193,7 @@ class AuthService {
   /// Cleans up active third-party auth tokens
   Future<void> signOut() async {
     await _firebaseAuth?.signOut();
+    if (_isWeb) return;
     try {
       if (await _googleSignIn.isSignedIn()) {
         await _googleSignIn.signOut();

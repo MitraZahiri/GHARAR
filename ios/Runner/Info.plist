@@ -49,5 +49,19 @@
 	<string>GHARAR uses the camera so you can send a photo love note to your partner.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>GHARAR lets you pick a photo from your library to send as a love note.</string>
+	<!-- Google Sign-In (Firebase project gharar-aead2, iOS OAuth client) -->
+	<key>GIDClientID</key>
+	<string>925195708674-2ibu6e6dqfrmdck5grmnva7tioapoao2.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.925195708674-2ibu6e6dqfrmdck5grmnva7tioapoao2</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

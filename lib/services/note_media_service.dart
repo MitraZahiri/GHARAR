@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:path_provider/path_provider.dart';
 
@@ -36,6 +37,7 @@ class NoteMediaService {
       'note_${DateTime.now().microsecondsSinceEpoch}.$extension';
 
   Future<String> saveBytes(Uint8List bytes, {required String extension}) async {
+    if (kIsWeb) throw const NoteMediaException('not available in browsers');
     try {
       final dir = await _mediaDirectory();
       final file = File(
@@ -49,6 +51,7 @@ class NoteMediaService {
   }
 
   Future<String> importFile(String sourcePath) async {
+    if (kIsWeb) throw const NoteMediaException('not available in browsers');
     final source = File(sourcePath);
     if (!await source.exists()) {
       throw const NoteMediaException('source missing');

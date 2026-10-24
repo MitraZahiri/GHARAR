@@ -27,7 +27,14 @@ void main() async {
   CloudSyncService? cloudSync;
   if (_hasFirebaseConfig) {
     await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+      // On the web, sign-in runs through the app's own Hosting domain so
+      // Safari (also as an iPhone home-screen app) keeps it first-party.
+      options:
+          kIsWeb
+              ? DefaultFirebaseOptions.web.copyWith(
+                authDomain: 'gharar-aead2.web.app',
+              )
+              : DefaultFirebaseOptions.currentPlatform,
     );
     final auth = FirebaseAuth.instance;
     authService = AuthService(firebaseAuth: auth);

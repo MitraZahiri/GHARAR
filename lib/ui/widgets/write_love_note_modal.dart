@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -352,14 +353,17 @@ class _WriteLoveNoteModalState extends State<WriteLoveNoteModal> {
 
             const SizedBox(height: 16),
 
-            _NoteModeSelector(
-              mode: _mode,
-              isDark: widget.isDark,
-              loc: loc,
-              onChanged: (mode) => setState(() => _mode = mode),
-            ),
+            // Drawings and photos are files on the phone; browsers get text.
+            if (!kIsWeb) ...[
+              _NoteModeSelector(
+                mode: _mode,
+                isDark: widget.isDark,
+                loc: loc,
+                onChanged: (mode) => setState(() => _mode = mode),
+              ),
 
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
+            ],
 
             // Interactive Note Canvas Preview
             if (_mode == LoveNoteKind.text)
