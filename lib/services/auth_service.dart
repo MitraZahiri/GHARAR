@@ -1,5 +1,7 @@
 import 'dart:io' show Platform;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../models/auth_result.dart';
@@ -11,14 +13,17 @@ typedef AppleSignInFunction = Future<AuthResult> Function();
 /// and guest authentication with robust error and fallback handling.
 class AuthService {
   final GoogleSignIn _googleSignIn;
+  final FirebaseAuth? _firebaseAuth;
   final GoogleSignInFunction? _googleSignInOverride;
   final AppleSignInFunction? _appleSignInOverride;
 
   AuthService({
     GoogleSignIn? googleSignIn,
+    FirebaseAuth? firebaseAuth,
     GoogleSignInFunction? googleSignInOverride,
     AppleSignInFunction? appleSignInOverride,
   }) : _googleSignIn = googleSignIn ?? GoogleSignIn(),
+       _firebaseAuth = firebaseAuth,
        _googleSignInOverride = googleSignInOverride,
        _appleSignInOverride = appleSignInOverride;
 
@@ -33,12 +38,13 @@ class AuthService {
     }
   }
 
-  /// Performs Google Sign-In using native SDK
+  /// Performs Google Sign-In using the native SDK and, when Firebase is
+  /// configured, exchanges the Google tokens for a Firebase Auth session.
   Future<AuthResult> signInWithGoogle() async {
     if (_googleSignInOverride != null) {
       return _googleSignInOverride();
     }
-    if (_isTestEnvironment) {
+    if (_isTestEnvironment && _firebaseAuth == null) {
       return AuthResult.success(
         email: 'user.google@gmail.com',
         displayName: 'Google User',
@@ -52,22 +58,36 @@ class AuthService {
         return AuthResult.cancelled(authProvider: 'google');
       }
 
-      final authentication = await account.authentication;
+      final tokens = await account.authentication;
+      final firebaseUser =
+          (await _firebaseAuth?.signInWithCredential(
+            GoogleAuthProvider.credential(
+              idToken: tokens.idToken,
+              accessToken: tokens.accessToken,
+            ),
+          ))?.user;
 
       return AuthResult.success(
-        email: account.email,
-        displayName: account.displayName,
-        idToken: authentication.idToken,
+        uid: firebaseUser?.uid,
+        email: firebaseUser?.email ?? account.email,
+        displayName: firebaseUser?.displayName ?? account.displayName,
+        idToken: tokens.idToken,
         authProvider: 'google',
       );
-    } catch (e, stackTrace) {
-      debugPrint('Google Sign-In notice: $e');
-      debugPrint(stackTrace.toString());
-      // On platforms/emulators without configured Google Play Services/SHA-1,
-      // fallback smoothly to ensure functional developer experience:
-      return AuthResult.success(
-        email: 'user.google@gmail.com',
-        displayName: 'Google User',
+    } on MissingPluginException catch (e) {
+      // Platforms without the native plugin (desktop, widget tests).
+      return AuthResult.failure(
+        errorMessage: 'MissingPluginException: ${e.message}',
+        authProvider: 'google',
+      );
+    } on PlatformException catch (e) {
+      return AuthResult.failure(
+        errorMessage: 'Google sign-in failed (${e.code})',
+        authProvider: 'google',
+      );
+    } on FirebaseAuthException catch (e) {
+      return AuthResult.failure(
+        errorMessage: 'Google sign-in failed (${e.code})',
         authProvider: 'google',
       );
     }
@@ -138,6 +158,7 @@ class AuthService {
 
   /// Cleans up active third-party auth tokens
   Future<void> signOut() async {
+    await _firebaseAuth?.signOut();
     try {
       if (await _googleSignIn.isSignedIn()) {
         await _googleSignIn.signOut();

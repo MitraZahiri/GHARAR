@@ -1,5 +1,6 @@
 class AuthResult {
   final bool success;
+  final String? uid; // Firebase Auth uid, when signed in through Firebase
   final String? email;
   final String? displayName;
   final String? idToken;
@@ -9,6 +10,7 @@ class AuthResult {
 
   const AuthResult({
     required this.success,
+    this.uid,
     this.email,
     this.displayName,
     this.idToken,
@@ -22,9 +24,11 @@ class AuthResult {
     required String? displayName,
     String? idToken,
     required String authProvider,
+    String? uid,
   }) {
     return AuthResult(
       success: true,
+      uid: uid,
       email: email,
       displayName: displayName,
       idToken: idToken,
@@ -53,6 +57,7 @@ class AuthResult {
 
   AuthResult copyWith({
     bool? success,
+    String? uid,
     String? email,
     String? displayName,
     String? idToken,
@@ -62,6 +67,7 @@ class AuthResult {
   }) {
     return AuthResult(
       success: success ?? this.success,
+      uid: uid ?? this.uid,
       email: email ?? this.email,
       displayName: displayName ?? this.displayName,
       idToken: idToken ?? this.idToken,
@@ -76,6 +82,7 @@ class AuthResult {
     if (identical(this, other)) return true;
     return other is AuthResult &&
         other.success == success &&
+        other.uid == uid &&
         other.email == email &&
         other.displayName == displayName &&
         other.idToken == idToken &&
@@ -87,6 +94,7 @@ class AuthResult {
   @override
   int get hashCode => Object.hash(
     success,
+    uid,
     email,
     displayName,
     idToken,

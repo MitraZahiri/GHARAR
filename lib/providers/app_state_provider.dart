@@ -22,12 +22,17 @@ import '../services/storage_service.dart';
 import '../services/seed_data_service.dart';
 import '../services/ai_companion_service.dart';
 import '../services/auth_service.dart';
+import '../services/cloud_sync_service.dart';
+
+const _simulatedNotePrefix = 'note_sim_';
+const _simulatedAnswerPrefix = 'ans_sim_';
 
 class AppStateProvider extends ChangeNotifier {
   final StorageService _storage;
   final AuthService _authService;
   final NoteMediaService _mediaService;
   final HomeWidgetService _homeWidgetService;
+  final CloudSyncService? _cloud;
 
   UserModel? _currentUser;
   CoupleModel? _couple;
@@ -41,6 +46,7 @@ class AppStateProvider extends ChangeNotifier {
   String? _userEmail;
   String? _authProvider;
   String? _lastAuthError;
+  String? _cloudSyncError;
 
   List<QuestionModel> _questions = [];
   int _currentQuestionIndex = 0;
@@ -68,7 +74,9 @@ class AppStateProvider extends ChangeNotifier {
     AuthService? authService,
     NoteMediaService? mediaService,
     HomeWidgetService? homeWidgetService,
-  }) : _authService = authService ?? AuthService(),
+    CloudSyncService? cloudSync,
+  }) : _cloud = cloudSync,
+       _authService = authService ?? AuthService(),
        _mediaService = mediaService ?? NoteMediaService(),
        _homeWidgetService = homeWidgetService ?? HomeWidgetService() {
     _loadFromStorage();
@@ -102,6 +110,9 @@ class AppStateProvider extends ChangeNotifier {
   String? get userEmail => _userEmail;
   String? get authProvider => _authProvider;
   String? get lastAuthError => _lastAuthError;
+
+  /// Firestore error code of the last rejected cloud write, if any.
+  String? get cloudSyncError => _cloudSyncError;
 
   void setLanguageCode(String code) {
     setLocale(Locale(code));
@@ -202,7 +213,66 @@ class AppStateProvider extends ChangeNotifier {
     if (_couple == null) return;
     _couple = update(_couple!);
     _storage.saveCouple(_couple!);
+    _syncCouple();
     notifyListeners();
+  }
+
+  /// Mirrors a change to Firestore without blocking the UI. Failures are
+  /// kept in [cloudSyncError]; the local copy stays the source of truth.
+  void _cloudWrite(Future<void> Function(CloudSyncService cloud) write) {
+    final cloud = _cloud;
+    if (cloud == null || !cloud.isActive) return;
+    unawaited(
+      write(cloud).catchError((Object e) {
+        _cloudSyncError = (e as CloudSyncException).code;
+        notifyListeners();
+      }, test: (e) => e is CloudSyncException),
+    );
+  }
+
+  void _cloudCoupleWrite(
+    Future<void> Function(CloudSyncService cloud, String coupleId) write,
+  ) {
+    final coupleId = _couple?.id;
+    if (coupleId == null) return;
+    _cloudWrite((cloud) => write(cloud, coupleId));
+  }
+
+  void _syncCouple() {
+    final couple = _couple;
+    if (couple != null) _cloudWrite((cloud) => cloud.saveCouple(couple));
+  }
+
+  void _syncUser() {
+    final user = _currentUser;
+    if (user != null) _cloudWrite((cloud) => cloud.saveUser(user));
+  }
+
+  /// Uploads everything the couple created on this device, e.g. right after
+  /// signing in. Demo simulations and seed templates are left out.
+  void _syncAll() {
+    _syncUser();
+    _syncCouple();
+    final seedDateIds =
+        SeedDataService.defaultSpecialDates.map((d) => d.id).toSet();
+    final notes = _loveNotes.where(
+      (n) => !n.id.startsWith(_simulatedNotePrefix),
+    );
+    final answers = _answersMap.values
+        .expand((list) => list)
+        .where((a) => !a.id.startsWith(_simulatedAnswerPrefix));
+    final dates = _specialDates.where((d) => !seedDateIds.contains(d.id));
+    final journal = List.of(_journalEntries);
+    final moods = Map<String, String>.of(_partnerMoods);
+    _cloudCoupleWrite(
+      (cloud, coupleId) => Future.wait([
+        for (final note in notes) cloud.saveLoveNote(coupleId, note),
+        for (final answer in answers) cloud.saveAnswer(coupleId, answer),
+        for (final entry in journal) cloud.saveJournalEntry(coupleId, entry),
+        for (final date in dates) cloud.saveSpecialDate(coupleId, date),
+        if (moods.isNotEmpty) cloud.saveMoods(coupleId, moods),
+      ]),
+    );
   }
 
   UserModel get activePartner {
@@ -351,6 +421,8 @@ class AppStateProvider extends ChangeNotifier {
   void setMyMood(String moodKey) {
     _partnerMoods[activePartner.id] = moodKey;
     _storage.savePartnerMoods(_partnerMoods);
+    final moods = Map<String, String>.of(_partnerMoods);
+    _cloudCoupleWrite((cloud, id) => cloud.saveMoods(id, moods));
     notifyListeners();
   }
 
@@ -433,6 +505,9 @@ class AppStateProvider extends ChangeNotifier {
   void _addLoveNote(LoveNoteModel note) {
     _loveNotes.insert(0, note);
     _storage.saveLoveNotes(_loveNotes);
+    if (!note.id.startsWith(_simulatedNotePrefix)) {
+      _cloudCoupleWrite((cloud, id) => cloud.saveLoveNote(id, note));
+    }
     notifyListeners();
     unawaited(_syncHomeWidget());
   }
@@ -468,6 +543,10 @@ class AppStateProvider extends ChangeNotifier {
           return n;
         }).toList();
     _storage.saveLoveNotes(_loveNotes);
+    final read = _loveNotes.where((n) => n.id == noteId).firstOrNull;
+    if (read != null && !read.id.startsWith(_simulatedNotePrefix)) {
+      _cloudCoupleWrite((cloud, id) => cloud.saveLoveNote(id, read));
+    }
     notifyListeners();
   }
 
@@ -476,6 +555,7 @@ class AppStateProvider extends ChangeNotifier {
     if (note == null) return;
     _loveNotes.removeWhere((n) => n.id == noteId);
     _storage.saveLoveNotes(_loveNotes);
+    _cloudCoupleWrite((cloud, id) => cloud.deleteLoveNote(id, noteId));
     notifyListeners();
     final imagePath = note.imagePath;
     if (imagePath != null) await _mediaService.delete(imagePath);
@@ -493,7 +573,7 @@ class AppStateProvider extends ChangeNotifier {
             : 'Left this sweet note on your main page while your phone was away. Have a beautiful day my love! ☀️💖';
 
     final note = LoveNoteModel(
-      id: 'note_sim_${DateTime.now().millisecondsSinceEpoch}',
+      id: '$_simulatedNotePrefix${DateTime.now().millisecondsSinceEpoch}',
       senderId: otherPartner.id,
       senderName: otherPartner.name,
       receiverId: activePartner.id,
@@ -575,6 +655,8 @@ class AppStateProvider extends ChangeNotifier {
       isLinked: false,
     );
     _storage.saveCouple(_couple!);
+    _syncUser();
+    _syncCouple();
 
     notifyListeners();
   }
@@ -598,6 +680,7 @@ class AppStateProvider extends ChangeNotifier {
           (_couple!.connectionStreak == 0) ? 1 : _couple!.connectionStreak,
     );
     _storage.saveCouple(_couple!);
+    _syncCouple();
     notifyListeners();
   }
 
@@ -672,6 +755,7 @@ class AppStateProvider extends ChangeNotifier {
     list.add(answer);
     _answersMap[questionId] = list;
     _storage.saveAnswers(_answersMap);
+    _cloudCoupleWrite((cloud, id) => cloud.saveAnswer(id, answer));
 
     // If both answered, increment connection streak if not done today
     if (list.length >= 2 && _couple != null) {
@@ -680,6 +764,7 @@ class AppStateProvider extends ChangeNotifier {
         streakLastMaintained: DateTime.now(),
       );
       _storage.saveCouple(_couple!);
+      _syncCouple();
     }
 
     notifyListeners();
@@ -729,7 +814,7 @@ class AppStateProvider extends ChangeNotifier {
 
     list.add(
       AnswerModel(
-        id: 'ans_sim_${DateTime.now().millisecondsSinceEpoch}',
+        id: '$_simulatedAnswerPrefix${DateTime.now().millisecondsSinceEpoch}',
         questionId: questionId,
         authorId: partner.id,
         authorName: partner.name,
@@ -765,6 +850,10 @@ class AppStateProvider extends ChangeNotifier {
         }).toList();
     _answersMap[questionId] = updated;
     _storage.saveAnswers(_answersMap);
+    final reacted = updated.where((a) => a.id == answerId).firstOrNull;
+    if (reacted != null && !reacted.id.startsWith(_simulatedAnswerPrefix)) {
+      _cloudCoupleWrite((cloud, id) => cloud.saveAnswer(id, reacted));
+    }
     notifyListeners();
   }
 
@@ -836,6 +925,7 @@ class AppStateProvider extends ChangeNotifier {
 
     _journalEntries.insert(0, newEntry);
     _storage.saveJournal(_journalEntries);
+    _cloudCoupleWrite((cloud, id) => cloud.saveJournalEntry(id, newEntry));
     notifyListeners();
   }
 
@@ -861,6 +951,7 @@ class AppStateProvider extends ChangeNotifier {
     _specialDates.add(newDate);
     _specialDates.sort((a, b) => a.daysUntil.compareTo(b.daysUntil));
     _storage.saveSpecialDates(_specialDates);
+    _cloudCoupleWrite((cloud, id) => cloud.saveSpecialDate(id, newDate));
     notifyListeners();
   }
 
@@ -897,6 +988,7 @@ class AppStateProvider extends ChangeNotifier {
     if (_couple != null) {
       _couple = _couple!.copyWith(isPremium: !_couple!.isPremium);
       _storage.saveCouple(_couple!);
+      _syncCouple();
       notifyListeners();
     }
   }
@@ -917,6 +1009,7 @@ class AppStateProvider extends ChangeNotifier {
         distanceMode: _couple!.distanceMode,
       );
       _storage.saveCouple(_couple!);
+      _syncCouple();
       notifyListeners();
     }
   }
@@ -964,6 +1057,7 @@ class AppStateProvider extends ChangeNotifier {
       final googleEmail = result.email ?? 'user.google@gmail.com';
       final name = cleanPersonName(result.displayName);
       _setAuthenticatedUser(email: googleEmail, name: name, provider: 'google');
+      _syncAll();
       return true;
     } else if (result.isCancelled) {
       return false;
