@@ -53,3 +53,6 @@ coverage/
 # Firestore rules tests
 firestore-tests/node_modules/
 *-debug.log
+
+# Firebase Hosting deploy cache
+.firebase/

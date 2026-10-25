@@ -2,7 +2,11 @@
     <application
         android:label="GHARAR"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false">
+        <!-- No Google Drive backups: personal data stays on the device, encrypted with a
+             Keystore key that a backup could not restore anyway; Firestore holds the copy. -->
         <!-- Disable Impeller to prevent black screen on emulators / devices without Vulkan hardware acceleration -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"

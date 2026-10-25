@@ -4,6 +4,7 @@ import 'package:mock_exceptions/mock_exceptions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:gharar/services/auth_service.dart';
 
 class _FakeAuthentication extends Fake implements GoogleSignInAuthentication {
@@ -153,6 +154,37 @@ void main() {
 
       expect(auth.currentUser, isNull);
       expect(google.signedOut, isFalse);
+    });
+
+    test(
+      'an Apple sign-in error is a failure, not a fake Apple user',
+      () async {
+        final service = AuthService(
+          appleCredentialRequest:
+              () async =>
+                  throw const SignInWithAppleNotSupportedException(
+                    message: 'not supported',
+                  ),
+        );
+
+        final result = await service.signInWithApple();
+
+        expect(result.success, isFalse);
+        expect(result.email, isNull);
+        expect(result.errorMessage, isNotNull);
+      },
+    );
+
+    test('an Apple platform error is reported with its code', () async {
+      final service = AuthService(
+        appleCredentialRequest:
+            () async => throw PlatformException(code: 'apple_error'),
+      );
+
+      final result = await service.signInWithApple();
+
+      expect(result.success, isFalse);
+      expect(result.errorMessage, contains('apple_error'));
     });
   });
 }

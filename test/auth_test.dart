@@ -143,65 +143,74 @@ void main() {
         ); // Name, Email, Password
         expect(find.text('Sign in with Apple'), findsOneWidget);
       },
+      variant: TargetPlatformVariant.only(TargetPlatform.iOS),
     );
 
-    testWidgets('Renders with zero overflow on smallest iPhone SE (320x568)', (
-      WidgetTester tester,
-    ) async {
-      tester.view.physicalSize = const Size(320 * 2, 568 * 2);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(() => tester.view.resetPhysicalSize());
+    testWidgets(
+      'Renders with zero overflow on smallest iPhone SE (320x568)',
+      (WidgetTester tester) async {
+        tester.view.physicalSize = const Size(320 * 2, 568 * 2);
+        tester.view.devicePixelRatio = 2.0;
+        addTearDown(() => tester.view.resetPhysicalSize());
 
-      await tester.pumpWidget(createAuthApp());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createAuthApp());
+        await tester.pumpAndSettle();
 
-      // Check no overflow errors
-      expect(tester.takeException(), isNull);
-      expect(find.byType(AuthScreen), findsOneWidget);
-      expect(find.text('Sign in with Apple'), findsOneWidget);
-    });
+        // Check no overflow errors
+        expect(tester.takeException(), isNull);
+        expect(find.byType(AuthScreen), findsOneWidget);
+        expect(find.text('Sign in with Apple'), findsOneWidget);
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+    );
 
-    testWidgets('Renders Turkish localized text correctly', (
-      WidgetTester tester,
-    ) async {
-      provider.setLanguageCode('tr');
+    testWidgets(
+      'Renders Turkish localized text correctly',
+      (WidgetTester tester) async {
+        provider.setLanguageCode('tr');
 
-      await tester.pumpWidget(createAuthApp(locale: const Locale('tr')));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createAuthApp(locale: const Locale('tr')));
+        await tester.pumpAndSettle();
 
-      // Check Turkish text
-      expect(find.text('Apple ile Giriş Yap'), findsOneWidget);
-      expect(find.text('Giriş Yap'), findsOneWidget);
-      expect(find.text('Yeni Hesap'), findsOneWidget);
-    });
+        // Check Turkish text
+        expect(find.text('Apple ile Giriş Yap'), findsOneWidget);
+        expect(find.text('Giriş Yap'), findsOneWidget);
+        expect(find.text('Yeni Hesap'), findsOneWidget);
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+    );
 
-    testWidgets('Renders Arabic RTL layout correctly', (
-      WidgetTester tester,
-    ) async {
-      provider.setLanguageCode('ar');
+    testWidgets(
+      'Renders Arabic RTL layout correctly',
+      (WidgetTester tester) async {
+        provider.setLanguageCode('ar');
 
-      await tester.pumpWidget(createAuthApp(locale: const Locale('ar')));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createAuthApp(locale: const Locale('ar')));
+        await tester.pumpAndSettle();
 
-      // Check Arabic text
-      expect(find.text('تسجيل الدخول باستخدام Apple'), findsOneWidget);
-      expect(find.text('تسجيل الدخول'), findsOneWidget);
-    });
+        // Check Arabic text
+        expect(find.text('تسجيل الدخول باستخدام Apple'), findsOneWidget);
+        expect(find.text('تسجيل الدخول'), findsOneWidget);
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+    );
 
-    testWidgets('Tapping Apple ID button calls provider.signInWithApple()', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(createAuthApp());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'Tapping Apple ID button calls provider.signInWithApple()',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(createAuthApp());
+        await tester.pumpAndSettle();
 
-      final appleBtn = find.text('Sign in with Apple');
-      expect(appleBtn, findsOneWidget);
+        final appleBtn = find.text('Sign in with Apple');
+        expect(appleBtn, findsOneWidget);
 
-      await tester.tap(appleBtn);
-      await tester.pumpAndSettle();
+        await tester.tap(appleBtn);
+        await tester.pumpAndSettle();
 
-      expect(provider.isAuthenticated, isTrue);
-      expect(provider.authProvider, equals('apple'));
-    });
+        expect(provider.isAuthenticated, isTrue);
+        expect(provider.authProvider, equals('apple'));
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+    );
   });
 }

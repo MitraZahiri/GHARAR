@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart' show ThemeMode;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../models/couple_model.dart';
@@ -9,6 +10,7 @@ import '../models/challenge_model.dart';
 import '../models/journal_entry_model.dart';
 import '../models/special_date_model.dart';
 import '../models/love_note_model.dart';
+import 'data_cipher.dart';
 
 class StorageService {
   static const _keyUser = 'gharar_user';
@@ -33,13 +35,65 @@ class StorageService {
   static const _keyLastNudgeSender = 'gharar_last_nudge_sender';
   static const _keyLastNudgeMessage = 'gharar_last_nudge_message';
 
-  final SharedPreferences _prefs;
+  /// Personal data: encrypted at rest whenever a [DataCipher] is given.
+  static const _sensitiveKeys = {
+    _keyUser,
+    _keyCouple,
+    _keyAnswers,
+    _keyLoveNotes,
+    _keyJournal,
+    _keySpecialDates,
+    _keyUserEmail,
+    _keyPartnerMoods,
+    _keyLastNudgeMessage,
+  };
 
-  StorageService(this._prefs);
+  final SharedPreferences _prefs;
+  final DataCipher? _cipher;
+
+  StorageService(this._prefs, {DataCipher? cipher}) : _cipher = cipher;
 
   static Future<StorageService> init() async {
     final prefs = await SharedPreferences.getInstance();
-    return StorageService(prefs);
+    final cipher = await DataCipher.fromSecureStorage(
+      const FlutterSecureStorage(),
+    );
+    final storage = StorageService(prefs, cipher: cipher);
+    await storage.encryptLegacyValues();
+    return storage;
+  }
+
+  /// Encrypts personal data that older versions stored as plain text.
+  Future<void> encryptLegacyValues() async {
+    final cipher = _cipher;
+    if (cipher == null) return;
+    for (final key in _sensitiveKeys) {
+      final raw = _prefs.getString(key);
+      if (raw != null && !DataCipher.isEncrypted(raw)) {
+        await _prefs.setString(key, cipher.encrypt(raw));
+      }
+    }
+  }
+
+  /// Reads [key], decrypting personal data. Values that can't be decrypted
+  /// (tampered, or the key was lost) read as missing.
+  String? _read(String key) {
+    final raw = _prefs.getString(key);
+    final cipher = _cipher;
+    if (raw == null || cipher == null || !DataCipher.isEncrypted(raw)) {
+      return raw;
+    }
+    try {
+      return cipher.decrypt(raw);
+    } on DataCipherException {
+      return null;
+    }
+  }
+
+  Future<bool> _write(String key, String value) {
+    final cipher = _cipher;
+    final protect = cipher != null && _sensitiveKeys.contains(key);
+    return _prefs.setString(key, protect ? cipher.encrypt(value) : value);
   }
 
   // Authentication status
@@ -47,10 +101,10 @@ class StorageService {
   Future<void> setIsAuthenticated(bool val) =>
       _prefs.setBool(_keyIsAuthenticated, val);
 
-  String? get userEmail => _prefs.getString(_keyUserEmail);
+  String? get userEmail => _read(_keyUserEmail);
   Future<void> setUserEmail(String? email) =>
       email != null
-          ? _prefs.setString(_keyUserEmail, email)
+          ? _write(_keyUserEmail, email)
           : _prefs.remove(_keyUserEmail);
 
   String? get authProvider => _prefs.getString(_keyAuthProvider);
@@ -94,7 +148,7 @@ class StorageService {
 
   // User
   UserModel? getUser() {
-    final raw = _prefs.getString(_keyUser);
+    final raw = _read(_keyUser);
     if (raw == null) return null;
     try {
       return UserModel.fromJson(jsonDecode(raw) as Map<String, dynamic>);
@@ -104,11 +158,11 @@ class StorageService {
   }
 
   Future<void> saveUser(UserModel user) =>
-      _prefs.setString(_keyUser, jsonEncode(user.toJson()));
+      _write(_keyUser, jsonEncode(user.toJson()));
 
   // Couple
   CoupleModel? getCouple() {
-    final raw = _prefs.getString(_keyCouple);
+    final raw = _read(_keyCouple);
     if (raw == null) return null;
     try {
       return CoupleModel.fromJson(jsonDecode(raw) as Map<String, dynamic>);
@@ -118,11 +172,11 @@ class StorageService {
   }
 
   Future<void> saveCouple(CoupleModel couple) =>
-      _prefs.setString(_keyCouple, jsonEncode(couple.toJson()));
+      _write(_keyCouple, jsonEncode(couple.toJson()));
 
   // Answers Map: questionId -> List<AnswerModel>
   Map<String, List<AnswerModel>> getAnswers() {
-    final raw = _prefs.getString(_keyAnswers);
+    final raw = _read(_keyAnswers);
     if (raw == null) return {};
     try {
       final decoded = jsonDecode(raw) as Map<String, dynamic>;
@@ -146,7 +200,7 @@ class StorageService {
     answers.forEach((qId, list) {
       mapped[qId] = list.map((a) => a.toJson()).toList();
     });
-    return _prefs.setString(_keyAnswers, jsonEncode(mapped));
+    return _write(_keyAnswers, jsonEncode(mapped));
   }
 
   // Activities
@@ -191,7 +245,7 @@ class StorageService {
 
   // Journal
   List<JournalEntryModel>? getJournal() {
-    final raw = _prefs.getString(_keyJournal);
+    final raw = _read(_keyJournal);
     if (raw == null) return null;
     try {
       final list = jsonDecode(raw) as List;
@@ -203,14 +257,12 @@ class StorageService {
     }
   }
 
-  Future<void> saveJournal(List<JournalEntryModel> journal) => _prefs.setString(
-    _keyJournal,
-    jsonEncode(journal.map((j) => j.toJson()).toList()),
-  );
+  Future<void> saveJournal(List<JournalEntryModel> journal) =>
+      _write(_keyJournal, jsonEncode(journal.map((j) => j.toJson()).toList()));
 
   // Special Dates
   List<SpecialDateModel>? getSpecialDates() {
-    final raw = _prefs.getString(_keySpecialDates);
+    final raw = _read(_keySpecialDates);
     if (raw == null) return null;
     try {
       final list = jsonDecode(raw) as List;
@@ -222,15 +274,14 @@ class StorageService {
     }
   }
 
-  Future<void> saveSpecialDates(List<SpecialDateModel> dates) =>
-      _prefs.setString(
-        _keySpecialDates,
-        jsonEncode(dates.map((d) => d.toJson()).toList()),
-      );
+  Future<void> saveSpecialDates(List<SpecialDateModel> dates) => _write(
+    _keySpecialDates,
+    jsonEncode(dates.map((d) => d.toJson()).toList()),
+  );
 
   // Partner Moods
   Map<String, String> getPartnerMoods() {
-    final raw = _prefs.getString(_keyPartnerMoods);
+    final raw = _read(_keyPartnerMoods);
     if (raw == null) return {};
     try {
       final decoded = jsonDecode(raw) as Map<String, dynamic>;
@@ -241,7 +292,7 @@ class StorageService {
   }
 
   Future<void> savePartnerMoods(Map<String, String> moods) =>
-      _prefs.setString(_keyPartnerMoods, jsonEncode(moods));
+      _write(_keyPartnerMoods, jsonEncode(moods));
 
   // Love Nudge
   DateTime? getLastNudgeTime() {
@@ -262,16 +313,16 @@ class StorageService {
           ? _prefs.setString(_keyLastNudgeSender, senderId)
           : _prefs.remove(_keyLastNudgeSender);
 
-  String? getLastNudgeMessage() => _prefs.getString(_keyLastNudgeMessage);
+  String? getLastNudgeMessage() => _read(_keyLastNudgeMessage);
 
   Future<void> setLastNudgeMessage(String? msg) =>
       msg != null
-          ? _prefs.setString(_keyLastNudgeMessage, msg)
+          ? _write(_keyLastNudgeMessage, msg)
           : _prefs.remove(_keyLastNudgeMessage);
 
   // Love Notes on Main Page
   List<LoveNoteModel>? getLoveNotes() {
-    final raw = _prefs.getString(_keyLoveNotes);
+    final raw = _read(_keyLoveNotes);
     if (raw == null) return null;
     try {
       final list = jsonDecode(raw) as List;
@@ -283,10 +334,8 @@ class StorageService {
     }
   }
 
-  Future<void> saveLoveNotes(List<LoveNoteModel> notes) => _prefs.setString(
-    _keyLoveNotes,
-    jsonEncode(notes.map((n) => n.toJson()).toList()),
-  );
+  Future<void> saveLoveNotes(List<LoveNoteModel> notes) =>
+      _write(_keyLoveNotes, jsonEncode(notes.map((n) => n.toJson()).toList()));
 
   Future<void> clearAll() async {
     await _prefs.clear();
