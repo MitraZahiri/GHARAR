@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/localization/app_language.dart';
@@ -577,8 +577,11 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(height: 12),
 
                           // Social Pill 2: Continue with Apple (Featured Pill).
-                          // Not configured for browsers, so apps only.
-                          if (!kIsWeb) ...[
+                          // Apple ID works natively on iPhone and Mac only.
+                          if (!kIsWeb &&
+                              (defaultTargetPlatform == TargetPlatform.iOS ||
+                                  defaultTargetPlatform ==
+                                      TargetPlatform.macOS)) ...[
                             AppleSignInButton(
                               isDark: isDark,
                               isLoading: _isLoading,

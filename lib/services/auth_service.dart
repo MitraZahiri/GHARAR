@@ -8,6 +8,8 @@ import '../models/auth_result.dart';
 
 typedef GoogleSignInFunction = Future<AuthResult> Function();
 typedef AppleSignInFunction = Future<AuthResult> Function();
+typedef AppleCredentialRequest =
+    Future<AuthorizationCredentialAppleID> Function();
 
 /// Service responsible for orchestrating third-party OAuth (Google, Apple)
 /// and guest authentication with robust error and fallback handling.
@@ -21,6 +23,7 @@ class AuthService {
   final bool _isWeb;
   final GoogleSignInFunction? _googleSignInOverride;
   final AppleSignInFunction? _appleSignInOverride;
+  final AppleCredentialRequest? _appleCredentialRequest;
 
   AuthService({
     GoogleSignIn? googleSignIn,
@@ -28,11 +31,13 @@ class AuthService {
     bool isWeb = kIsWeb,
     GoogleSignInFunction? googleSignInOverride,
     AppleSignInFunction? appleSignInOverride,
+    AppleCredentialRequest? appleCredentialRequest,
   }) : _injectedGoogleSignIn = googleSignIn,
        _firebaseAuth = firebaseAuth,
        _isWeb = isWeb,
        _googleSignInOverride = googleSignInOverride,
-       _appleSignInOverride = appleSignInOverride;
+       _appleSignInOverride = appleSignInOverride,
+       _appleCredentialRequest = appleCredentialRequest;
 
   GoogleSignIn get googleSignInInstance => _googleSignIn;
 
@@ -132,7 +137,7 @@ class AuthService {
     if (_appleSignInOverride != null) {
       return _appleSignInOverride();
     }
-    if (_isTestEnvironment) {
+    if (_isTestEnvironment && _appleCredentialRequest == null) {
       return AuthResult.success(
         email: 'user.apple@privaterelay.appleid.com',
         displayName: 'Apple User',
@@ -141,12 +146,16 @@ class AuthService {
     }
 
     try {
-      final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
+      final request = _appleCredentialRequest;
+      final credential =
+          await (request != null
+              ? request()
+              : SignInWithApple.getAppleIDCredential(
+                scopes: [
+                  AppleIDAuthorizationScopes.email,
+                  AppleIDAuthorizationScopes.fullName,
+                ],
+              ));
 
       final fullNameParts = [
         credential.givenName,
@@ -169,13 +178,21 @@ class AuthService {
         errorMessage: 'Apple ID ile giriş yapılamadı: ${e.message}',
         authProvider: 'apple',
       );
-    } catch (e) {
-      debugPrint('Apple Sign-In notice: $e');
-      // On platforms without native Apple ID support (Windows desktop, Android without server OAuth),
-      // fallback smoothly to ensure functional developer experience:
-      return AuthResult.success(
-        email: 'user.apple@privaterelay.appleid.com',
-        displayName: 'Apple User',
+    } on SignInWithAppleException {
+      // Not supported here (Android, Windows) or the credential was invalid.
+      // Never sign anyone in without a real Apple ID.
+      return AuthResult.failure(
+        errorMessage: 'Apple sign-in is not available on this device',
+        authProvider: 'apple',
+      );
+    } on MissingPluginException catch (e) {
+      return AuthResult.failure(
+        errorMessage: 'MissingPluginException: ${e.message}',
+        authProvider: 'apple',
+      );
+    } on PlatformException catch (e) {
+      return AuthResult.failure(
+        errorMessage: 'Apple sign-in failed (${e.code})',
         authProvider: 'apple',
       );
     }
