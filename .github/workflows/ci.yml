@@ -2,7 +2,7 @@ name: GHARAR Flutter CI
 
 on:
   push:
-    branches: [ main, 'feature/**' ]
+    branches: [ main, 'feature/**', 'feat/**' ]
   pull_request:
     branches: [ main ]
 
@@ -66,3 +66,30 @@ jobs:
 
       - name: Test Firestore Security Rules
         run: npm test
+
+  # Windows can't build iOS; this proves the iPhone app compiles on macOS.
+  # Unsigned: installing on a phone needs an Apple Developer signing setup.
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build iOS (no code signing)
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload Unsigned App
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-runner-app-unsigned
+          path: build/ios/iphoneos/Runner.app
