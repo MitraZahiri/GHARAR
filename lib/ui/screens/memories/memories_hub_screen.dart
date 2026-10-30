@@ -10,6 +10,7 @@ import '../../widgets/glass_card.dart';
 import '../../widgets/romantic_app_bar.dart';
 import 'add_memory_modal.dart';
 import 'special_dates_screen.dart';
+import 'time_capsule_screen.dart';
 
 class MemoriesHubScreen extends StatefulWidget {
   const MemoriesHubScreen({super.key});
@@ -77,6 +78,44 @@ class _MemoriesHubScreenState extends State<MemoriesHubScreen>
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: GlassCard(
+              key: const ValueKey('memories-time-capsule'),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const TimeCapsuleScreen(),
+                  ),
+                );
+              },
+              child: Row(
+                children: [
+                  const Text('⏳', style: TextStyle(fontSize: 22)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      isTr
+                          ? 'Zaman Kapsülü: geleceğe bir mektup'
+                          : 'Time Capsule: a letter to the future',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.labelLarge(
+                        isDark: isDark,
+                      ).copyWith(fontSize: 13),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 12,
+                    color: AppColors.lightTextMuted,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
           // Tab bar
           TabBar(
             controller: _tabController,
