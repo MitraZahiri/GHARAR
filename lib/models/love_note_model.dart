@@ -27,6 +27,10 @@ class LoveNoteModel {
   /// Local file path of the drawing/photo; null for text notes.
   final String? imagePath;
 
+  /// Set for a time capsule: the note stays sealed for its receiver
+  /// until this moment.
+  final DateTime? opensAt;
+
   const LoveNoteModel({
     required this.id,
     required this.senderId,
@@ -40,9 +44,17 @@ class LoveNoteModel {
     this.readAt,
     this.kind = LoveNoteKind.text,
     this.imagePath,
+    this.opensAt,
   });
 
   bool get hasImage => imagePath != null && kind != LoveNoteKind.text;
+
+  bool get isTimeCapsule => opensAt != null;
+
+  bool isSealedAt(DateTime now) {
+    final opening = opensAt;
+    return opening != null && now.isBefore(opening);
+  }
 
   LoveNoteModel copyWith({
     String? id,
@@ -57,6 +69,7 @@ class LoveNoteModel {
     DateTime? readAt,
     LoveNoteKind? kind,
     String? imagePath,
+    DateTime? opensAt,
   }) {
     return LoveNoteModel(
       id: id ?? this.id,
@@ -71,8 +84,25 @@ class LoveNoteModel {
       readAt: readAt ?? this.readAt,
       kind: kind ?? this.kind,
       imagePath: imagePath ?? this.imagePath,
+      opensAt: opensAt ?? this.opensAt,
     );
   }
+
+  /// The same note as an ordinary, immediately readable one.
+  LoveNoteModel withoutOpeningDate() => LoveNoteModel(
+    id: id,
+    senderId: senderId,
+    senderName: senderName,
+    receiverId: receiverId,
+    text: text,
+    paperColor: paperColor,
+    emoji: emoji,
+    createdAt: createdAt,
+    isRead: isRead,
+    readAt: readAt,
+    kind: kind,
+    imagePath: imagePath,
+  );
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -87,6 +117,7 @@ class LoveNoteModel {
     'readAt': readAt?.toIso8601String(),
     'kind': kind.name,
     'imagePath': imagePath,
+    'opensAt': opensAt?.toIso8601String(),
   };
 
   factory LoveNoteModel.fromJson(Map<String, dynamic> json) {
@@ -108,6 +139,7 @@ class LoveNoteModel {
               : null,
       kind: LoveNoteKind.fromName(json['kind'] as String?),
       imagePath: json['imagePath'] as String?,
+      opensAt: DateTime.tryParse(json['opensAt'] as String? ?? ''),
     );
   }
 
@@ -127,7 +159,8 @@ class LoveNoteModel {
           isRead == other.isRead &&
           readAt == other.readAt &&
           kind == other.kind &&
-          imagePath == other.imagePath;
+          imagePath == other.imagePath &&
+          opensAt == other.opensAt;
 
   @override
   int get hashCode =>
@@ -142,5 +175,6 @@ class LoveNoteModel {
       isRead.hashCode ^
       readAt.hashCode ^
       kind.hashCode ^
-      imagePath.hashCode;
+      imagePath.hashCode ^
+      opensAt.hashCode;
 }

@@ -44,6 +44,7 @@ class AppStateProvider extends ChangeNotifier {
   final AuthService _authService;
   final NoteMediaService _mediaService;
   final HomeWidgetService _homeWidgetService;
+  final DateTime Function() _clock;
   final CloudSyncService? _cloud;
 
   UserModel? _currentUser;
@@ -97,7 +98,9 @@ class AppStateProvider extends ChangeNotifier {
     NoteMediaService? mediaService,
     HomeWidgetService? homeWidgetService,
     CloudSyncService? cloudSync,
+    DateTime Function()? clock,
   }) : _cloud = cloudSync,
+       _clock = clock ?? DateTime.now,
        _authService = authService ?? AuthService(),
        _mediaService = mediaService ?? NoteMediaService(),
        _homeWidgetService = homeWidgetService ?? HomeWidgetService() {
@@ -187,7 +190,9 @@ class AppStateProvider extends ChangeNotifier {
 
   LoveNoteModel? get latestNoteForActivePartner {
     final forMe =
-        _loveNotes.where((n) => n.receiverId == activePartner.id).toList();
+        _loveNotes
+            .where((n) => n.receiverId == activePartner.id && !isSealed(n))
+            .toList();
     if (forMe.isEmpty) return null;
     forMe.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return forMe.first;
@@ -200,6 +205,28 @@ class AppStateProvider extends ChangeNotifier {
     fromMe.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return fromMe.first;
   }
+
+  /// Time capsules sent to the active partner, soonest to open first.
+  List<LoveNoteModel> get timeCapsulesForActivePartner =>
+      _timeCapsulesWhere((n) => n.receiverId == activePartner.id);
+
+  List<LoveNoteModel> get timeCapsulesSentByActivePartner =>
+      _timeCapsulesWhere((n) => n.senderId == activePartner.id);
+
+  List<LoveNoteModel> _timeCapsulesWhere(bool Function(LoveNoteModel) test) {
+    final capsules =
+        _loveNotes.where((n) => n.isTimeCapsule && test(n)).toList();
+    capsules.sort((a, b) {
+      final aOpens = a.opensAt ?? a.createdAt;
+      final bOpens = b.opensAt ?? b.createdAt;
+      return aOpens.compareTo(bOpens);
+    });
+    return capsules;
+  }
+
+  bool isSealed(LoveNoteModel note) => note.isSealedAt(_clock());
+
+  DateTime get now => _clock();
 
   bool get isPartnerLinked => _couple?.isLinked ?? false;
 
@@ -821,6 +848,28 @@ class AppStateProvider extends ChangeNotifier {
     _addLoveNote(note);
   }
 
+  /// Seals a letter for the partner that opens at [opensAt]. Returns false
+  /// for empty text or an opening moment that is not in the future.
+  bool sendTimeCapsule({required String text, required DateTime opensAt}) {
+    final trimmed = text.trim();
+    final sentAt = _clock();
+    if (trimmed.isEmpty || !opensAt.isAfter(sentAt)) return false;
+    _addLoveNote(
+      LoveNoteModel(
+        id: 'note_${sentAt.microsecondsSinceEpoch}',
+        senderId: activePartner.id,
+        senderName: activePartner.name,
+        receiverId: otherPartner.id,
+        text: trimmed,
+        paperColor: 'parchment',
+        emoji: '⏳',
+        createdAt: sentAt,
+        opensAt: opensAt,
+      ),
+    );
+    return true;
+  }
+
   /// Posts a handwritten drawing ([imageBytes]) or a photo
   /// ([sourceImagePath]) as a love note. Returns false when the image cannot
   /// be stored; no note is added in that case.
@@ -879,7 +928,9 @@ class AppStateProvider extends ChangeNotifier {
   Future<void> _syncHomeWidget() {
     final ownerId = _currentUser?.id;
     final received =
-        _loveNotes.where((n) => n.receiverId == ownerId).toList()
+        _loveNotes
+            .where((n) => n.receiverId == ownerId && !isSealed(n))
+            .toList()
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     if (received.isEmpty) return _homeWidgetService.clear();
 
