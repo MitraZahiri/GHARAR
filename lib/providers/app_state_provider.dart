@@ -14,6 +14,7 @@ import '../models/milestone_model.dart';
 import '../models/special_date_model.dart';
 import '../models/ai_message_model.dart';
 import '../models/love_note_model.dart';
+import '../models/love_language.dart';
 import '../core/localization/app_language.dart';
 import '../core/localization/app_localizations.dart';
 import '../core/utils/person_name.dart';
@@ -72,6 +73,7 @@ class AppStateProvider extends ChangeNotifier {
   List<AIMessageModel> _aiMessages = [];
 
   Map<String, String> _partnerMoods = {};
+  Map<String, String> _loveLanguages = {};
   DateTime? _lastNudgeTime;
   String? _lastNudgeSenderId;
   String? _lastNudgeMessage;
@@ -166,6 +168,10 @@ class AppStateProvider extends ChangeNotifier {
   String? get activePartnerMood => _partnerMoods[activePartner.id];
   String? get otherPartnerMood => _partnerMoods[otherPartner.id];
   String? getMoodForPartner(String partnerId) => _partnerMoods[partnerId];
+  LoveLanguage? get activePartnerLoveLanguage =>
+      LoveLanguage.fromKey(_loveLanguages[activePartner.id]);
+  LoveLanguage? get otherPartnerLoveLanguage =>
+      LoveLanguage.fromKey(_loveLanguages[otherPartner.id]);
   DateTime? get lastNudgeTime => _lastNudgeTime;
   String? get lastNudgeSenderId => _lastNudgeSenderId;
   String? get lastNudgeMessage => _lastNudgeMessage;
@@ -571,6 +577,7 @@ class AppStateProvider extends ChangeNotifier {
     ];
     final myDates = _specialDates.where((d) => !seedDateIds.contains(d.id));
     final myMood = _partnerMoods[previousId];
+    final myLoveLanguage = _loveLanguages[previousId];
 
     _stopListening();
     _setPairedOnline(true);
@@ -581,12 +588,14 @@ class AppStateProvider extends ChangeNotifier {
     _answersMap = {};
     _journalEntries = [];
     _partnerMoods = {};
+    _loveLanguages = {if (myLoveLanguage != null) uid: myLoveLanguage};
     _storage.saveUser(me);
     _storage.saveCouple(shared);
     _storage.saveLoveNotes(_loveNotes);
     _storage.saveAnswers(_answersMap);
     _storage.saveJournal(_journalEntries);
     _storage.savePartnerMoods(_partnerMoods);
+    _storage.saveLoveLanguages(_loveLanguages);
     await _storage.setCloudUploadedFor('$uid/${shared.id}');
     _syncUser();
     try {
@@ -676,6 +685,7 @@ class AppStateProvider extends ChangeNotifier {
     _aiMessages = AICompanionService.getInitialMessages();
 
     _partnerMoods = _storage.getPartnerMoods();
+    _loveLanguages = _storage.getLoveLanguages();
     _lastNudgeTime = _storage.getLastNudgeTime();
     _lastNudgeSenderId = _storage.getLastNudgeSender();
     _lastNudgeMessage = _storage.getLastNudgeMessage();
@@ -762,6 +772,19 @@ class AppStateProvider extends ChangeNotifier {
     _storage.savePartnerMoods(_partnerMoods);
     final moods = Map<String, String>.of(_partnerMoods);
     _cloudCoupleWrite((cloud, id) => cloud.saveMoods(id, moods));
+    notifyListeners();
+  }
+
+  // Love Languages quiz result, kept per partner on this device.
+  void setMyLoveLanguage(LoveLanguage language) {
+    _loveLanguages[activePartner.id] = language.name;
+    _storage.saveLoveLanguages(_loveLanguages);
+    notifyListeners();
+  }
+
+  void clearMyLoveLanguage() {
+    if (_loveLanguages.remove(activePartner.id) == null) return;
+    _storage.saveLoveLanguages(_loveLanguages);
     notifyListeners();
   }
 
@@ -1519,6 +1542,7 @@ class AppStateProvider extends ChangeNotifier {
     _stopListening();
     _isAuthenticated = false;
     _partnerMoods = {};
+    _loveLanguages = {};
     _lastNudgeTime = null;
     _lastNudgeSenderId = null;
     _lastNudgeMessage = null;
