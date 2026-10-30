@@ -388,6 +388,12 @@ class AppStateProvider extends ChangeNotifier {
     _hadCoupleAccess = false;
   }
 
+  /// Unique even when two phones set up a couple in the same millisecond;
+  /// a shared id would make both write to one cloud couple.
+  static String _newCoupleId() =>
+      'couple_${DateTime.now().millisecondsSinceEpoch}_'
+      '${Random.secure().nextInt(1 << 32).toRadixString(36)}';
+
   void _setPairedOnline(bool value) {
     if (value == _isPairedOnline) return;
     _isPairedOnline = value;
@@ -489,11 +495,7 @@ class AppStateProvider extends ChangeNotifier {
     _stopListening();
     _setPairedOnline(false);
     final me = _currentUser ?? activePartner;
-    _couple = _withoutPartner(
-      old,
-      id: 'couple_${DateTime.now().millisecondsSinceEpoch}',
-      me: me,
-    );
+    _couple = _withoutPartner(old, id: _newCoupleId(), me: me);
     _activeViewingPartnerId = me.id;
     _storage.saveCouple(_couple!);
     notifyListeners();
@@ -984,7 +986,7 @@ class AppStateProvider extends ChangeNotifier {
     _storage.saveUser(user);
 
     _couple = CoupleModel(
-      id: 'couple_${DateTime.now().millisecondsSinceEpoch}',
+      id: _newCoupleId(),
       partner1: user,
       partner2: null,
       inviteCode: CloudSyncService.newInviteCode(),
