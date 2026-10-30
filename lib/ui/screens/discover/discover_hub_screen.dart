@@ -7,6 +7,7 @@ import '../../../providers/app_state_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/romantic_app_bar.dart';
 import 'future_alignment_screen.dart';
+import 'love_languages_screen.dart';
 import 'quiz_game_screen.dart';
 
 class DiscoverHubScreen extends StatefulWidget {
@@ -86,6 +87,25 @@ class _DiscoverHubScreenState extends State<DiscoverHubScreen>
                   ),
                 ),
               ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: DiscoverActionTile(
+              title: isTr ? 'Sevgi Dillerimiz' : 'Our Love Languages',
+              subtitle:
+                  isTr
+                      ? 'Nasıl sevildiğini birbirinize gösterin'
+                      : 'Learn how each of you feels loved',
+              icon: '💞',
+              isDark: isDark,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const LoveLanguagesScreen(),
+                  ),
+                );
+              },
             ),
           ),
 

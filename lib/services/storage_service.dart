@@ -34,6 +34,7 @@ class StorageService {
   static const _keyLastNudgeTime = 'gharar_last_nudge_time';
   static const _keyLastNudgeSender = 'gharar_last_nudge_sender';
   static const _keyLastNudgeMessage = 'gharar_last_nudge_message';
+  static const _keyLoveLanguages = 'gharar_love_languages';
 
   /// Personal data: encrypted at rest whenever a [DataCipher] is given.
   static const _sensitiveKeys = {
@@ -46,6 +47,7 @@ class StorageService {
     _keyUserEmail,
     _keyPartnerMoods,
     _keyLastNudgeMessage,
+    _keyLoveLanguages,
   };
 
   final SharedPreferences _prefs;
@@ -293,6 +295,21 @@ class StorageService {
 
   Future<void> savePartnerMoods(Map<String, String> moods) =>
       _write(_keyPartnerMoods, jsonEncode(moods));
+
+  // Love Languages (partner id -> LoveLanguage.name)
+  Map<String, String> getLoveLanguages() {
+    final raw = _read(_keyLoveLanguages);
+    if (raw == null) return {};
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+      return decoded.map((k, v) => MapEntry(k, v.toString()));
+    } catch (_) {
+      return {};
+    }
+  }
+
+  Future<void> saveLoveLanguages(Map<String, String> languages) =>
+      _write(_keyLoveLanguages, jsonEncode(languages));
 
   // Love Nudge
   DateTime? getLastNudgeTime() {
