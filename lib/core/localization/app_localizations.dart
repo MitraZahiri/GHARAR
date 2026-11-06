@@ -173,6 +173,26 @@ class AppLocalizations {
       // Names
       'nameYou': 'You',
       'nameYourSoulmate': 'Your Soulmate',
+      // Surprise generator
+      'surpriseTitle': 'Romantic Surprise Generator',
+      'surpriseSubtitle':
+          'A gentle, spontaneous gesture to make your partner smile today!',
+      'surpriseRollAnother': 'Roll Another Surprise 🎲',
+      'surpriseKeepIdea': 'I Love This Idea, Close',
+      'surpriseIdea1':
+          'Write 3 reasons you love them on small sticky notes and place them in their shoe, laptop, and coat pocket.',
+      'surpriseIdea2':
+          'Prepare their favorite hot beverage exactly how they like it and serve it with a 5-minute shoulder massage.',
+      'surpriseIdea3':
+          'Create a secret 7-song playlist of melodies that tell the story of how you two met.',
+      'surpriseIdea4':
+          'Plan a 30-minute “silent dance” in the living room with fairy lights and no talking.',
+      'surpriseIdea5':
+          'Surprise them by taking complete charge of dinner and bedtime routines so they can take a long, serene bath.',
+      'surpriseIdea6':
+          'Leave a single fresh flower with a sweet handwritten note on the bathroom mirror.',
+      'surpriseIdea7':
+          'Blindfold your partner and give them a 3-course sensory taste test with strawberries, dark chocolate, and honey.',
     },
 
     // ==========================================
@@ -317,6 +337,26 @@ class AppLocalizations {
       // Names
       'nameYou': 'Sen',
       'nameYourSoulmate': 'Ruh Eşin',
+      // Surprise generator
+      'surpriseTitle': 'Romantik Sürpriz Çarkı',
+      'surpriseSubtitle':
+          'Partnerinizi bugün mutlu edecek tatlı, spontane bir jest!',
+      'surpriseRollAnother': 'Yeni Bir Sürpriz Çek 🎲',
+      'surpriseKeepIdea': 'Bu Fikri Beğendim, Kapat',
+      'surpriseIdea1':
+          'Onu neden sevdiğine dair 3 küçük not yazıp ayakkabısına, bilgisayarına ve ceket cebine gizlice iliştir.',
+      'surpriseIdea2':
+          'En sevdiği sıcak içeceği tam istediği kıvamda hazırla ve 5 dakikalık omuz masajıyla ikram et.',
+      'surpriseIdea3':
+          'Tanışma hikayenizi anlatan 7 şarkılık gizli bir romantik çalma listesi oluştur.',
+      'surpriseIdea4':
+          'Oturma odasında peri ışıklarını yakıp hiç konuşmadan 30 dakikalık sakin bir dans anı başlat.',
+      'surpriseIdea5':
+          'Akşam yemeği ve toparlanma işlerini tamamen üstlenerek partnerine sıcak, köpüklü ve dinlendirici bir banyo hediye et.',
+      'surpriseIdea6':
+          'Banyo aynasına ruj veya küçük bir not kağıdıyla gününü aydınlatacak tatlı bir sevgi sözcüğü bırak.',
+      'surpriseIdea7':
+          'Partnerinin gözlerini bağlayıp çilek, bitter çikolata ve bal gibi tatlarla 3 aşamalı duyusal bir tadım yaptır.',
     },
 
     // ==========================================
@@ -449,6 +489,25 @@ class AppLocalizations {
       // Names
       'nameYou': 'أنت',
       'nameYourSoulmate': 'توأم روحك',
+      // Surprise generator
+      'surpriseTitle': 'مولّد المفاجآت الرومانسية',
+      'surpriseSubtitle':
+          'لفتة رقيقة وعفوية ترسم الابتسامة على وجه شريكك اليوم!',
+      'surpriseRollAnother': 'اسحب مفاجأة أخرى 🎲',
+      'surpriseKeepIdea': 'أحببت هذه الفكرة، إغلاق',
+      'surpriseIdea1':
+          'اكتب 3 أسباب تجعلك تحب شريكك على أوراق لاصقة صغيرة وضعها في حذائه وحاسوبه وجيب معطفه.',
+      'surpriseIdea2':
+          'حضّر مشروبه الساخن المفضل تمامًا كما يحبه وقدّمه مع تدليك للكتفين لمدة 5 دقائق.',
+      'surpriseIdea3': 'أنشئ سرًّا قائمة من 7 أغانٍ تروي قصة لقائكما الأول.',
+      'surpriseIdea4':
+          'خطّط لـ«رقصة صامتة» مدتها 30 دقيقة في غرفة المعيشة مع أضواء خافتة ومن دون كلام.',
+      'surpriseIdea5':
+          'تولَّ العشاء وروتين المساء بالكامل ليستمتع شريكك بحمّام طويل ومريح.',
+      'surpriseIdea6':
+          'اترك وردة طازجة مع رسالة لطيفة بخط يدك على مرآة الحمّام.',
+      'surpriseIdea7':
+          'اعصب عيني شريكك وقدّم له تذوقًا حسيًا من 3 مراحل بالفراولة والشوكولاتة الداكنة والعسل.',
     },
 
     // ==========================================
@@ -585,6 +644,26 @@ class AppLocalizations {
       // Names
       'nameYou': 'تو',
       'nameYourSoulmate': 'نیمه‌ی گمشده‌ات',
+      // Surprise generator
+      'surpriseTitle': 'سازنده‌ی سورپرایز عاشقانه',
+      'surpriseSubtitle':
+          'یک حرکت لطیف و خودجوش تا امروز لبخند به لب همراهت بیاوری!',
+      'surpriseRollAnother': 'یک سورپرایز دیگر 🎲',
+      'surpriseKeepIdea': 'این ایده را دوست دارم، بستن',
+      'surpriseIdea1':
+          'سه دلیل دوست داشتنش را روی کاغذهای کوچک بنویس و در کفش، لپ‌تاپ و جیب کتش بگذار.',
+      'surpriseIdea2':
+          'نوشیدنی گرم محبوبش را دقیقاً همان‌طور که دوست دارد آماده کن و با یک ماساژ پنج‌دقیقه‌ای شانه تقدیمش کن.',
+      'surpriseIdea3':
+          'پنهانی یک فهرست پخش هفت‌آهنگی بساز که داستان آشنایی‌تان را روایت کند.',
+      'surpriseIdea4':
+          'یک «رقص بی‌صدا»ی سی‌دقیقه‌ای در اتاق نشیمن با ریسه‌های نور و بدون حرف زدن ترتیب بده.',
+      'surpriseIdea5':
+          'شام و کارهای شب را کامل به عهده بگیر تا همراهت بتواند یک حمام طولانی و آرام بگیرد.',
+      'surpriseIdea6':
+          'یک شاخه گل تازه با یادداشتی شیرین و دست‌نویس روی آینه‌ی حمام بگذار.',
+      'surpriseIdea7':
+          'چشم‌های همراهت را ببند و یک چشیدن حسی سه‌مرحله‌ای با توت‌فرنگی، شکلات تلخ و عسل برایش ترتیب بده.',
     },
 
     // ==========================================
@@ -725,6 +804,26 @@ class AppLocalizations {
       // Names
       'nameYou': 'Du',
       'nameYourSoulmate': 'Dein Seelenverwandter',
+      // Surprise generator
+      'surpriseTitle': 'Romantischer Überraschungsgenerator',
+      'surpriseSubtitle':
+          'Eine zarte, spontane Geste, die deinen Schatz heute zum Lächeln bringt!',
+      'surpriseRollAnother': 'Neue Überraschung ziehen 🎲',
+      'surpriseKeepIdea': 'Diese Idee gefällt mir, schließen',
+      'surpriseIdea1':
+          'Schreibe auf kleine Zettel 3 Gründe, warum du deinen Schatz liebst, und verstecke sie in Schuh, Laptop und Manteltasche.',
+      'surpriseIdea2':
+          'Bereite das warme Lieblingsgetränk deines Schatzes genau richtig zu und serviere es mit einer 5-minütigen Schultermassage.',
+      'surpriseIdea3':
+          'Stelle heimlich eine Playlist aus 7 Liedern zusammen, die erzählen, wie ihr euch kennengelernt habt.',
+      'surpriseIdea4':
+          'Plant einen 30-minütigen „stillen Tanz“ im Wohnzimmer – mit Lichterketten und ohne ein Wort.',
+      'surpriseIdea5':
+          'Übernimm Abendessen und Abendroutine komplett, damit dein Schatz ein langes, entspannendes Bad genießen kann.',
+      'surpriseIdea6':
+          'Lege eine frische Blume mit einer süßen handgeschriebenen Nachricht an den Badezimmerspiegel.',
+      'surpriseIdea7':
+          'Verbinde deinem Schatz die Augen und veranstalte eine Geschmacksprobe in 3 Gängen mit Erdbeeren, Zartbitterschokolade und Honig.',
     },
 
     // ==========================================
@@ -861,6 +960,26 @@ class AppLocalizations {
       // Names
       'nameYou': 'Tú',
       'nameYourSoulmate': 'Tu alma gemela',
+      // Surprise generator
+      'surpriseTitle': 'Generador de Sorpresas Románticas',
+      'surpriseSubtitle':
+          '¡Un gesto tierno y espontáneo para hacer sonreír hoy a tu pareja!',
+      'surpriseRollAnother': 'Otra sorpresa 🎲',
+      'surpriseKeepIdea': 'Me encanta esta idea, cerrar',
+      'surpriseIdea1':
+          'Escribe 3 razones por las que amas a tu pareja en notitas adhesivas y escóndelas en su zapato, su portátil y el bolsillo de su abrigo.',
+      'surpriseIdea2':
+          'Prepara su bebida caliente favorita justo como le gusta y sírvela con un masaje de hombros de 5 minutos.',
+      'surpriseIdea3':
+          'Crea en secreto una lista de 7 canciones que cuenten la historia de cómo se conocieron.',
+      'surpriseIdea4':
+          'Organiza un «baile en silencio» de 30 minutos en el salón, con lucecitas y sin hablar.',
+      'surpriseIdea5':
+          'Encárgate por completo de la cena y de la rutina de la noche para que tu pareja pueda darse un baño largo y tranquilo.',
+      'surpriseIdea6':
+          'Deja una flor fresca con una nota dulce escrita a mano en el espejo del baño.',
+      'surpriseIdea7':
+          'Venda los ojos a tu pareja y ofrécele una cata sensorial de 3 pasos con fresas, chocolate negro y miel.',
     },
 
     // ==========================================
@@ -999,6 +1118,26 @@ class AppLocalizations {
       // Names
       'nameYou': 'Toi',
       'nameYourSoulmate': 'Ton âme sœur',
+      // Surprise generator
+      'surpriseTitle': 'Générateur de surprises romantiques',
+      'surpriseSubtitle':
+          'Un geste tendre et spontané pour faire sourire ton partenaire aujourd\'hui !',
+      'surpriseRollAnother': 'Tirer une autre surprise 🎲',
+      'surpriseKeepIdea': 'J\'adore cette idée, fermer',
+      'surpriseIdea1':
+          'Écris 3 raisons pour lesquelles tu l\'aimes sur des petits post-it et glisse-les dans sa chaussure, son ordinateur et la poche de son manteau.',
+      'surpriseIdea2':
+          'Prépare sa boisson chaude préférée exactement à son goût et sers-la avec un massage des épaules de 5 minutes.',
+      'surpriseIdea3':
+          'Crée en secret une playlist de 7 chansons qui racontent l\'histoire de votre rencontre.',
+      'surpriseIdea4':
+          'Organise une « danse silencieuse » de 30 minutes dans le salon, avec des guirlandes lumineuses et sans un mot.',
+      'surpriseIdea5':
+          'Prends entièrement en charge le dîner et le coucher pour que ton partenaire puisse profiter d\'un long bain apaisant.',
+      'surpriseIdea6':
+          'Laisse une fleur fraîche et un petit mot doux écrit à la main sur le miroir de la salle de bain.',
+      'surpriseIdea7':
+          'Bande les yeux de ton partenaire et offre-lui une dégustation sensorielle en 3 étapes : fraises, chocolat noir et miel.',
     },
 
     // ==========================================
@@ -1135,6 +1274,26 @@ class AppLocalizations {
       // Names
       'nameYou': 'Tu',
       'nameYourSoulmate': 'La tua anima gemella',
+      // Surprise generator
+      'surpriseTitle': 'Generatore di sorprese romantiche',
+      'surpriseSubtitle':
+          'Un gesto dolce e spontaneo per far sorridere oggi il tuo partner!',
+      'surpriseRollAnother': 'Un\'altra sorpresa 🎲',
+      'surpriseKeepIdea': 'Adoro questa idea, chiudi',
+      'surpriseIdea1':
+          'Scrivi 3 motivi per cui ami il tuo partner su piccoli post-it e nascondili nella sua scarpa, nel portatile e nella tasca del cappotto.',
+      'surpriseIdea2':
+          'Prepara la sua bevanda calda preferita proprio come la preferisce e servila con un massaggio alle spalle di 5 minuti.',
+      'surpriseIdea3':
+          'Crea in segreto una playlist di 7 canzoni che raccontino la storia di come vi siete conosciuti.',
+      'surpriseIdea4':
+          'Organizza un «ballo silenzioso» di 30 minuti in salotto, con lucine e senza parlare.',
+      'surpriseIdea5':
+          'Occupati tu della cena e della routine serale, così il tuo partner potrà concedersi un lungo bagno rilassante.',
+      'surpriseIdea6':
+          'Lascia un fiore fresco con un dolce biglietto scritto a mano sullo specchio del bagno.',
+      'surpriseIdea7':
+          'Benda gli occhi al tuo partner e offrigli una degustazione sensoriale in 3 tappe con fragole, cioccolato fondente e miele.',
     },
   };
 

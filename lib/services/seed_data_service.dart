@@ -650,24 +650,4 @@ class SeedDataService {
           'Tasting local cheeses, listening to acoustic melodies, and no laptops!',
     ),
   ];
-
-  static List<String> get romanticSurpriseIdeasEn => [
-    'Write 3 reasons you love them on small sticky notes and place them in their shoe, laptop, and coat pocket.',
-    'Prepare their favorite hot beverage exactly how they like it and serve it with a 5-minute shoulder massage.',
-    'Create a secret 7-song playlist of melodies that tell the story of how you two met.',
-    'Plan a 30-minute “silent dance” in the living room with fairy lights and no talking.',
-    'Surprise them by taking complete charge of dinner and bedtime routines so they can take a long, serene bath.',
-    'Leave a single fresh flower with a sweet handwritten note on the bathroom mirror.',
-    'Blindfold your partner and give them a 3-course sensory taste test with strawberries, dark chocolate, and honey.',
-  ];
-
-  static List<String> get romanticSurpriseIdeasTr => [
-    'Onu neden sevdiğine dair 3 küçük not yazıp ayakkabısına, bilgisayarına ve ceket cebine gizlice iliştir.',
-    'En sevdiği sıcak içeceği tam istediği kıvamda hazırla ve 5 dakikalık omuz masajıyla ikram et.',
-    'Tanışma hikayenizi anlatan 7 şarkılık gizli bir romantik çalma listesi oluştur.',
-    'Oturma odasında peri ışıklarını yakıp hiç konuşmadan 30 dakikalık sakin bir dans anı başlat.',
-    'Akşam yemeği ve toparlanma işlerini tamamen üstlenerek partnerine sıcak, köpüklü ve dinlendirici bir banyo hediye et.',
-    'Banyo aynasına ruj veya küçük bir not kağıdıyla gününü aydınlatacak tatlı bir sevgi sözcüğü bırak.',
-    'Partnerinin gözlerini bağlayıp çilek, bitter çikolata ve bal gibi tatlarla 3 aşamalı duyusal bir tadım yaptır.',
-  ];
 }
