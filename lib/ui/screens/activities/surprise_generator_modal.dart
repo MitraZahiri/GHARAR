@@ -1,10 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/utils/surprise_picker.dart';
 import '../../../providers/app_state_provider.dart';
-import '../../../services/seed_data_service.dart';
 import '../../widgets/confetti_overlay.dart';
 import '../../widgets/gradient_button.dart';
 
@@ -16,23 +17,25 @@ class SurpriseGeneratorModal extends StatefulWidget {
 }
 
 class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
-  int _currentSurpriseIndex = 0;
+  final Random _random = Random();
+  late int _currentSurpriseIndex = nextSurpriseIndex(null, _random);
   bool _playConfetti = true;
 
   @override
   void initState() {
     super.initState();
-    _rollNewSurprise();
+    _stopConfettiLater();
   }
 
   void _rollNewSurprise() {
-    final rand = Random();
     setState(() {
-      _currentSurpriseIndex = rand.nextInt(
-        SeedDataService.romanticSurpriseIdeasEn.length,
-      );
+      _currentSurpriseIndex = nextSurpriseIndex(_currentSurpriseIndex, _random);
       _playConfetti = true;
     });
+    _stopConfettiLater();
+  }
+
+  void _stopConfettiLater() {
     Future.delayed(const Duration(milliseconds: 2200), () {
       if (mounted) {
         setState(() {
@@ -45,12 +48,9 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
   @override
   Widget build(BuildContext context) {
     final isDark = context.select<AppStateProvider, bool>((p) => p.isDarkMode);
-    final isTr = context.select<AppStateProvider, bool>((p) => p.isTurkish);
-
-    final idea =
-        isTr
-            ? SeedDataService.romanticSurpriseIdeasTr[_currentSurpriseIndex]
-            : SeedDataService.romanticSurpriseIdeasEn[_currentSurpriseIndex];
+    final locale = context.select<AppStateProvider, Locale>((p) => p.locale);
+    final loc = AppLocalizations(locale);
+    final idea = loc.t('surpriseIdea${_currentSurpriseIndex + 1}');
 
     return ConfettiOverlay(
       isPlaying: _playConfetti,
@@ -81,21 +81,20 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
                 children: [
                   const Text('🎲', style: TextStyle(fontSize: 26)),
                   const SizedBox(width: 10),
-                  Text(
-                    isTr
-                        ? 'Romantik Sürpriz Çarkı'
-                        : 'Romantic Surprise Generator',
-                    style: AppTextStyles.titleMedium(
-                      isDark: isDark,
-                    ).copyWith(fontWeight: FontWeight.w700, fontSize: 18),
+                  Flexible(
+                    child: Text(
+                      loc.t('surpriseTitle'),
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.titleMedium(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w700, fontSize: 18),
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 6),
               Text(
-                isTr
-                    ? 'Partnerinizi bugün mutlu edecek tatlı, spontane bir jest!'
-                    : 'A gentle, spontaneous gesture to make your partner smile today!',
+                loc.t('surpriseSubtitle'),
                 textAlign: TextAlign.center,
                 style: AppTextStyles.bodySmall(isDark: isDark),
               ),
@@ -132,6 +131,7 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
                     const SizedBox(height: 12),
                     Text(
                       idea,
+                      key: const ValueKey('surprise-idea'),
                       textAlign: TextAlign.center,
                       style: AppTextStyles.displaySmall(
                         isDark: isDark,
@@ -149,10 +149,7 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
 
               // Roll Another Button
               GradientButton(
-                text:
-                    isTr
-                        ? 'Yeni Bir Sürpriz Çek 🎲'
-                        : 'Roll Another Surprise 🎲',
+                text: loc.t('surpriseRollAnother'),
                 onPressed: _rollNewSurprise,
               ),
 
@@ -161,7 +158,7 @@ class _SurpriseGeneratorModalState extends State<SurpriseGeneratorModal> {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
-                  isTr ? 'Bu Fikri Beğendim, Kapat' : 'I Love This Idea, Close',
+                  loc.t('surpriseKeepIdea'),
                   style: AppTextStyles.bodyMedium(isDark: isDark).copyWith(
                     color:
                         isDark
